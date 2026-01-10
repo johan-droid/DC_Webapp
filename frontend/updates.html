@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latest Cases | Detective Conan</title>
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://image.tmdb.org https://m.media-amazon.com https://c4.wallpaperflare.com https://static.wikia.nocookie.net; script-src 'self';">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <h1 class="logo">DC.</h1>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="characters.html">Characters</a></li>
+                <li><a href="updates.html" class="active">Updates</a></li>
+                <li><a href="news.html">News & Gossip</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="animate-on-scroll">Latest Investigations</h2>
+
+            <!-- Filter Controls -->
+            <div class="filter-controls animate-on-scroll" style="margin-bottom: 2rem; text-align: center;">
+                <button class="btn filter-btn active" onclick="filterEpisodes('all')">All Cases</button>
+                <button class="btn filter-btn" onclick="filterEpisodes('canon')">Canon Only</button>
+                <button class="btn filter-btn" onclick="filterEpisodes('movie')">Movies</button>
+            </div>
+
+            <div class="card-grid">
+                <!-- Card 1 -->
+                <article class="card animate-on-scroll" data-type="canon" style="transition-delay: 0.1s;">
+                    <div class="card-content">
+                        <span class="card-category">Upcoming • Oct 14</span>
+                        <h3>Episode 1137: The Secret of the Old Clock Tower</h3>
+                        <p>The Detective Boys stumble upon a mystery while cleaning up a local park.</p>
+                    </div>
+                </article>
+                <!-- Card 2 -->
+                <article class="card animate-on-scroll" data-type="anime" style="transition-delay: 0.2s;">
+                    <div class="card-content">
+                        <span class="card-category">Just Aired</span>
+                        <h3>Episode 1136: The Invisible Witness</h3>
+                        <p>Conan solves a locked room mystery in a high-rise apartment complex.</p>
+                    </div>
+                </article>
+                <!-- Card 3 -->
+                <article class="card animate-on-scroll" data-type="movie" style="transition-delay: 0.3s;">
+                    <div class="card-content">
+                        <span class="card-category">Movie</span>
+                        <h3>Movie 27: The Million-Dollar Pentagram</h3>
+                        <p>Now available on Blu-ray and DVD. Includes limited edition artwork.</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>
