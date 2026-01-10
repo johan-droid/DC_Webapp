@@ -525,57 +525,119 @@ footer {
     font-size: 0.9rem;
 }
 
-/* --- Mobile Responsiveness --- */
+/* --- Mobile Responsiveness & Premium Menu --- */
 @media (max-width: 768px) {
-    .hamburger { display: block; }
+    /* 1. Hamburger Icon Positioning */
+    .hamburger {
+        display: block;
+        position: relative;
+        z-index: 2000; /* Ensure it stays on top of the overlay */
+    }
 
-    /* Improved Mobile Menu Animation */
+    /* 2. Full Screen Glass Overlay */
     .nav-links {
         position: fixed;
-        left: 0; /* Align left but hide via opacity/visibility for smoother transition */
-        top: var(--nav-height);
+        left: 0;
+        top: 0;
         width: 100%;
-        background-color: rgba(10, 14, 23, 0.98);
-        backdrop-filter: blur(15px);
-        flex-direction: column;
-        align-items: center;
-        gap: 0;
-        padding: 2rem 0;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
+        height: 100vh; /* Full viewport height */
+        background: rgba(10, 14, 23, 0.95); /* Darker opacity for readability */
+        backdrop-filter: blur(20px); /* Heavy blur for premium glass effect */
+        -webkit-backdrop-filter: blur(20px);
         
-        /* Slide & Fade Logic */
-        transform: translateY(-20px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center items vertically */
+        align-items: center;
+        gap: 2rem;
+        
+        /* Animation: Slide down or Fade in */
         opacity: 0;
+        visibility: hidden;
+        transform: scale(0.95);
+        transition: all 0.4s var(--ease-bounce);
         pointer-events: none;
-        transition: all 0.3s var(--ease-smooth);
     }
 
+    /* Active State (Open) */
     .nav-links.active {
-        transform: translateY(0);
         opacity: 1;
+        visibility: visible;
+        transform: scale(1);
         pointer-events: all;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
+    /* 3. Premium Text Styling */
     .nav-links li {
         width: 100%;
         text-align: center;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.4s ease, transform 0.4s ease;
     }
 
+    /* Staggered animation for list items when opening */
+    .nav-links.active li {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .nav-links.active li:nth-child(1) { transition-delay: 0.1s; }
+    .nav-links.active li:nth-child(2) { transition-delay: 0.2s; }
+    .nav-links.active li:nth-child(3) { transition-delay: 0.3s; }
+    .nav-links.active li:nth-child(4) { transition-delay: 0.4s; }
+
     .nav-links a {
-        display: block;
-        padding: 1.2rem;
+        font-family: var(--font-heading); /* Playfair Display */
+        font-size: 2rem;
+        color: var(--text-primary);
+        font-weight: 700;
+        display: inline-block;
+        position: relative;
+    }
+
+    /* 4. The "Proper Button" - Transformation */
+    /* This targets the LAST item in your menu (News & Gossip) and makes it a button */
+    .nav-links li:last-child {
+        margin-top: 1rem;
+    }
+
+    .nav-links li:last-child a {
+        font-family: var(--font-body); /* Back to Inter for readability */
         font-size: 1.1rem;
-        border-bottom: 1px solid rgba(255,255,255,0.02);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        
+        background: var(--accent-red);
+        color: white;
+        padding: 16px 40px;
+        border-radius: 50px; /* Pill shape */
+        box-shadow: 0 10px 30px rgba(230, 57, 70, 0.4);
+        border: 1px solid transparent;
+        transition: transform 0.2s ease;
+    }
+
+    .nav-links li:last-child a:active {
+        transform: scale(0.95); /* Tap effect */
+    }
+
+    /* Hide the underline effect for the button */
+    .nav-links li:last-child a::after {
+        display: none;
+    }
+
+    /* Container Adjustments */
+    .container { padding: 0 20px; }
+    .hero h1 { white-space: normal; }
+    
+    /* Hide scrollbar when menu is open */
+    body.menu-open {
+        overflow: hidden;
     }
     
     /* Hamburger Animation */
     .hamburger.active .bar:nth-child(2) { opacity: 0; }
     .hamburger.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
     .hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
-
-    .container { padding: 0 20px; }
-    .hero h1 { white-space: normal; }
 }
 
 /* --- BO Theme (APTX Mode) --- */

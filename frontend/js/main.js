@@ -119,6 +119,9 @@ document.addEventListener('DOMContentLoaded', () => {
         hamburger.addEventListener('click', () => {
             hamburger.classList.toggle('active');
             navLinks.classList.toggle('active');
+            
+            // Prevent background scrolling when menu is open
+            document.body.classList.toggle('menu-open');
         });
 
         // Close menu on link click
@@ -126,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
             link.addEventListener('click', () => {
                 hamburger.classList.remove('active');
                 navLinks.classList.remove('active');
+                document.body.classList.remove('menu-open');
             });
         });
     }
