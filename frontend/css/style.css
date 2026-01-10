@@ -1,188 +1,155 @@
-/* Modern Mystery Theme - Refined Transitions */
+/* frontend/css/style.css */
+
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap');
 
 :root {
-    /* Color Palette */
+    /* --- Color Palette --- */
     --bg-primary: #0a0e17;
     --bg-secondary: #1a2639;
     --accent-red: #e63946;
+    --accent-red-glow: rgba(230, 57, 70, 0.4);
     --text-primary: #f1faee;
     --text-secondary: #a8dadc;
-    --gold-highlight: #ffd700;
     --card-bg: #131b2e;
+    
+    /* --- Glassmorphism --- */
+    --glass-bg: rgba(10, 14, 23, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-blur: 12px;
 
-    /* Typography */
+    /* --- Typography (Fluid) --- */
     --font-heading: 'Playfair Display', serif;
     --font-body: 'Inter', sans-serif;
+    /* Scales between 2.5rem and 5rem based on viewport width */
+    --h1-size: clamp(2.5rem, 5vw + 1rem, 5rem); 
+    --h2-size: clamp(1.8rem, 3vw + 1rem, 3rem);
+    --p-size: clamp(1rem, 2vw, 1.15rem);
 
-    /* Spacing & Layout */
+    /* --- Spacing & Layout --- */
     --container-width: 1200px;
-    --section-spacing: 5rem;
-    --nav-height: 80px;
+    --section-spacing: clamp(3rem, 8vw, 6rem);
+    --nav-height: 70px;
+    --border-radius: 16px;
 
-    /* Animation Variables */
-    --transition-speed: 0.4s;
+    /* --- Animations --- */
     --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    /* Smooth Quad */
     --ease-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    /* Gentle Bounce */
 }
 
-* {
+/* Reset & Base */
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent; /* Remove blue tap highlight on Android */
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--nav-height); /* Fix anchor jumps */
 }
 
 body {
-    /* 1. The base color (Dark Blue/Black) - No image here */
     background-color: var(--bg-primary);
     color: var(--text-primary);
     font-family: var(--font-body);
     line-height: 1.6;
     overflow-x: hidden;
     position: relative;
-    /* Needed for to pseudo-element to position correctly */
     -webkit-font-smoothing: antialiased;
-    /* Crisper text */
 }
 
-/* --- Default Theme (Conan) --- */
+/* --- Dynamic Background --- */
 body::before {
     content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* Default Conan Image (Local) */
+    inset: 0;
     background-image: url('../assets/conan-mystery-hero.png');
     background-position: right bottom;
     background-repeat: no-repeat;
     background-size: contain;
-    opacity: 0.12;
+    opacity: 0.1;
     z-index: -1;
     filter: grayscale(100%);
-    transition: all 0.5s ease;
     pointer-events: none;
-    /* Ensure clicks pass through */
+    transition: all 0.5s ease;
 }
 
-/* --- APTX Mode Overrides (The Villain Layer) --- */
-body.bo-theme::before {
-    /* 1. Use the LOCAL Gin image you downloaded */
-    background-image: url('../assets/gin-villain.png');
-
-    /* 2. Move him to the left (Looming presence) */
-    background-position: left bottom;
-
-    /* 3. The "Danger" Filter: Turns him into a blood-red silhouette */
-    filter: grayscale(100%) brightness(0.6) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(1.2);
-
-    /* 4. Adjust visibility */
-    opacity: 0.2;
-    /* Slightly higher opacity for the villain */
-    background-size: 50%;
-    /* Adjust based on your image size */
-}
-
-/* Mobile Adjustment for Villain Background */
+/* Phone Adjustment for Background */
 @media (max-width: 768px) {
-    body.bo-theme::before {
-        background-size: 80%;
-        /* Make him larger on phone */
-        background-position: left bottom;
-        opacity: 0.15;
+    body::before {
+        background-size: 150%; 
+        background-position: center bottom;
+        opacity: 0.05; 
     }
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+/* --- Typography --- */
+h1, h2, h3 {
     font-family: var(--font-heading);
     color: var(--text-primary);
     margin-bottom: 1rem;
     font-weight: 700;
-    letter-spacing: -0.02em;
+    line-height: 1.2;
 }
 
-p {
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
-}
+h1 { font-size: var(--h1-size); }
+h2 { font-size: var(--h2-size); }
+p { font-size: var(--p-size); color: var(--text-secondary); margin-bottom: 1.5rem; }
 
-a {
-    text-decoration: none;
-    color: inherit;
-    transition: color 0.3s ease;
-}
+a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
 
 /* --- Layout Utils --- */
 .container {
+    width: 100%;
     max-width: var(--container-width);
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 max(20px, env(safe-area-inset-right)); /* Handle notched phones */
+    padding-left: max(20px, env(safe-area-inset-left));
 }
 
-.section {
-    padding: var(--section-spacing) 0;
-}
+.section { padding: var(--section-spacing) 0; }
 
-/* Update .btn style for better fluidity */
+/* --- Buttons (Enhanced for Touch) --- */
 .btn {
-    display: inline-block;
-    padding: 14px 36px;
-    /* Larger click area */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 32px;
     background: linear-gradient(135deg, var(--accent-red), #c1121f);
-    /* Gradient depth */
     color: white;
     font-weight: 600;
     border-radius: 50px;
-    /* Pill shape is less "clumsy" than square */
     border: none;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+    box-shadow: 0 4px 15px var(--accent-red-glow);
     transition: transform 0.3s var(--ease-bounce), box-shadow 0.3s ease;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    font-size: 1rem;
     position: relative;
     z-index: 1;
+    white-space: nowrap;
 }
 
 .btn:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 10px 25px rgba(230, 57, 70, 0.5);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(230, 57, 70, 0.6);
 }
 
-/* APTX Mode Hero Button */
-body.bo-theme .btn {
-    background: transparent;
-    border: 2px solid var(--accent-red);
-    box-shadow: inset 0 0 10px rgba(255, 0, 51, 0.2);
-    color: var(--accent-red);
-}
+.btn:active { transform: scale(0.95); }
 
-body.bo-theme .btn:hover {
-    background: var(--accent-red);
-    color: black;
-    box-shadow: 0 0 30px var(--accent-red);
-}
-
-/* --- Navbar (Glassmorphism) --- */
+/* --- Navbar (Glassmorphism & Mobile Optimized) --- */
 .navbar {
     height: var(--nav-height);
-    background-color: rgba(10, 14, 23, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+    top: 0; left: 0; width: 100%;
     z-index: 1000;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    transition: background-color 0.3s ease;
+    border-bottom: 1px solid var(--glass-border);
+    transition: background 0.3s ease;
+    padding-top: env(safe-area-inset-top); /* Notch support */
 }
 
 .nav-content {
@@ -197,7 +164,7 @@ body.bo-theme .btn:hover {
     color: var(--accent-red);
     letter-spacing: 2px;
     z-index: 1001;
-    text-shadow: 0 0 20px rgba(230, 57, 70, 0.4);
+    font-weight: 800;
 }
 
 .nav-links {
@@ -207,145 +174,112 @@ body.bo-theme .btn:hover {
 }
 
 .nav-links a {
-    font-family: var(--font-body);
-    font-weight: 500;
     font-size: 0.95rem;
-    position: relative;
+    font-weight: 500;
     opacity: 0.8;
-    transition: opacity 0.3s ease;
+    position: relative;
+    padding: 5px 0;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
+.nav-links a.active, .nav-links a:hover {
     opacity: 1;
+    color: #fff;
 }
 
 .nav-links a::after {
     content: '';
     position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -5px;
-    left: 0;
+    width: 0; height: 2px;
+    bottom: 0; left: 0;
     background-color: var(--accent-red);
-    transition: width 0.3s var(--ease-smooth);
+    transition: width 0.3s ease;
 }
 
-.nav-links a:hover::after,
-.nav-links a.active::after {
-    width: 100%;
-}
+.nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
 
-/* Mobile Hamburger */
+/* --- Hamburger Menu --- */
 .hamburger {
     display: none;
     cursor: pointer;
-    z-index: 1001;
+    z-index: 2001;
+    padding: 10px; /* Increase hit area */
 }
 
 .bar {
     display: block;
-    width: 25px;
-    height: 2px;
-    margin: 6px auto;
-    transition: all 0.3s ease-in-out;
+    width: 26px; height: 3px;
+    margin: 5px auto;
     background-color: var(--text-primary);
+    border-radius: 3px;
+    transition: all 0.3s ease-in-out;
 }
 
 /* --- Hero Section --- */
 .hero {
-    height: 100svh;
-    /* Optimized for mobile address bar */
+    min-height: 100vh; /* Replaces 100svh for broader compatibility */
+    min-height: 100svh; /* Modern mobile units */
     display: flex;
     align-items: center;
-    background: linear-gradient(rgba(5, 8, 16, 0.5), rgba(5, 8, 16, 0.9)),
-        url('../assets/conan-mystery-hero.png');
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(5, 8, 16, 0.4) 0%, rgba(5, 8, 16, 1) 100%),
+                url('../assets/conan-mystery-hero.png');
     background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    background-position: center top;
     padding-top: var(--nav-height);
-    box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.9);
+    position: relative;
     overflow: hidden;
-}
-
-@media (hover: none) {
-    .hero {
-        background-attachment: scroll;
-    }
 }
 
 .hero-content {
-    width: 100%;
     text-align: center;
+    z-index: 2;
     padding: 0 20px;
-    opacity: 0;
-    /* JS fade in handled manually or via animation class */
-    animation: fadeIn 1s var(--ease-smooth) forwards;
 }
 
 .hero h1 {
-    font-size: clamp(2.5rem, 6vw, 5.5rem);
-    line-height: 1.1;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.8);
     margin-bottom: 1.5rem;
-    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
 }
 
 .hero p {
-    font-size: clamp(1rem, 2vw, 1.3rem);
-    margin-bottom: 2.5rem;
     max-width: 600px;
-    margin-inline: auto;
+    margin: 0 auto 2.5rem;
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
 }
 
-/* --- Card Grid Improvement --- */
+/* --- Responsive Grid Layouts --- */
 .card-grid {
     display: grid;
-    /* responsive columns, minimum 300px wide */
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2.5rem;
+    /* Smart wrapping: columns never get smaller than 280px */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
     margin-top: 2rem;
-    padding-bottom: 2rem;
 }
 
+/* Card Styling */
 .card {
     background-color: var(--card-bg);
-    border-radius: 16px;
-    /* Softer corners */
+    border-radius: var(--border-radius);
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--glass-border);
     display: flex;
     flex-direction: column;
-    /* Forces footer to bottom */
-    height: 100%;
-    /* Uniform height */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s ease, border-color 0.3s ease;
-    position: relative;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    height: 100%;
 }
 
 .card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    transform: translateY(-5px);
     border-color: rgba(255, 255, 255, 0.2);
 }
 
 .card-image {
     width: 100%;
-    height: 200px;
-    /* Fixed height for images */
+    aspect-ratio: 16/9;
     background-size: cover;
     background-position: center;
-    position: relative;
-}
-
-.card-image::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 50%;
-    background: linear-gradient(to top, var(--card-bg), transparent);
 }
 
 .card-content {
@@ -353,103 +287,59 @@ body.bo-theme .btn:hover {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    /* Fills remaining space */
 }
 
 .card-category {
-    font-size: 0.7rem;
-    letter-spacing: 1.5px;
+    font-size: 0.75rem;
     text-transform: uppercase;
     color: var(--accent-red);
     font-weight: 700;
     margin-bottom: 0.5rem;
+    letter-spacing: 1px;
 }
 
-.card h3 {
-    font-size: 1.25rem;
-    margin-bottom: 0.75rem;
-    line-height: 1.4;
-}
-
-.card p {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-    line-height: 1.6;
-    flex-grow: 1;
-    /* Pushes button to bottom */
-}
-
-/* --- BO Theme (APTX Mode) Specifics for Grid --- */
-body.bo-theme .card {
-    background-color: rgba(0, 0, 0, 0.8);
-    /* Darker cards */
-    border-color: #330000;
-}
-
-body.bo-theme .card:hover {
-    border-color: var(--accent-red);
-    box-shadow: 0 0 20px rgba(255, 0, 51, 0.2);
-}
-
-body.bo-theme .card-category {
-    color: #fff;
-    background: var(--accent-red);
+.read-more {
+    margin-top: auto; /* Pushes link to bottom */
+    color: var(--accent-red);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding-top: 1rem;
     display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
 }
 
-/* --- Premium Character Cards (Overlay Style) --- */
+/* --- Premium Character Grid --- */
 .character-premium-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Mobile friendly small cards */
+    gap: 1.5rem;
     padding: 2rem 0;
 }
 
+@media (min-width: 600px) {
+    .character-premium-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
+}
+
 .char-card {
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--border-radius);
     overflow: hidden;
     position: relative;
     border: 1px solid rgba(255, 255, 255, 0.05);
-    height: 380px;
-    /* Fixed height for uniformity */
-    transition: all 0.4s var(--ease-bounce);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    aspect-ratio: 3/4; /* Consistent aspect ratio */
+    transition: all 0.3s ease;
 }
 
-.char-card:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-    border-color: rgba(230, 57, 70, 0.5);
-    z-index: 5;
-}
-
-/* The Image Container */
 .char-image-wrapper {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
+    width: 100%; height: 100%;
+    position: absolute; top: 0; left: 0;
     background: linear-gradient(135deg, #1a2639, #0a0e17);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     border-radius: 16px 16px 0 0;
-}
-
-/* Ensure images load properly with fallback */
-.char-img-element {
-    transition: opacity 0.3s ease;
-}
-
-.char-img-element:not([src]),
-.char-img-element[src=""] {
-    display: none;
 }
 
 .char-placeholder {
@@ -470,302 +360,107 @@ body.bo-theme .card-category {
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-/* Gradient Overlay - Always present but changes on hover */
-.char-card::before {
+.char-img-element {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+    border-radius: 16px 16px 0 0;
+}
+
+.char-card:hover .char-img-element { transform: scale(1.05); }
+
+/* Overlay Gradient */
+.char-card::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top,
-            rgba(0, 0, 0, 0.95) 0%,
-            rgba(0, 0, 0, 0.7) 30%,
-            transparent 100%);
-    z-index: 1;
-    opacity: 0.8;
-    transition: opacity 0.4s ease;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+    pointer-events: none;
 }
 
-.char-card:hover::before {
-    opacity: 1;
-    background: linear-gradient(to top,
-            rgba(0, 0, 0, 0.95) 10%,
-            rgba(230, 57, 70, 0.1) 100%);
-    /* Subtle red tint on hover */
-}
-
-/* Content positioning */
 .char-content {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 2rem 1.5rem;
+    bottom: 0; left: 0; width: 100%;
+    padding: 1.5rem;
     z-index: 2;
-    transform: translateY(10px);
-    transition: transform 0.4s var(--ease-smooth);
-}
-
-.char-card:hover .char-content {
-    transform: translateY(0);
 }
 
 .char-name {
-    font-size: 1.6rem;
-    color: #fff;
-    margin-bottom: 0.5rem;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-    position: relative;
-    display: inline-block;
+    font-size: 1.25rem;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
 
-/* Underline Animation */
-.char-name::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -2px;
-    width: 0;
-    height: 2px;
-    background: var(--accent-red);
-    transition: width 0.4s var(--ease-smooth);
-}
-
-.char-card:hover .char-name::after {
-    width: 100%;
-}
-
+/* Hide description on mobile to keep grid clean, show on hover/desktop */
 .char-desc {
-    font-size: 0.9rem;
-    color: #e0e0e0;
-    line-height: 1.5;
+    font-size: 0.85rem;
+    color: #ddd;
     max-height: 0;
-    opacity: 0;
     overflow: hidden;
-    transition: all 0.5s var(--ease-smooth);
+    transition: max-height 0.4s ease;
+    opacity: 0.9;
 }
 
 .char-card:hover .char-desc {
-    max-height: 150px;
-    /* Allow expansion */
-    opacity: 1;
-    margin-top: 10px;
+    max-height: 100px;
+    margin-top: 0.5rem;
 }
 
-/* Mobile Char Card: Show content always, remove hover mechanics */
+/* --- Mobile Menu & Responsive Tweaks --- */
 @media (max-width: 768px) {
-    .char-card {
-        height: auto;
-        min-height: 350px;
-        transform: none !important;
-    }
+    .hamburger { display: block; }
 
-    .char-content {
-        transform: translateY(0);
-        padding-bottom: 1.5rem;
-    }
-
-    .char-desc {
-        max-height: 200px;
-        opacity: 0.9;
-        margin-top: 10px;
-    }
-
-    .char-name::after {
-        width: 40px;
-        /* Static underline on mobile */
-    }
-}
-
-/* --- Animation Classes (Scroll Reveal) --- */
-.animate-on-scroll {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s var(--ease-smooth), transform 0.8s var(--ease-smooth);
-}
-
-.animate-on-scroll-active {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* --- Footer --- */
-footer {
-    background-color: var(--bg-secondary);
-    padding: 4rem 0;
-    text-align: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-}
-
-/* --- Mobile Responsiveness & Premium Menu --- */
-@media (max-width: 768px) {
-
-    /* 1. Hamburger Icon Positioning */
-    .hamburger {
-        display: block;
-        position: relative;
-        z-index: 2000;
-        /* Ensure it stays on top of the overlay */
-    }
-
-    /* 2. Full Screen Glass Overlay */
     .nav-links {
         position: fixed;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100vh;
-        /* Full viewport height */
-        background: rgba(10, 14, 23, 0.95);
-        /* Darker opacity for readability */
-        backdrop-filter: blur(20px);
-        /* Heavy blur for premium glass effect */
-        -webkit-backdrop-filter: blur(20px);
-
-        display: flex;
+        top: 0; left: 0;
+        width: 100%; height: 100vh;
+        background: rgba(5, 8, 16, 0.98); /* Less transparent for readability */
         flex-direction: column;
         justify-content: center;
-        /* Center items vertically */
         align-items: center;
-        gap: 2rem;
-
-        /* Animation: Slide down or Fade in */
-        opacity: 0;
-        visibility: hidden;
-        transform: scale(0.95);
-        transition: all 0.4s var(--ease-bounce);
-        pointer-events: none;
+        gap: 2.5rem;
+        transform: translateY(-100%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 2rem;
     }
 
-    /* Active State (Open) */
-    .nav-links.active {
-        opacity: 1;
-        visibility: visible;
-        transform: scale(1);
-        pointer-events: all;
-    }
-
-    /* 3. Premium Text Styling */
-    .nav-links li {
-        width: 100%;
-        text-align: center;
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.4s ease, transform 0.4s ease;
-    }
-
-    /* Staggered animation for list items when opening */
-    .nav-links.active li {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .nav-links.active li:nth-child(1) {
-        transition-delay: 0.1s;
-    }
-
-    .nav-links.active li:nth-child(2) {
-        transition-delay: 0.2s;
-    }
-
-    .nav-links.active li:nth-child(3) {
-        transition-delay: 0.3s;
-    }
-
-    .nav-links.active li:nth-child(4) {
-        transition-delay: 0.4s;
-    }
+    .nav-links.active { transform: translateY(0); }
 
     .nav-links a {
         font-family: var(--font-heading);
-        /* Playfair Display */
         font-size: 2rem;
         color: var(--text-primary);
-        font-weight: 700;
-        display: inline-block;
-        position: relative;
-    }
-
-    /* 4. The "Proper Button" - Transformation */
-    /* This targets the LAST item in your menu (News & Gossip) and makes it a button */
-    .nav-links li:last-child {
-        margin-top: 1rem;
-    }
-
-    .nav-links li:last-child a {
-        font-family: var(--font-body);
-        /* Back to Inter for readability */
-        font-size: 1.1rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-
-        background: var(--accent-red);
-        color: white;
-        padding: 16px 40px;
-        border-radius: 50px;
-        /* Pill shape */
-        box-shadow: 0 10px 30px rgba(230, 57, 70, 0.4);
-        border: 1px solid transparent;
-        transition: transform 0.2s ease;
-    }
-
-    .nav-links li:last-child a:active {
-        transform: scale(0.95);
-        /* Tap effect */
-    }
-
-    /* Hide the underline effect for the button */
-    .nav-links li:last-child a::after {
-        display: none;
-    }
-
-    /* Container Adjustments */
-    .container {
-        padding: 0 20px;
-    }
-
-    .hero h1 {
-        white-space: normal;
-    }
-
-    /* Hide scrollbar when menu is open */
-    body.menu-open {
-        overflow: hidden;
+        opacity: 1;
     }
 
     /* Hamburger Animation */
-    .hamburger.active .bar:nth-child(2) {
-        opacity: 0;
-    }
+    .hamburger.active .bar:nth-child(2) { opacity: 0; }
+    .hamburger.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-    .hamburger.active .bar:nth-child(1) {
-        transform: translateY(8px) rotate(45deg);
-    }
-
-    .hamburger.active .bar:nth-child(3) {
-        transform: translateY(-8px) rotate(-45deg);
-    }
+    /* Fix Grid Spacing on Mobile */
+    .container { padding: 0 20px; }
+    
+    /* Make buttons full width on very small screens */
+    .filter-controls { flex-direction: column; width: 100%; }
+    .filter-btn { width: 100%; margin-bottom: 10px; }
 }
 
-/* --- BO Theme (APTX Mode) --- */
+/* --- APTX (Villain) Theme --- */
 body.bo-theme {
     --accent-red: #ff0033;
-    --card-bg: rgba(5, 5, 5, 0.9);
+    --bg-primary: #050505;
 }
 
-body.bo-theme .char-card:hover {
-    box-shadow: 0 0 30px rgba(255, 0, 51, 0.4);
-    border-color: var(--accent-red);
+body.bo-theme::before {
+    background-image: url('../assets/gin-villain.png');
+    background-position: left bottom;
+    filter: grayscale(100%) brightness(0.6) sepia(100%) hue-rotate(-50deg) saturate(600%);
+    opacity: 0.15;
 }
 
-body.bo-theme .char-name,
-body.bo-theme h1,
-body.bo-theme h2 {
-    font-family: 'Courier New', monospace;
-    letter-spacing: -1px;
-}
+body.bo-theme .card { border-color: #330000; background: #0a0000; }
 
-/* APTX Mode Character Placeholders */
 body.bo-theme .char-placeholder {
     background: linear-gradient(135deg, #1a0000, #330000);
     color: rgba(255, 0, 51, 0.6);
@@ -777,51 +472,22 @@ body.bo-theme .char-image-wrapper {
 }
 
 /* --- Animations --- */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* --- NEW: Cinematic Slogan Animation --- */
-.mystery-reveal {
+.animate-on-scroll {
     opacity: 0;
-    /* Start hidden */
-    animation: mysteryReveal 2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-
-    /* Optional: Make it look elegant */
-    letter-spacing: 0.1em;
-    background: linear-gradient(to right, #fff, #a8dadc);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
-@keyframes mysteryReveal {
-    0% {
-        opacity: 0;
-        transform: translateY(40px) scale(0.95);
-        filter: blur(20px);
-        /* Heavy fog/blur start */
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        filter: blur(0);
-        /* Crystal clear truth */
-    }
+.animate-on-scroll-active {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.fade-in {
-    animation: fadeIn 0.8s var(--ease-smooth) forwards;
+/* --- Character Header --- */
+.character-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding-top: 120px;
 }
 
 /* --- Welcome Section --- */
@@ -830,20 +496,6 @@ body.bo-theme .char-image-wrapper {
     background: var(--bg-secondary);
     position: relative;
     overflow: hidden;
-}
-
-.welcome-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('https://www.detectiveconanworld.com/wiki/images/w/wallpaper_conan_edogawa.jpg');
-    background-size: cover;
-    background-position: center;
-    opacity: 0.1;
-    z-index: 0;
 }
 
 .welcome-content {
@@ -874,14 +526,6 @@ body.bo-theme .char-image-wrapper {
     height: 3px;
     background: linear-gradient(to right, transparent, var(--accent-red), transparent);
     margin: 2rem auto;
-}
-
-/* --- Character Header --- */
-.character-header {
-    text-align: center;
-    margin-bottom: 4rem;
-    /* FIX: Add padding to clear the fixed navbar (80px nav + 40px space) */
-    padding-top: 120px;
 }
 
 /* --- About Section --- */
@@ -969,7 +613,7 @@ body.bo-theme .char-image-wrapper {
     font-style: italic;
 }
 
-/* --- Refined Quiz Section (Glassmorphism & Grid) --- */
+/* --- Quiz Section --- */
 .quiz-container {
     background: rgba(26, 38, 57, 0.6);
     padding: 2.5rem;
@@ -992,15 +636,12 @@ body.bo-theme .char-image-wrapper {
 .quiz-options {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    /* Auto-grid */
     gap: 1.5rem;
-    /* Better spacing to remove "clumsiness" */
     margin-top: 1.5rem;
 }
 
 .option-btn {
     background: rgba(255, 255, 255, 0.05);
-    /* Subtle glass */
     border: 1px solid rgba(255, 255, 255, 0.15);
     color: var(--text-secondary);
     padding: 1.2rem;
@@ -1013,7 +654,6 @@ body.bo-theme .char-image-wrapper {
     overflow: hidden;
 }
 
-/* Hover Effect: Glow & Lift */
 .option-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: var(--text-secondary);
@@ -1022,7 +662,6 @@ body.bo-theme .char-image-wrapper {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Selected States */
 .option-btn.correct {
     background: rgba(42, 157, 143, 0.2) !important;
     border-color: #2a9d8f !important;
@@ -1036,39 +675,23 @@ body.bo-theme .char-image-wrapper {
     color: #e63946 !important;
 }
 
-/* --- APTX MODE (Villain Theme) Button Overrides --- */
-body.bo-theme .quiz-container {
-    background: rgba(0, 0, 0, 0.8);
-    border-color: var(--accent-red);
-    box-shadow: 0 0 30px rgba(255, 0, 51, 0.15);
-}
-
-body.bo-theme .option-btn {
-    background: rgba(20, 0, 0, 0.6);
-    border: 1px solid rgba(255, 0, 51, 0.3);
-    color: #aaa;
-    font-family: 'Courier New', monospace;
-    /* Hacker vibe */
-    letter-spacing: 1px;
-}
-
-body.bo-theme .option-btn:hover {
-    background: rgba(255, 0, 51, 0.1);
-    border-color: var(--accent-red);
-    color: #fff;
-    box-shadow: 0 0 15px rgba(255, 0, 51, 0.4);
-    text-shadow: 0 0 8px var(--accent-red);
-}
-
-/* --- Disclaimer --- */
-.disclaimer-section {
-    margin-top: 4rem;
-    padding: 2rem;
-    background: rgba(255, 255, 255, 0.02);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+/* --- Footer --- */
+footer {
+    background-color: var(--bg-secondary);
+    padding: 4rem 0;
     text-align: center;
-    font-size: 0.8rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
     color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Disclaimer Footer */
+.disclaimer-section {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    text-align: center;
+    margin-top: 4rem;
+    padding-bottom: 2rem;
 }
 
 .disclaimer-section a {
@@ -1076,45 +699,27 @@ body.bo-theme .option-btn:hover {
     text-decoration: underline;
 }
 
-/* --- BO Theme Updates --- */
-body.bo-theme .welcome-section {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(5, 5, 5, 0.9));
+/* --- Mystery Reveal Animation --- */
+.mystery-reveal {
+    opacity: 0;
+    animation: mysteryReveal 2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    letter-spacing: 0.1em;
+    background: linear-gradient(to right, #fff, #a8dadc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-body.bo-theme .welcome-section::before {
-    opacity: 0.05;
-}
-
-body.bo-theme .welcome-title,
-body.bo-theme .article-title {
-    color: var(--accent-red);
-    text-shadow: 0 0 10px var(--accent-red);
-}
-
-body.bo-theme .about-article {
-    border: 1px solid var(--accent-red);
-    box-shadow: 0 0 25px rgba(255, 0, 51, 0.3);
-}
-
-body.bo-theme .article-heading {
-    color: var(--text-primary);
-    text-shadow: 0 0 5px var(--accent-red);
-}
-
-body.bo-theme .navbar {
-    background: rgba(0, 0, 0, 0.95);
-    border-bottom: 2px solid var(--accent-red);
-}
-
-body.bo-theme .logo {
-    text-shadow: 0 0 10px var(--accent-red);
-}
-
-
-
-body.bo-theme .hero {
-    background: #000;
-    background-image:
-        radial-gradient(circle at 50% 50%, rgba(20, 0, 0, 0.4) 0%, rgba(0, 0, 0, 1) 90%),
-        repeating-linear-gradient(0deg, transparent, transparent 2px, #111 3px);
+@keyframes mysteryReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+        filter: blur(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
 }
