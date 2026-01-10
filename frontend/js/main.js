@@ -300,3 +300,31 @@ function toggleTheme() {
         if(btn) btn.innerText = "APTX-4869 Mode";
     }
 }
+
+// Create theme toggle button
+const themeBtn = document.createElement('button');
+themeBtn.innerText = '💊';
+themeBtn.className = 'theme-toggle';
+themeBtn.title = 'APTX-4869 Mode';
+themeBtn.style.cssText = "position:fixed; bottom:20px; right:20px; z-index:9999; font-size:2rem; background:none; border:none; cursor:pointer; transition: transform 0.3s ease; padding:10px; border-radius:50%; background:rgba(230,57,70,0.1); backdrop-filter:blur(10px);";
+document.body.appendChild(themeBtn);
+
+const currentTheme = localStorage.getItem('theme');
+if (currentTheme === 'bo-theme') {
+    document.body.classList.add('bo-theme');
+    themeBtn.style.transform = 'rotate(180deg)';
+}
+
+themeBtn.addEventListener('click', () => {
+    document.body.classList.toggle('bo-theme');
+
+    if (document.body.classList.contains('bo-theme')) {
+        localStorage.setItem('theme', 'bo-theme');
+        themeBtn.style.transform = 'rotate(180deg)';
+    } else {
+        localStorage.removeItem('theme');
+        themeBtn.style.transform = 'rotate(0deg)';
+    }
+
+    renderCharacters();
+});
