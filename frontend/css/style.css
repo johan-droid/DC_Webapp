@@ -962,6 +962,18 @@ body.bo-theme .hero {
     height: 350px;
     overflow: hidden;
     position: relative;
+    background: linear-gradient(135deg, var(--accent-red), var(--bg-secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.char-placeholder {
+    font-size: 4rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
 .char-image {

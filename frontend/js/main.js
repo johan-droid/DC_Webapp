@@ -125,7 +125,7 @@ function renderCharacters() {
 
         card.innerHTML = `
             <div class="char-image-wrapper">
-                <img src="${char.image}" alt="${char.name}" class="char-image" loading="lazy" data-fallback="${char.image}">
+                <div class="char-placeholder">${char.name.charAt(0)}</div>
             </div>
             <div class="char-content">
                 <h3 class="char-name">${char.name}</h3>
@@ -134,11 +134,6 @@ function renderCharacters() {
                 </div>
             </div>
         `;
-
-        const img = card.querySelector('.char-image');
-        img.addEventListener('error', function() {
-            this.src = this.dataset.fallback;
-        });
 
         charGrid.appendChild(card);
     });
@@ -169,10 +164,10 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 
+    // Check if slideshow exists before initializing
     const slideshowContainer = document.querySelector('.slideshow-container');
-    console.log("Slideshow container found:", !!slideshowContainer);
-
     if (slideshowContainer) {
+        console.log("Slideshow container found:", !!slideshowContainer);
         const slides = document.getElementsByClassName("mySlides");
         console.log("Slides found:", slides.length);
         showSlides(slideIndex);
@@ -205,6 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 plusSlides(-1);
             }
         }
+    } else {
+        console.log("Slideshow container not found - slideshow functionality disabled");
     }
 
     loadQuiz();
