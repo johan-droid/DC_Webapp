@@ -43,35 +43,48 @@ body {
     -webkit-font-smoothing: antialiased; /* Crisper text */
 }
 
-/* 2. The "Ghost" Conan Background */
+/* --- Default Theme (Conan) --- */
 body::before {
     content: '';
-    position: fixed; /* Stays in place while you scroll */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    
-    /* The Conan Image */
-    background-image: url('../assets/conan-mystery-hero.png'); /* Use your hero image */
-    background-position: center bottom; /* Anchor him to bottom or center */
+    /* Default Conan Image (Local) */
+    background-image: url('../assets/conan-mystery-hero.png'); 
+    background-position: right bottom;
     background-repeat: no-repeat;
-    background-size: contain; /* Ensure he fits within screen */
-    
-    /* 3. The "Transparent Wallpage" Effect */
-    opacity: 0.15; /* Very low opacity (15%) - Adjust this! */
-    z-index: -1; /* Puts him BEHIND content */
-    
-    /* Optional: Blend mode for better integration with dark background */
-    mix-blend-mode: luminosity; 
-    filter: grayscale(100%); /* Makes him B&W to not distract from colorful cards */
+    background-size: contain;
+    opacity: 0.12; 
+    z-index: -1;
+    filter: grayscale(100%);
+    transition: all 0.5s ease;
+    pointer-events: none; /* Ensure clicks pass through */
 }
 
-/* Optimize for mobile */
+/* --- APTX Mode Overrides (The Villain Layer) --- */
+body.bo-theme::before {
+    /* 1. Use the LOCAL Gin image you downloaded */
+    background-image: url('../assets/gin-villain.png'); 
+    
+    /* 2. Move him to the left (Looming presence) */
+    background-position: left bottom; 
+    
+    /* 3. The "Danger" Filter: Turns him into a blood-red silhouette */
+    filter: grayscale(100%) brightness(0.6) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(1.2);
+    
+    /* 4. Adjust visibility */
+    opacity: 0.2; /* Slightly higher opacity for the villain */
+    background-size: 50%; /* Adjust based on your image size */
+}
+
+/* Mobile Adjustment for Villain Background */
 @media (max-width: 768px) {
-    body::before {
-        background-size: cover; /* Cover full screen on phone */
-        opacity: 0.1; /* Even fainter on phone to help readability */
+    body.bo-theme::before {
+        background-size: 80%; /* Make him larger on phone */
+        background-position: left bottom;
+        opacity: 0.15;
     }
 }
 
