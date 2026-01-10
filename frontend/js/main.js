@@ -167,14 +167,10 @@ function renderCharacters() {
         // Stagger animation
         card.style.transitionDelay = `${index * 0.1}s`;
 
-        /* FIX APPLIED: 
-           1. Using <img> tag instead of background-image for better control.
-           2. Added onerror="" to hide image if it 404s, showing the placeholder letter instead.
-        */
         card.innerHTML = `
             <div class="char-image-wrapper">
                 <div class="char-placeholder">${char.name.charAt(0)}</div>
-                ${char.image ? `<img src="${char.image}" alt="${char.name}" class="char-img-element" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:1;" onerror="this.style.display='none'">` : ''}
+                ${char.image ? `<img src="${char.image}" alt="${char.name}" class="char-img-element" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:1; border-radius: 16px 16px 0 0;" onerror="this.style.display='none'; this.parentElement.querySelector('.char-placeholder').style.display='flex';">` : ''}
             </div>
             <div class="char-content">
                 <h3 class="char-name">${char.name}</h3>
@@ -184,6 +180,34 @@ function renderCharacters() {
             </div>
         `;
         charGrid.appendChild(card);
+        
+        // Add additional image loading handling
+        const img = card.querySelector('.char-img-element');
+        const placeholder = card.querySelector('.char-placeholder');
+        
+        if (img && placeholder) {
+            // Hide placeholder initially if image is provided
+            placeholder.style.display = 'none';
+            
+            // Show placeholder if image fails to load
+            img.addEventListener('error', () => {
+                img.style.display = 'none';
+                placeholder.style.display = 'flex';
+            });
+            
+            // Hide placeholder if image loads successfully
+            img.addEventListener('load', () => {
+                placeholder.style.display = 'none';
+            });
+            
+            // Timeout fallback - if image takes too long, show placeholder
+            setTimeout(() => {
+                if (!img.complete || img.naturalHeight === 0) {
+                    img.style.display = 'none';
+                    placeholder.style.display = 'flex';
+                }
+            }, 5000); // 5 second timeout
+        }
     });
 
     // Re-observe new elements
@@ -328,3 +352,16 @@ themeBtn.addEventListener('click', () => {
 
     renderCharacters();
 });
+
+/* --- Enhanced Image Loading with Better Fallbacks --- */
+function preloadImage(src) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+        img.src = src;
+        
+        // Timeout after 3 seconds
+        setTimeout(() => reject(new Error('Image load timeout')), 3000);
+    });
+}

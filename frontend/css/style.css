@@ -438,12 +438,36 @@ body.bo-theme .card-category {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;
+}
+
+/* Ensure images load properly with fallback */
+.char-img-element {
+    transition: opacity 0.3s ease;
+}
+
+.char-img-element:not([src]),
+.char-img-element[src=""] {
+    display: none;
 }
 
 .char-placeholder {
     font-size: 5rem;
-    color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.3);
     font-family: var(--font-heading);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    background: linear-gradient(135deg, #1a2639, #0a0e17);
+    font-weight: bold;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 /* Gradient Overlay - Always present but changes on hover */
@@ -739,6 +763,17 @@ body.bo-theme h1,
 body.bo-theme h2 {
     font-family: 'Courier New', monospace;
     letter-spacing: -1px;
+}
+
+/* APTX Mode Character Placeholders */
+body.bo-theme .char-placeholder {
+    background: linear-gradient(135deg, #1a0000, #330000);
+    color: rgba(255, 0, 51, 0.6);
+    text-shadow: 0 0 10px rgba(255, 0, 51, 0.3);
+}
+
+body.bo-theme .char-image-wrapper {
+    background: linear-gradient(135deg, #1a0000, #330000);
 }
 
 /* --- Animations --- */
