@@ -4,9 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latest Cases | Detective Conan</title>
-    <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://image.tmdb.org https://m.media-amazon.com https://c4.wallpaperflare.com https://static.wikia.nocookie.net https://i.imgur.com https://www.detectiveconanworld.com; script-src 'self' 'unsafe-inline';">
+    <title>Investigations | Detective Conan</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -22,53 +20,104 @@
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="characters.html">Characters</a></li>
-                <li><a href="updates.html" class="active">Updates</a></li>
+                <li><a href="updates.html" class="active">Investigations</a></li>
                 <li><a href="news.html">News & Gossip</a></li>
             </ul>
         </div>
     </nav>
 
-    <section class="section">
-        <div class="container">
-            <h2 class="animate-on-scroll">Latest Investigations</h2>
+    <div class="container">
+        <header class="character-header animate-on-scroll">
+            <h1>Case Files</h1>
+            <p>Access the latest reports on criminal activities and special operations.</p>
+        </header>
 
-            <!-- Filter Controls -->
-            <div class="filter-controls animate-on-scroll" style="margin-bottom: 2rem; text-align: center;">
-                <button class="btn filter-btn active" onclick="filterEpisodes('all')">All Cases</button>
-                <button class="btn filter-btn" onclick="filterEpisodes('canon')">Canon Only</button>
-                <button class="btn filter-btn" onclick="filterEpisodes('movie')">Movies</button>
-            </div>
-
-            <div class="card-grid">
-                <!-- Card 1 -->
-                <article class="card animate-on-scroll" data-type="canon" style="transition-delay: 0.1s;">
-                    <div class="card-content">
-                        <span class="card-category">Upcoming • Oct 14</span>
-                        <h3>Episode 1137: The Secret of the Old Clock Tower</h3>
-                        <p>The Detective Boys stumble upon a mystery while cleaning up a local park.</p>
-                    </div>
-                </article>
-                <!-- Card 2 -->
-                <article class="card animate-on-scroll" data-type="anime" style="transition-delay: 0.2s;">
-                    <div class="card-content">
-                        <span class="card-category">Just Aired</span>
-                        <h3>Episode 1136: The Invisible Witness</h3>
-                        <p>Conan solves a locked room mystery in a high-rise apartment complex.</p>
-                    </div>
-                </article>
-                <!-- Card 3 -->
-                <article class="card animate-on-scroll" data-type="movie" style="transition-delay: 0.3s;">
-                    <div class="card-content">
-                        <span class="card-category">Movie</span>
-                        <h3>Movie 27: The Million-Dollar Pentagram</h3>
-                        <p>Now available on Blu-ray and DVD. Includes limited edition artwork.</p>
-                    </div>
-                </article>
-            </div>
+        <div class="filter-controls animate-on-scroll"
+            style="margin-bottom: 3rem; text-align: center; display:flex; justify-content:center; gap: 15px; flex-wrap:wrap;">
+            <button class="btn filter-btn active" onclick="filterEpisodes('all')">All Files</button>
+            <button class="btn filter-btn" onclick="filterEpisodes('canon')">Canon Only</button>
+            <button class="btn filter-btn" onclick="filterEpisodes('movie')">Movies</button>
         </div>
-    </section>
+
+        <div class="card-grid">
+            <article class="card animate-on-scroll" data-type="canon" style="transition-delay: 0.1s;">
+                <div class="card-image"
+                    style="background-image: url('https://www.detectiveconanworld.com/wiki/images/thumb/a/a4/Conan_Edogawa_60px.jpg/275px-Conan_Edogawa_60px.jpg');">
+                </div>
+                <div class="card-content">
+                    <span class="card-category">Upcoming • Oct 14</span>
+                    <h3>Ep 1137: The Secret of the Old Clock Tower</h3>
+                    <p>The Detective Boys stumble upon a mystery while cleaning up a local park. Clues point to a heist
+                        from 10 years ago.</p>
+                    <a href="#" class="read-more">View Evidence →</a>
+                </div>
+            </article>
+
+            <article class="card animate-on-scroll" data-type="anime" style="transition-delay: 0.2s;">
+                <div class="card-image"
+                    style="background-image: url('https://image.tmdb.org/t/p/w500/qMTj3fX7Qe254C8C2oZk3F8jHg.jpg');">
+                </div>
+                <div class="card-content">
+                    <span class="card-category">Just Aired</span>
+                    <h3>Ep 1136: The Invisible Witness</h3>
+                    <p>Conan solves a locked room mystery in a high-rise apartment complex. A parrot is the only
+                        witness.</p>
+                    <a href="#" class="read-more">View Evidence →</a>
+                </div>
+            </article>
+
+            <article class="card animate-on-scroll" data-type="movie" style="transition-delay: 0.3s;">
+                <div class="card-image"
+                    style="background-image: url('https://www.detectiveconanworld.com/wiki/images/m/million_dollar_pentagram.jpg');">
+                </div>
+                <div class="card-content">
+                    <span class="card-category">Feature Film</span>
+                    <h3>Movie 27: The Million-Dollar Pentagram</h3>
+                    <p>Now available on Blu-ray. Heiji Hattori and Kazuha take center stage in this Hakodate mystery.
+                    </p>
+                    <a href="#" class="read-more">View Evidence →</a>
+                </div>
+            </article>
+
+            <article class="card animate-on-scroll" data-type="canon" style="transition-delay: 0.4s;">
+                <div class="card-image"
+                    style="background-image: url('https://www.detectiveconanworld.com/wiki/images/7/7e/File_1066_Infobox.jpg');">
+                </div>
+                <div class="card-content">
+                    <span class="card-category">Manga Case</span>
+                    <h3>File 1100: Rum's Move</h3>
+                    <p>The Black Organization's Number 2 begins to make his move against the Kudo family.</p>
+                    <a href="#" class="read-more">View Evidence →</a>
+                </div>
+            </article>
+        </div>
+
+        <div class="disclaimer-section">
+            <p>Classified Information. For Detective Use Only.</p>
+        </div>
+    </div>
 
     <script src="js/main.js"></script>
+    <script>
+        // Simple script to handle the active class on buttons
+        function filterEpisodes(type) {
+            const cards = document.querySelectorAll('.card');
+            const btns = document.querySelectorAll('.filter-btn');
+
+            // Update buttons
+            btns.forEach(btn => { btn.classList.remove('active'); });
+            event.target.classList.add('active');
+
+            // Filter logic
+            cards.forEach(card => {
+                if (type === 'all' || card.dataset.type === type) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>
