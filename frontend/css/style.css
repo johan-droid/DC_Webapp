@@ -643,6 +643,14 @@ body.bo-theme .char-name, body.bo-theme h1, body.bo-theme h2 {
     margin: 2rem auto;
 }
 
+/* --- Character Header --- */
+.character-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    /* FIX: Add padding to clear the fixed navbar (80px nav + 40px space) */
+    padding-top: 120px; 
+}
+
 /* --- About Section --- */
 .about-section {
     padding: 4rem 0;

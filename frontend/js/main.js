@@ -6,106 +6,81 @@ let autoSlideInterval;
 const mainCharactersData = [
     {
         "name": "Shinichi Kudo",
-        "image": "",
-        "description": "Main character of the series, and Ran's love interest and later boyfriend. He was shrunk into a child after being forced to take a drug called APTX 4869, which was created by the Black Organization."
+        "image": "https://static.wikia.nocookie.net/detectiveconan/images/3/3b/Shinichi_Kudo_Profile.jpg",
+        "description": "Main character of the series, and Ran's love interest. He was shrunk into a child after being forced to take APTX 4869."
     },
     {
         "name": "Conan Edogawa",
-        "image": "",
-        "description": "\"Child\" version of Shinichi Kudo. He's after the Black Organization to regain his original body. The show follows his journey and the different cases he encounters along the way."
+        "image": "https://static.wikia.nocookie.net/detectiveconan/images/0/00/Conan_Edogawa_Profile.jpg",
+        "description": "The child form of Shinichi Kudo. He chases the Black Organization to regain his original body while solving cases."
     },
     {
         "name": "Ran Mouri",
-        "image": "",
-        "description": "Shinichi's childhood friend, and later his girlfriend. She doesn't know Conan's real identity. She's the one taking care of him along with her detective father, Kogoro. She is also skilled in karate."
+        "image": "https://static.wikia.nocookie.net/detectiveconan/images/9/93/Ran_Mouri_Profile.jpg",
+        "description": "Shinichi's childhood friend and love interest. She takes care of Conan and her father, unaware of Conan's true identity."
     },
     {
         "name": "Kogoro Mouri",
-        "image": "",
-        "description": "Private eye and Ran's father. Separated from Eri Kisaki, Ran's mother."
+        "image": "https://static.wikia.nocookie.net/detectiveconan/images/c/c5/Kogoro_Mouri_Profile.jpg",
+        "description": "A private detective and Ran's father. Known as 'Sleeping Kogoro' due to Conan's help in solving cases."
     },
     {
         "name": "Ai Haibara",
-        "image": "",
-        "description": "Member of the Detective Boys and an adult shrunken by APTX 4869. Her former identity was a Black Organization scientist codenamed \"Sherry\", real name \"Shiho Miyano\"."
+        "image": "https://static.wikia.nocookie.net/detectiveconan/images/2/23/Ai_Haibara_Profile.jpg",
+        "description": "The creator of APTX 4869 who shrunk herself to escape the Black Organization. She now helps Conan."
     },
     {
         "name": "Hiroshi Agasa",
-        "image": "",
-        "description": "Professor who creates gadgets for Conan to use. Is the best friend and the next-door neighbour of the Kudos. He was the first to know about Conan's true identity."
+        "image": "https://static.wikia.nocookie.net/detectiveconan/images/d/d7/Hiroshi_Agasa_Profile.jpg",
+        "description": "An eccentric inventor and the first person to learn Conan's true identity. He provides Conan's gadgets."
     },
     {
         "name": "Heiji Hattori",
-        "image": "",
-        "description": "Shinichi's rival detective and best friend from Osaka. Known as \"Great Detective of the West\". He's also a trained Kendo martial artist and the first to deduce Conan's true identity."
+        "image": "https://static.wikia.nocookie.net/detectiveconan/images/7/75/Heiji_Hattori_Profile.jpg",
+        "description": "The 'Great Detective of the West' from Osaka. He is Shinichi's rival and one of his closest friends."
     },
     {
         "name": "Shuichi Akai",
-        "image": "",
-        "description": "FBI agent and rival to Gin. He faked his death to protect Kir and is currently undercover as Subaru Okiya."
+        "image": "https://static.wikia.nocookie.net/detectiveconan/images/a/a2/Shuichi_Akai_Profile.jpg",
+        "description": "An FBI agent who infiltrated the Black Organization. He is a master sniper and a key ally to Conan."
     },
     {
         "name": "Kaitou Kid",
-        "image": "",
-        "description": "Secret identity of Kaito Kuroba. Magician and thief, also known to be \"uncatchable\"."
+        "image": "https://static.wikia.nocookie.net/detectiveconan/images/0/07/Kaitou_Kid_Profile.jpg",
+        "description": "A phantom thief who uses magic tricks and disguises. He is a rival to Conan but often helps him."
     },
     {
         "name": "Juzo Megure",
-        "image": "",
-        "description": "An inspector from the Tokyo Metropolitan Police District."
+        "image": "https://static.wikia.nocookie.net/detectiveconan/images/1/1a/Juzo_Megure_Profile.jpg",
+        "description": "A dedicated police inspector from Tokyo Metropolitan Police District who trusts Shinichi implicitly."
     }
 ];
 
 const blackOrgCharactersData = [
     {
         "name": "Gin",
-        "image": "",
-        "description": "A high ranking executive member of the Black Organization. A highly intelligent and lethal assassin, he tried to kill Shinichi with APTX 4869."
+        "image": "https://static.wikia.nocookie.net/detectiveconan/images/8/8c/Gin_Profile.jpg",
+        "description": "A high-ranking executive member. He forced Shinichi to take the poison that shrunk him."
     },
     {
         "name": "Vodka",
-        "image": "",
-        "description": "Member of the Black Organization. Gin's secretary and partner on most occasions."
+        "image": "https://static.wikia.nocookie.net/detectiveconan/images/0/06/Vodka_Profile.jpg",
+        "description": "Gin's secretary and partner. He is loyal but less intelligent than his counterpart."
     },
     {
         "name": "Vermouth",
-        "image": "",
-        "description": "Member of the Black Organization. She is an actress and master of disguise. Considered the Boss' \"favorite,\" and knows that Haibara and Conan are Sherry and Shinichi."
+        "image": "https://static.wikia.nocookie.net/detectiveconan/images/8/87/Vermouth_Profile.jpg",
+        "description": "A master of disguise and a favorite of the Boss. She knows Conan's true identity but keeps it secret."
     },
     {
-        "name": "Rum",
-        "image": "",
-        "description": "Second-in-command of the Black Organization and close aide of Karasuma. Currently disguises as Kanenori Wakita, a sushi chef, to spy on Kogoro."
+        "name": "Bourbon",
+        "image": "https://static.wikia.nocookie.net/detectiveconan/images/a/a6/Rei_Furuya_Profile.jpg",
+        "description": "An undercover agent working within the organization. He is also known as Amuro Tooru."
     },
     {
-        "name": "Bourbon (Rei Furuya)",
-        "image": "",
-        "description": "Undercover National Police Agency investigator working in the Black Organization. Posed as a private detective and became Kogoro Mouri's apprentice."
-    },
-    {
-        "name": "Kir (Rena Mizunashi)",
-        "image": "",
-        "description": "Undercover CIA agent infiltrating the Black Organization. Works as a news anchor while gathering intelligence on the organization."
-    },
-    {
-        "name": "Chianti",
-        "image": "",
-        "description": "Sniper for the Black Organization. Known for her excellent marksmanship and volatile personality. Often works with Korn."
-    },
-    {
-        "name": "Korn",
-        "image": "",
-        "description": "Sniper for the Black Organization. Chianti's partner and fellow marksman. More calm and collected than his partner."
-    },
-    {
-        "name": "Pisco",
-        "image": "",
-        "description": "Former member of the Black Organization. Was a company chairman who had been with the organization for 50 years before being eliminated by Gin."
-    },
-    {
-        "name": "Renya Karasuma",
-        "image": "",
-        "description": "The mysterious boss of the Black Organization. A multi-billionaire who was thought to be dead but is revealed to be the mastermind behind the organization."
+        "name": "Kir",
+        "image": "https://static.wikia.nocookie.net/detectiveconan/images/4/4b/Rena_Mizunashi_Profile.jpg",
+        "description": "An undercover CIA agent posing as a TV reporter. She relays information to the FBI."
     }
 ];
 
