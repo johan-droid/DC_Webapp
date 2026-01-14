@@ -96,7 +96,7 @@ const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
         if (entry.isIntersecting) {
             entry.target.classList.add('animate-on-scroll-active');
-            if (entry.target.classList.contains('card-grid') || 
+            if (entry.target.classList.contains('card-grid') ||
                 entry.target.classList.contains('character-premium-grid')) {
                 const children = entry.target.children;
                 Array.from(children).forEach((child, index) => {
@@ -138,16 +138,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial Character Render
     renderCharacters();
-    
+
     // Check for other components
     if (document.querySelector('.slideshow-container')) {
         showSlides(slideIndex);
-        if(!autoSlideInterval) {
+        if (!autoSlideInterval) {
             autoSlideInterval = setInterval(() => plusSlides(1), 5000);
         }
     }
-    
+
     loadQuiz();
+    loadDynamicContent();
 });
 
 /* --- Character Rendering (FIXED for Broken Images) --- */
@@ -163,7 +164,7 @@ function renderCharacters() {
     charactersData.forEach((char, index) => {
         const card = document.createElement('div');
         // Add animation class
-        card.className = 'char-card animate-on-scroll'; 
+        card.className = 'char-card animate-on-scroll';
         // Stagger animation
         card.style.transitionDelay = `${index * 0.1}s`;
 
@@ -180,26 +181,26 @@ function renderCharacters() {
             </div>
         `;
         charGrid.appendChild(card);
-        
+
         // Add additional image loading handling
         const img = card.querySelector('.char-img-element');
         const placeholder = card.querySelector('.char-placeholder');
-        
+
         if (img && placeholder) {
             // Hide placeholder initially if image is provided
             placeholder.style.display = 'none';
-            
+
             // Show placeholder if image fails to load
             img.addEventListener('error', () => {
                 img.style.display = 'none';
                 placeholder.style.display = 'flex';
             });
-            
+
             // Hide placeholder if image loads successfully
             img.addEventListener('load', () => {
                 placeholder.style.display = 'none';
             });
-            
+
             // Timeout fallback - if image takes too long, show placeholder
             setTimeout(() => {
                 if (!img.complete || img.naturalHeight === 0) {
@@ -230,16 +231,16 @@ function showSlides(n) {
     let dots = document.getElementsByClassName("dot");
     if (!slides.length) return;
 
-    if (n > slides.length) {slideIndex = 1}    
-    if (n < 1) {slideIndex = slides.length}
+    if (n > slides.length) { slideIndex = 1 }
+    if (n < 1) { slideIndex = slides.length }
     for (i = 0; i < slides.length; i++) {
-        slides[i].style.display = "none";  
+        slides[i].style.display = "none";
     }
     for (i = 0; i < dots.length; i++) {
         dots[i].className = dots[i].className.replace(" active-dot", "");
     }
-    slides[slideIndex-1].style.display = "block";  
-    if(dots.length > 0) dots[slideIndex-1].className += " active-dot";
+    slides[slideIndex - 1].style.display = "block";
+    if (dots.length > 0) dots[slideIndex - 1].className += " active-dot";
 }
 
 /* --- Quiz Functions --- */
@@ -266,35 +267,35 @@ function loadQuiz() {
     if (!quizContainer) return;
 
     let quizHTML = "<h2>Detective Mystery Quiz</h2>";
-    
+
     quizData.forEach((q, index) => {
         quizHTML += `
             <div class="quiz-question">
                 <p>${index + 1}. ${q.question}</p>
                 <div class="quiz-options">
-                    ${q.options.map((opt, i) => 
-                        `<button class="option-btn" onclick="checkAnswer(this, ${index}, ${i})">${opt}</button>` 
-                    ).join('')}
+                    ${q.options.map((opt, i) =>
+            `<button class="option-btn" onclick="checkAnswer(this, ${index}, ${i})">${opt}</button>`
+        ).join('')}
                 </div>
                 <p class="feedback" id="feedback-${index}"></p>
             </div>
         `;
     });
-    
+
     quizContainer.innerHTML = quizHTML;
 }
 
 function checkAnswer(btn, questionIndex, optionIndex) {
     const feedback = document.getElementById(`feedback-${questionIndex}`);
     const correct = quizData[questionIndex].correct;
-    
+
     // Reset buttons in this group
     const parent = btn.parentElement;
     const buttons = parent.getElementsByClassName('option-btn');
-    for(let b of buttons) {
+    for (let b of buttons) {
         b.disabled = true;
         if (b.innerText === quizData[questionIndex].options[correct]) {
-             b.classList.add('correct');
+            b.classList.add('correct');
         }
     }
 
@@ -312,16 +313,16 @@ function checkAnswer(btn, questionIndex, optionIndex) {
 /* --- Theme Toggle (APTX Mode) --- */
 function toggleTheme() {
     document.body.classList.toggle('bo-theme');
-    
+
     // Re-render characters to switch between Main and Black Org
     renderCharacters();
-    
+
     // Add visual feedback or sound effect here if desired
     const btn = document.querySelector('.theme-toggle');
-    if(document.body.classList.contains('bo-theme')) {
-        if(btn) btn.innerText = "Return to Normal";
+    if (document.body.classList.contains('bo-theme')) {
+        if (btn) btn.innerText = "Return to Normal";
     } else {
-        if(btn) btn.innerText = "APTX-4869 Mode";
+        if (btn) btn.innerText = "APTX-4869 Mode";
     }
 }
 
@@ -360,8 +361,67 @@ function preloadImage(src) {
         img.onload = () => resolve(img);
         img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
         img.src = src;
-        
+
         // Timeout after 3 seconds
         setTimeout(() => reject(new Error('Image load timeout')), 3000);
     });
+}
+
+async function loadDynamicContent() {
+    // 1. Load News (if on news page)
+    const newsContainer = document.getElementById('news-feed');
+    if (newsContainer) {
+        try {
+            const res = await fetch('/api/news');
+            const news = await res.json();
+
+            if (news.length === 0) {
+                newsContainer.innerHTML = '<p>No recent signals intercepted.</p>';
+                return;
+            }
+
+            newsContainer.innerHTML = news.map(item => `
+                <article class="card animate-on-scroll">
+                    <div class="card-image" style="background-image: url('${item.image}');"></div>
+                    <div class="card-content">
+                        <span class="card-category">${item.category} • ${item.date}</span>
+                        <h3>${item.title}</h3>
+                        <p>${item.content}</p>
+                        <a href="${item.link}" class="read-more">Read Full Report →</a>
+                    </div>
+                </article>
+            `).join('');
+
+            // Re-trigger animation observer for new elements
+            document.querySelectorAll('.card').forEach(el => observer.observe(el));
+        } catch (err) {
+            console.error('Failed to load news:', err);
+        }
+    }
+
+    // 2. Load Cases (if on updates page)
+    const caseContainer = document.getElementById('case-feed');
+    if (caseContainer) {
+        try {
+            const res = await fetch('/api/cases');
+            const cases = await res.json();
+
+            caseContainer.innerHTML = cases.map(item => `
+                <article class="card animate-on-scroll" data-type="${item.type}">
+                    <div class="card-image" style="background-image: url('${item.image}');"></div>
+                    <div class="card-content">
+                        <span class="card-category">${item.type.toUpperCase()} • ${item.date}</span>
+                        <h3>${item.title}</h3>
+                        <p>${item.description}</p>
+                        <a href="#" class="read-more">View Evidence →</a>
+                    </div>
+                </article>
+            `).join('');
+
+            // Re-trigger animation observer
+            document.querySelectorAll('.card').forEach(el => observer.observe(el));
+        } catch (err) {
+            console.error('Failed to load cases:', err);
+        }
+    }
 }
