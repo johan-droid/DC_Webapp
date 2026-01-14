@@ -148,7 +148,10 @@
 
             await fetch('/api/news', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'x-admin-key': 'detective-conan-admin-2024'
+                },
                 body: JSON.stringify(data)
             });
             alert('News Published!');
@@ -167,7 +170,10 @@
 
             await fetch('/api/cases', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'x-admin-key': 'detective-conan-admin-2024'
+                },
                 body: JSON.stringify(data)
             });
             alert('Case Filed!');
