@@ -1,4 +1,4 @@
-/* server.js - Supabase PostgreSQL Edition */
+/* backend/server.js - Supabase PostgreSQL Edition */
 require('dotenv').config();
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
@@ -13,11 +13,13 @@ const PORT = process.env.PORT || 3000;
 
 // --- 1. SUPABASE CONNECTION ---
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY; // Use the SERVICE_ROLE key for backend admin tasks
+const supabaseKey = process.env.SUPABASE_KEY; 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // --- 2. MIDDLEWARE ---
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: false, // Disable default CSP to allow external images/scripts for now
+}));
 app.use(express.json());
 app.use(cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -28,10 +30,11 @@ app.use(cors({
 const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
 app.use('/api/', limiter);
 
-// Serve Frontend Static Files
-app.use(express.static(path.join(__dirname, 'frontend')));
+// --- FIX: SERVE FRONTEND CORRECTLY ---
+// Since server.js is in /backend, we need to go up one level to find /frontend
+app.use(express.static(path.join(__dirname, '../frontend')));
 
-// --- 3. AUTHENTICATION (Simple Admin Key) ---
+// --- 3. AUTHENTICATION ---
 const authenticateAdmin = (req, res, next) => {
     const apiKey = req.headers['x-admin-key'];
     if (apiKey && apiKey === process.env.ADMIN_SECRET) {
@@ -70,13 +73,11 @@ app.get('/api/news', async (req, res) => {
     res.json(data);
 });
 
-// POST News (Admin Only)
+// POST News
 app.post('/api/news', authenticateAdmin, async (req, res) => {
-    // Validate
     const { error: valError, value } = newsValidation.validate(req.body);
     if (valError) return res.status(400).json({ error: valError.details[0].message });
 
-    // Insert into Supabase
     const { data, error } = await supabase
         .from('news')
         .insert([value])
@@ -97,7 +98,7 @@ app.get('/api/cases', async (req, res) => {
     res.json(data);
 });
 
-// POST Cases (Admin Only)
+// POST Cases
 app.post('/api/cases', authenticateAdmin, async (req, res) => {
     const { error: valError, value } = caseValidation.validate(req.body);
     if (valError) return res.status(400).json({ error: valError.details[0].message });
@@ -109,6 +110,11 @@ app.post('/api/cases', authenticateAdmin, async (req, res) => {
 
     if (error) return res.status(500).json({ error: error.message });
     res.status(201).json({ message: 'Case filed!', case: data[0] });
+});
+
+// Serve index.html for any other route (SPA support)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
 // Global Error Handler

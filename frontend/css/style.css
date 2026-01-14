@@ -319,6 +319,52 @@ a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
     .character-premium-grid {
         grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     }
+    .aptx-toggle-container {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 9999;
+        cursor: pointer;
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .aptx-pill {
+        width: 100px;
+        height: 40px;
+        background: linear-gradient(90deg, #e63946 50%, #f1faee 50%);
+        border-radius: 20px;
+        border: 2px solid rgba(255,255,255,0.2);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 10px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .aptx-pill::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 50%;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
+        border-radius: 20px 20px 0 0;
+    }
+
+    .pill-text {
+        font-size: 0.7rem;
+        font-weight: 900;
+        font-family: 'Arial', sans-serif;
+        letter-spacing: 1px;
+        z-index: 2;
+    }
+
+    .pill-left { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+    .pill-right { color: #e63946; }
+
+    .aptx-toggle-container:hover {
+        transform: scale(1.1) rotate(5deg);
+    }
 }
 
 .char-card {
