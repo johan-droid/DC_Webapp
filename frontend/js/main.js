@@ -4,45 +4,89 @@
 let slideIndex = 1;
 let autoSlideInterval;
 
-// --- DATA CONFIGURATION ---
+// API Helper (Injected to support the new data fetching logic)
+// API Helper is now provided by api.js (window.api)
+// Ensure api.js is loaded before this script.
+
+/* Character Data & Rendering - UPDATED with stable URLs */
 const mainCharactersData = [
     {
-        name: "Conan Edogawa",
-        image: "assets/conan-mystery-hero.png",
-        description: "The child form of Shinichi Kudo. "
+        "name": "Shinichi Kudo",
+        "image": null,
+        "description": "Main character of the series, and Ran's love interest. He was shrunk into a child after being forced to take APTX 4869."
     },
     {
-        name: "Shinichi Kudo",
-        image: "assets/hero-bg.png",
-        description: "The high school detective shrunk by APTX 4869."
+        "name": "Conan Edogawa",
+        "image": "assets/conan-mystery-hero.png",
+        "description": "The child form of Shinichi Kudo. He chases the Black Organization to regain his original body while solving cases."
     },
     {
-        name: "Ran Mouri",
-        image: null,
-        description: "Shinichi's childhood friend and karate champion."
+        "name": "Ran Mouri",
+        "image": null,
+        "description": "Shinichi's childhood friend and love interest. She takes care of Conan and her father, unaware of Conan's true identity."
     },
     {
-        name: "Kogoro Mouri",
-        image: null,
-        description: "Private investigator known as 'Sleeping Kogoro'."
+        "name": "Kogoro Mouri",
+        "image": null,
+        "description": "A private detective and Ran's father. Known as 'Sleeping Kogoro' due to Conan's help in solving cases."
+    },
+    {
+        "name": "Ai Haibara",
+        "image": null,
+        "description": "The creator of APTX 4869 who shrunk herself to escape the Black Organization. She now helps Conan."
+    },
+    {
+        "name": "Hiroshi Agasa",
+        "image": null,
+        "description": "An eccentric inventor and the first person to learn Conan's true identity. He provides Conan's gadgets."
+    },
+    {
+        "name": "Heiji Hattori",
+        "image": null,
+        "description": "The 'Great Detective of the West' from Osaka. He is Shinichi's rival and one of his closest friends."
+    },
+    {
+        "name": "Shuichi Akai",
+        "image": null,
+        "description": "An FBI agent who infiltrated the Black Organization. He is a master sniper and a key ally to Conan."
+    },
+    {
+        "name": "Kaitou Kid",
+        "image": null,
+        "description": "A phantom thief who uses magic tricks and disguises. He is a rival to Conan but often helps him."
+    },
+    {
+        "name": "Juzo Megure",
+        "image": null,
+        "description": "A dedicated police inspector from the Tokyo Metropolitan Police District who trusts Shinichi implicitly."
     }
 ];
 
 const blackOrgCharactersData = [
     {
-        name: "Gin",
-        image: "assets/gin-villain.png",
-        description: "Executive member of the Black Organization."
+        "name": "Gin",
+        "image": "assets/gin-villain.png",
+        "description": "A high-ranking executive member. He forced Shinichi to take the poison that shrunk him."
     },
     {
-        name: "Vodka",
-        image: null,
-        description: "Gin's partner and secretary."
+        "name": "Vodka",
+        "image": null,
+        "description": "Gin's secretary and partner. He is loyal but less intelligent than his counterpart."
     },
     {
-        name: "Vermouth",
-        image: null,
-        description: "A master of disguise with a secret agenda."
+        "name": "Vermouth",
+        "image": null,
+        "description": "A master of disguise and a favorite of the Boss. She knows Conan's true identity but keeps it secret."
+    },
+    {
+        "name": "Bourbon",
+        "image": null,
+        "description": "An undercover agent working within the organization. He is also known as Amuro Tooru."
+    },
+    {
+        "name": "Kir",
+        "image": null,
+        "description": "An undercover CIA agent posing as a TV reporter. She relays information to the FBI."
     }
 ];
 
@@ -68,74 +112,101 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
-// --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("Detective Conan System: Online");
+    console.log("Detective Conan Website Loaded");
 
-    // 1. Setup Theme (APTX Mode)
-    setupAptxSystem();
-
-    // 2. Setup Mobile Menu
+    /* --- Mobile Menu Logic --- */
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
-    if (hamburger) {
+    const body = document.body;
+
+    if (hamburger && navLinks) {
         hamburger.addEventListener('click', () => {
             hamburger.classList.toggle('active');
             navLinks.classList.toggle('active');
+            body.classList.toggle('menu-open');
+        });
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                body.classList.remove('menu-open');
+            });
         });
     }
 
-    // 3. Render Content
-    renderCharacters();
-    
-    // 4. Load Animations
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) entry.target.classList.add('animate-on-scroll-active');
-        });
-    });
+    /* --- Initialize Animations --- */
     document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    document.querySelectorAll('.card-grid, .character-premium-grid').forEach(grid => observer.observe(grid));
+
+    // Initial Character Render
+    renderCharacters();
+
+    // Check for other components
+    if (document.querySelector('.slideshow-container')) {
+        showSlides(slideIndex);
+        if (!autoSlideInterval) {
+            autoSlideInterval = setInterval(() => plusSlides(1), 5000);
+        }
+    }
+
+    loadQuiz();
+    loadDynamicContent();
 });
 
-// --- CHARACTER RENDERER ---
+/* --- Character Rendering (Updated for Separate Sections) --- */
 function renderCharacters() {
-    const grid = document.getElementById('character-grid');
-    if (!grid) return;
+    const mainGrid = document.getElementById('main-char-grid');
+    const boGrid = document.getElementById('bo-char-grid');
 
-    grid.innerHTML = '';
-    
-    // Choose data based on theme
-    const isBO = document.body.classList.contains('bo-theme');
-    const data = isBO ? blackOrgCharactersData : mainCharactersData;
+    // Helper function to render a list into a grid
+    const populateGrid = (gridElement, data) => {
+        if (!gridElement) return;
 
-    data.forEach((char, index) => {
-        const card = document.createElement('div');
-        card.className = 'char-card animate-on-scroll';
-        card.style.transitionDelay = `${index * 0.1}s`;
+        gridElement.innerHTML = '';
+        data.forEach((char, index) => {
+            const card = document.createElement('div');
+            card.className = 'char-card animate-on-scroll';
+            card.style.transitionDelay = `${index * 0.1}s`;
 
-        const hasImage = char.image && char.image.trim() !== '';
-        
-        card.innerHTML = `
-            <div class="char-placeholder">${char.name.charAt(0)}</div>
-            ${hasImage ? `<img src="${char.image}" alt="${char.name}" class="char-img-element">` : ''}
-            <div class="char-content">
-                <h3>${char.name}</h3>
-                <p style="font-size: 0.85rem; margin:0; opacity:0.8;">${char.description}</p>
-            </div>
-        `;
+            card.innerHTML = `
+                <div class="char-image-wrapper">
+                    <div class="char-placeholder">${char.name.charAt(0)}</div>
+                    ${char.image ? `<img src="${char.image}" alt="${char.name}" class="char-img-element" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:1; border-radius: 16px 16px 0 0;" onerror="this.style.display='none'; this.parentElement.querySelector('.char-placeholder').style.display='flex';">` : ''}
+                </div>
+                <div class="char-content">
+                    <h3 class="char-name">${char.name}</h3>
+                    <div class="char-desc">
+                        <p>${char.description}</p>
+                    </div>
+                </div>
+            `;
+            gridElement.appendChild(card);
 
-        // Robust Error Handling
-        if (hasImage) {
-            const img = card.querySelector('img');
-            img.onerror = function() {
-                this.style.display = 'none';
-            };
-        }
+            // Image handling logic
+            const img = card.querySelector('.char-img-element');
+            const placeholder = card.querySelector('.char-placeholder');
+            if (img && placeholder) {
+                placeholder.style.display = 'none';
+                img.addEventListener('error', () => {
+                    img.style.display = 'none';
+                    placeholder.style.display = 'flex';
+                });
+                img.addEventListener('load', () => {
+                    placeholder.style.display = 'none';
+                });
+            }
+        });
 
-        grid.appendChild(card);
-    });
+        // Observe new elements
+        gridElement.querySelectorAll('.char-card').forEach(el => observer.observe(el));
+    };
+
+    // Render both sections
+    populateGrid(mainGrid, mainCharactersData);
+    populateGrid(boGrid, blackOrgCharactersData);
 }
-
 
 /* --- Slideshow Functions --- */
 function plusSlides(n) {
@@ -210,7 +281,6 @@ function checkAnswer(btn, questionIndex, optionIndex) {
     const feedback = document.getElementById(`feedback-${questionIndex}`);
     const correct = quizData[questionIndex].correct;
 
-    // Reset buttons in this group
     const parent = btn.parentElement;
     const buttons = parent.getElementsByClassName('option-btn');
     for (let b of buttons) {
@@ -231,56 +301,14 @@ function checkAnswer(btn, questionIndex, optionIndex) {
     }
 }
 
-// --- CAPSULE SYSTEM (APTX TOGGLE) ---
-function setupAptxSystem() {
-    // Check saved preference
-    if (localStorage.getItem('theme') === 'bo-theme') {
-        document.body.classList.add('bo-theme');
-    }
-
-    // Inject the Capsule HTML
-    const toggle = document.createElement('div');
-    toggle.className = 'aptx-toggle-container animate-on-scroll';
-    toggle.innerHTML = `
-        <div class="aptx-pill">
-            <span class="pill-text pill-left">APTX</span>
-            <span class="pill-text pill-right">4869</span>
-        </div>
-    `;
-
-    // Toggle Logic
-    toggle.addEventListener('click', () => {
-        document.body.classList.toggle('bo-theme');
-        const isDark = document.body.classList.contains('bo-theme');
-        localStorage.setItem('theme', isDark ? 'bo-theme' : 'light');
-        
-        // Re-render characters to switch between Conan/Gin lists
-        renderCharacters();
-    });
-
-    document.body.appendChild(toggle);
-}
-
-/* --- Enhanced Image Loading with Better Fallbacks --- */
-function preloadImage(src) {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
-        img.src = src;
-
-        // Timeout after 3 seconds
-        setTimeout(() => reject(new Error('Image load timeout')), 3000);
-    });
-}
-
+/* --- Dynamic Content Loading --- */
 async function loadDynamicContent() {
-    // 1. Load News (if on news page)
+    // 1. Load News
     const newsContainer = document.getElementById('news-feed');
     if (newsContainer) {
         try {
-            const res = await fetch('/api/news');
-            const news = await res.json();
+            const res = await api.getNews();
+            const news = res;
 
             if (news.length === 0) {
                 newsContainer.innerHTML = '<p>No recent signals intercepted.</p>';
@@ -289,46 +317,46 @@ async function loadDynamicContent() {
 
             newsContainer.innerHTML = news.map(item => `
                 <article class="card animate-on-scroll">
-                    <div class="card-image" style="background-image: url('${item.image}');"></div>
+                    <div class="card-image" style="background-image: url('${item.image || 'assets/hero-bg.png'}');"></div>
                     <div class="card-content">
-                        <span class="card-category">${item.category} • ${item.date}</span>
+                        <span class="card-category">${item.category} • ${new Date(item.created_at).toLocaleDateString()}</span>
                         <h3>${item.title}</h3>
-                        <p>${item.content}</p>
-                        <a href="${item.link}" class="read-more">Read Full Report →</a>
+                        <p>${item.content.substring(0, 100)}...</p>
+                        <a href="${item.link || '#'}" class="read-more">Read Full Report →</a>
                     </div>
                 </article>
             `).join('');
 
-            // Re-trigger animation observer for new elements
             document.querySelectorAll('.card').forEach(el => observer.observe(el));
         } catch (err) {
             console.error('Failed to load news:', err);
+            newsContainer.innerHTML = '<p style="text-align:center;">Database offline.</p>';
         }
     }
 
-    // 2. Load Cases (if on updates page)
+    // 2. Load Cases
     const caseContainer = document.getElementById('case-feed');
     if (caseContainer) {
         try {
-            const res = await fetch('/api/cases');
-            const cases = await res.json();
+            const res = await api.getCases();
+            const cases = res;
 
             caseContainer.innerHTML = cases.map(item => `
                 <article class="card animate-on-scroll" data-type="${item.type}">
-                    <div class="card-image" style="background-image: url('${item.image}');"></div>
+                    <div class="card-image" style="background-image: url('${item.image || 'assets/conan-mystery-hero.png'}');"></div>
                     <div class="card-content">
-                        <span class="card-category">${item.type.toUpperCase()} • ${item.date}</span>
+                        <span class="card-category">${item.type.toUpperCase()}</span>
                         <h3>${item.title}</h3>
-                        <p>${item.description}</p>
+                        <p>${item.description.substring(0, 100)}...</p>
                         <a href="#" class="read-more">View Evidence →</a>
                     </div>
                 </article>
             `).join('');
 
-            // Re-trigger animation observer
             document.querySelectorAll('.card').forEach(el => observer.observe(el));
         } catch (err) {
             console.error('Failed to load cases:', err);
+            caseContainer.innerHTML = '<p style="text-align:center;">Restricted Access.</p>';
         }
     }
 }

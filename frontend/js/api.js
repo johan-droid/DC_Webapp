@@ -2,7 +2,9 @@
 
 class ApiService {
   constructor() {
-    this.baseURL = 'http://localhost:3000/api';
+    // BUG FIX: Use relative path for production compatibility
+    // This allows the frontend to call the backend on the same domain/port automatically
+    this.baseURL = '/api';
   }
 
   async request(endpoint, options = {}) {
