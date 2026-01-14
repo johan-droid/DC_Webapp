@@ -13,8 +13,16 @@ const PORT = process.env.PORT || 3000;
 
 // --- 1. SUPABASE CONNECTION ---
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY; 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabaseKey = process.env.SUPABASE_KEY;
+
+// Validate environment variables
+if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('your-project-id') || supabaseKey.includes('your-service-role-secret-key')) {
+    console.error('❌ Missing or invalid Supabase environment variables!');
+    console.error('Please set SUPABASE_URL and SUPABASE_KEY in your .env file');
+    console.error('Continuing without database functionality...');
+}
+
+const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 // --- 2. MIDDLEWARE ---
 app.use(helmet({
@@ -64,6 +72,18 @@ const caseValidation = Joi.object({
 
 // GET News
 app.get('/api/news', async (req, res) => {
+    if (!supabase) {
+        return res.json([
+            {
+                id: 1,
+                title: "Detective Conan Website Launched",
+                category: "Breaking News",
+                content: "The new Detective Conan fan website is now live with character profiles and interactive features!",
+                created_at: new Date().toISOString()
+            }
+        ]);
+    }
+
     const { data, error } = await supabase
         .from('news')
         .select('*')
@@ -75,6 +95,10 @@ app.get('/api/news', async (req, res) => {
 
 // POST News
 app.post('/api/news', authenticateAdmin, async (req, res) => {
+    if (!supabase) {
+        return res.status(503).json({ error: 'Database not available' });
+    }
+
     const { error: valError, value } = newsValidation.validate(req.body);
     if (valError) return res.status(400).json({ error: valError.details[0].message });
 
@@ -89,6 +113,18 @@ app.post('/api/news', authenticateAdmin, async (req, res) => {
 
 // GET Cases
 app.get('/api/cases', async (req, res) => {
+    if (!supabase) {
+        return res.json([
+            {
+                id: 1,
+                title: "The Mystery of the Missing Detective",
+                type: "canon",
+                description: "Shinichi Kudo's disappearance and transformation into Conan Edogawa remains one of the most intriguing cases.",
+                created_at: new Date().toISOString()
+            }
+        ]);
+    }
+
     const { data, error } = await supabase
         .from('cases')
         .select('*')
@@ -100,6 +136,10 @@ app.get('/api/cases', async (req, res) => {
 
 // POST Cases
 app.post('/api/cases', authenticateAdmin, async (req, res) => {
+    if (!supabase) {
+        return res.status(503).json({ error: 'Database not available' });
+    }
+
     const { error: valError, value } = caseValidation.validate(req.body);
     if (valError) return res.status(400).json({ error: valError.details[0].message });
 

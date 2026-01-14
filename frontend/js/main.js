@@ -4,85 +4,45 @@
 let slideIndex = 1;
 let autoSlideInterval;
 
-/* Character Data & Rendering - UPDATED with stable URLs */
+// --- DATA CONFIGURATION ---
 const mainCharactersData = [
     {
-        "name": "Shinichi Kudo",
-        "image": null,
-        "description": "Main character of the series, and Ran's love interest. He was shrunk into a child after being forced to take APTX 4869."
+        name: "Conan Edogawa",
+        image: "assets/conan-mystery-hero.png",
+        description: "The child form of Shinichi Kudo. "
     },
     {
-        "name": "Conan Edogawa",
-        "image": "assets/conan-mystery-hero.png",
-        "description": "The child form of Shinichi Kudo. He chases the Black Organization to regain his original body while solving cases."
+        name: "Shinichi Kudo",
+        image: "assets/hero-bg.png",
+        description: "The high school detective shrunk by APTX 4869."
     },
     {
-        "name": "Ran Mouri",
-        "image": null,
-        "description": "Shinichi's childhood friend and love interest. She takes care of Conan and her father, unaware of Conan's true identity."
+        name: "Ran Mouri",
+        image: null,
+        description: "Shinichi's childhood friend and karate champion."
     },
     {
-        "name": "Kogoro Mouri",
-        "image": null,
-        "description": "A private detective and Ran's father. Known as 'Sleeping Kogoro' due to Conan's help in solving cases."
-    },
-    {
-        "name": "Ai Haibara",
-        "image": null,
-        "description": "The creator of APTX 4869 who shrunk herself to escape the Black Organization. She now helps Conan."
-    },
-    {
-        "name": "Hiroshi Agasa",
-        "image": null,
-        "description": "An eccentric inventor and the first person to learn Conan's true identity. He provides Conan's gadgets."
-    },
-    {
-        "name": "Heiji Hattori",
-        "image": null,
-        "description": "The 'Great Detective of the West' from Osaka. He is Shinichi's rival and one of his closest friends."
-    },
-    {
-        "name": "Shuichi Akai",
-        "image": null,
-        "description": "An FBI agent who infiltrated the Black Organization. He is a master sniper and a key ally to Conan."
-    },
-    {
-        "name": "Kaitou Kid",
-        "image": null,
-        "description": "A phantom thief who uses magic tricks and disguises. He is a rival to Conan but often helps him."
-    },
-    {
-        "name": "Juzo Megure",
-        "image": null,
-        "description": "A dedicated police inspector from the Tokyo Metropolitan Police District who trusts Shinichi implicitly."
+        name: "Kogoro Mouri",
+        image: null,
+        description: "Private investigator known as 'Sleeping Kogoro'."
     }
 ];
 
 const blackOrgCharactersData = [
     {
-        "name": "Gin",
-        "image": "assets/gin-villain.png",
-        "description": "A high-ranking executive member. He forced Shinichi to take the poison that shrunk him."
+        name: "Gin",
+        image: "assets/gin-villain.png",
+        description: "Executive member of the Black Organization."
     },
     {
-        "name": "Vodka",
-        "image": null,
-        "description": "Gin's secretary and partner. He is loyal but less intelligent than his counterpart."
+        name: "Vodka",
+        image: null,
+        description: "Gin's partner and secretary."
     },
     {
-        "name": "Vermouth",
-        "image": null,
-        "description": "A master of disguise and a favorite of the Boss. She knows Conan's true identity but keeps it secret."
-    },
-    {
-        "name": "Bourbon",
-        "image": null,
-        "description": "An undercover agent working within the organization. He is also known as Amuro Tooru."
-    },
-    {
-        "name": "Kir",
-        "image": null,
-        "description": "An undercover CIA agent posing as a TV reporter. She relays information to the FBI."
+        name: "Vermouth",
+        image: null,
+        description: "A master of disguise with a secret agenda."
     }
 ];
 
@@ -108,115 +68,72 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
+// --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("Detective Conan Website Loaded");
+    console.log("Detective Conan System: Online");
 
-    /* --- Mobile Menu Logic --- */
+    // 1. Setup Theme (APTX Mode)
+    setupAptxSystem();
+
+    // 2. Setup Mobile Menu
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
-    const body = document.body;
-
-    if (hamburger && navLinks) {
+    if (hamburger) {
         hamburger.addEventListener('click', () => {
             hamburger.classList.toggle('active');
             navLinks.classList.toggle('active');
-            body.classList.toggle('menu-open');
-        });
-
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                navLinks.classList.remove('active');
-                body.classList.remove('menu-open');
-            });
         });
     }
 
-    /* --- Initialize Animations --- */
-    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
-    document.querySelectorAll('.card-grid, .character-premium-grid').forEach(grid => observer.observe(grid));
-
-    // Initial Character Render
+    // 3. Render Content
     renderCharacters();
-
-    // Check for other components
-    if (document.querySelector('.slideshow-container')) {
-        showSlides(slideIndex);
-        if (!autoSlideInterval) {
-            autoSlideInterval = setInterval(() => plusSlides(1), 5000);
-        }
-    }
-
-    loadQuiz();
-    loadDynamicContent();
+    
+    // 4. Load Animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('animate-on-scroll-active');
+        });
+    });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
 });
 
-/* --- Character Rendering (FIXED for Broken Images) --- */
+// --- CHARACTER RENDERER ---
 function renderCharacters() {
-    const charGrid = document.getElementById('character-grid');
-    if (!charGrid) return;
+    const grid = document.getElementById('character-grid');
+    if (!grid) return;
 
-    console.log('Rendering characters...');
-    charGrid.innerHTML = '';
+    grid.innerHTML = '';
+    
+    // Choose data based on theme
+    const isBO = document.body.classList.contains('bo-theme');
+    const data = isBO ? blackOrgCharactersData : mainCharactersData;
 
-    const isBoTheme = document.body.classList.contains('bo-theme');
-    const charactersData = isBoTheme ? blackOrgCharactersData : mainCharactersData;
-    console.log('Is BO Theme:', isBoTheme);
-    console.log('Using character data:', isBoTheme ? 'Black Organization' : 'Main Characters');
-    console.log('Character count:', charactersData.length);
-
-    charactersData.forEach((char, index) => {
+    data.forEach((char, index) => {
         const card = document.createElement('div');
-        // Add animation class
         card.className = 'char-card animate-on-scroll';
-        // Stagger animation
         card.style.transitionDelay = `${index * 0.1}s`;
 
+        const hasImage = char.image && char.image.trim() !== '';
+        
         card.innerHTML = `
-            <div class="char-image-wrapper">
-                <div class="char-placeholder">${char.name.charAt(0)}</div>
-                ${char.image ? `<img src="${char.image}" alt="${char.name}" class="char-img-element" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:1; border-radius: 16px 16px 0 0;" onerror="this.style.display='none'; this.parentElement.querySelector('.char-placeholder').style.display='flex';">` : ''}
-            </div>
+            <div class="char-placeholder">${char.name.charAt(0)}</div>
+            ${hasImage ? `<img src="${char.image}" alt="${char.name}" class="char-img-element">` : ''}
             <div class="char-content">
-                <h3 class="char-name">${char.name}</h3>
-                <div class="char-desc">
-                    <p>${char.description}</p>
-                </div>
+                <h3>${char.name}</h3>
+                <p style="font-size: 0.85rem; margin:0; opacity:0.8;">${char.description}</p>
             </div>
         `;
-        charGrid.appendChild(card);
 
-        // Add additional image loading handling
-        const img = card.querySelector('.char-img-element');
-        const placeholder = card.querySelector('.char-placeholder');
-
-        if (img && placeholder) {
-            // Hide placeholder initially if image is provided
-            placeholder.style.display = 'none';
-
-            // Show placeholder if image fails to load
-            img.addEventListener('error', () => {
-                img.style.display = 'none';
-                placeholder.style.display = 'flex';
-            });
-
-            // Hide placeholder if image loads successfully
-            img.addEventListener('load', () => {
-                placeholder.style.display = 'none';
-            });
-
-            // Timeout fallback - if image takes too long, show placeholder
-            setTimeout(() => {
-                if (!img.complete || img.naturalHeight === 0) {
-                    img.style.display = 'none';
-                    placeholder.style.display = 'flex';
-                }
-            }, 5000); // 5 second timeout
+        // Robust Error Handling
+        if (hasImage) {
+            const img = card.querySelector('img');
+            img.onerror = function() {
+                this.style.display = 'none';
+            };
         }
-    });
 
-    // Re-observe new elements
-    document.querySelectorAll('.char-card').forEach(el => observer.observe(el));
+        grid.appendChild(card);
+    });
 }
 
 
@@ -314,57 +231,35 @@ function checkAnswer(btn, questionIndex, optionIndex) {
     }
 }
 
-/* --- Theme Toggle (APTX Mode) --- */
-function toggleTheme() {
-    console.log('Toggle theme clicked');
-    document.body.classList.toggle('bo-theme');
-    console.log('Body classes after toggle:', document.body.classList.toString());
-    
-    // Re-render characters to switch between Main and Black Org
-    renderCharacters();
-    
-    // Update button text and rotation
-    const btn = document.querySelector('.theme-toggle');
-    if (document.body.classList.contains('bo-theme')) {
-        localStorage.setItem('theme', 'bo-theme');
-        if (btn) {
-            btn.innerText = "Return to Normal";
-            btn.style.transform = 'rotate(180deg)';
-        }
-        console.log('Switched to APTX (Black Org) mode');
-    } else {
-        localStorage.removeItem('theme');
-        if (btn) {
-            btn.innerText = "APTX-4869 Mode";
-            btn.style.transform = 'rotate(0deg)';
-        }
-        console.log('Switched to Normal mode');
+// --- CAPSULE SYSTEM (APTX TOGGLE) ---
+function setupAptxSystem() {
+    // Check saved preference
+    if (localStorage.getItem('theme') === 'bo-theme') {
+        document.body.classList.add('bo-theme');
     }
+
+    // Inject the Capsule HTML
+    const toggle = document.createElement('div');
+    toggle.className = 'aptx-toggle-container animate-on-scroll';
+    toggle.innerHTML = `
+        <div class="aptx-pill">
+            <span class="pill-text pill-left">APTX</span>
+            <span class="pill-text pill-right">4869</span>
+        </div>
+    `;
+
+    // Toggle Logic
+    toggle.addEventListener('click', () => {
+        document.body.classList.toggle('bo-theme');
+        const isDark = document.body.classList.contains('bo-theme');
+        localStorage.setItem('theme', isDark ? 'bo-theme' : 'light');
+        
+        // Re-render characters to switch between Conan/Gin lists
+        renderCharacters();
+    });
+
+    document.body.appendChild(toggle);
 }
-
-// Create theme toggle button
-const themeBtn = document.createElement('button');
-themeBtn.innerText = '💊';
-themeBtn.className = 'theme-toggle';
-themeBtn.title = 'APTX-4869 Mode';
-themeBtn.style.cssText = "position:fixed; bottom:20px; right:20px; z-index:9999; font-size:2rem; background:none; border:none; cursor:pointer; transition: transform 0.3s ease; padding:10px; border-radius:50%; background:rgba(230,57,70,0.1); backdrop-filter:blur(10px);";
-document.body.appendChild(themeBtn);
-
-// Initialize theme from localStorage
-const currentTheme = localStorage.getItem('theme');
-if (currentTheme === 'bo-theme') {
-    document.body.classList.add('bo-theme');
-    themeBtn.style.transform = 'rotate(180deg)';
-    themeBtn.innerText = "Return to Normal";
-    console.log('Initialized with APTX mode from localStorage');
-}
-
-// Add click event listener
-themeBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    console.log('Theme button clicked');
-    toggleTheme();
-});
 
 /* --- Enhanced Image Loading with Better Fallbacks --- */
 function preloadImage(src) {

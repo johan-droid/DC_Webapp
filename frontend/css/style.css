@@ -315,56 +315,69 @@ a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
     padding: 2rem 0;
 }
 
-@media (min-width: 600px) {
-    .character-premium-grid {
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    }
-    .aptx-toggle-container {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        z-index: 9999;
-        cursor: pointer;
-        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
+/* --- CAPSULE SYSTEM (APTX TOGGLE) --- */
+.aptx-toggle-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
 
-    .aptx-pill {
-        width: 100px;
-        height: 40px;
-        background: linear-gradient(90deg, #e63946 50%, #f1faee 50%);
-        border-radius: 20px;
-        border: 2px solid rgba(255,255,255,0.2);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 10px;
-        position: relative;
-        overflow: hidden;
-    }
+.aptx-pill {
+    width: 120px;
+    height: 44px;
+    background: linear-gradient(90deg, #e63946 50%, #f1faee 50%);
+    border-radius: 22px;
+    border: 2px solid rgba(255,255,255,0.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    position: relative;
+    overflow: hidden;
+}
 
-    .aptx-pill::after {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 50%;
-        background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
-        border-radius: 20px 20px 0 0;
-    }
+.aptx-pill::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 50%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+    border-radius: 20px 20px 0 0;
+    pointer-events: none;
+}
 
-    .pill-text {
-        font-size: 0.7rem;
-        font-weight: 900;
-        font-family: 'Arial', sans-serif;
-        letter-spacing: 1px;
-        z-index: 2;
-    }
+.pill-text {
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    z-index: 2;
+    font-family: sans-serif;
+}
 
-    .pill-left { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
-    .pill-right { color: #e63946; }
+.pill-left { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+.pill-right { color: #e63946; }
 
-    .aptx-toggle-container:hover {
-        transform: scale(1.1) rotate(5deg);
-    }
+.aptx-toggle-container:hover {
+    transform: scale(1.05) rotate(5deg);
+}
+
+/* --- THEMES --- */
+body.bo-theme {
+    --bg-primary: #000000;
+    --accent-red: #990000;
+}
+
+body.bo-theme::before {
+    background-image: url('../assets/gin-villain.png');
+    filter: grayscale(100%) contrast(120%);
+    opacity: 0.2;
+}
+
+body.bo-theme .aptx-toggle-container {
+    transform: rotate(180deg);
 }
 
 .char-card {
@@ -492,30 +505,6 @@ a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
     .filter-btn { width: 100%; margin-bottom: 10px; }
 }
 
-/* --- APTX (Villain) Theme --- */
-body.bo-theme {
-    --accent-red: #ff0033;
-    --bg-primary: #050505;
-}
-
-body.bo-theme::before {
-    background-image: url('../assets/gin-villain.png');
-    background-position: left bottom;
-    filter: grayscale(100%) brightness(0.6) sepia(100%) hue-rotate(-50deg) saturate(600%);
-    opacity: 0.15;
-}
-
-body.bo-theme .card { border-color: #330000; background: #0a0000; }
-
-body.bo-theme .char-placeholder {
-    background: linear-gradient(135deg, #1a0000, #330000);
-    color: rgba(255, 0, 51, 0.6);
-    text-shadow: 0 0 10px rgba(255, 0, 51, 0.3);
-}
-
-body.bo-theme .char-image-wrapper {
-    background: linear-gradient(135deg, #1a0000, #330000);
-}
 
 /* --- Animations --- */
 .animate-on-scroll {
