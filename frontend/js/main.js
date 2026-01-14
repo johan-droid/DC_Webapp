@@ -156,10 +156,14 @@ function renderCharacters() {
     const charGrid = document.getElementById('character-grid');
     if (!charGrid) return;
 
+    console.log('Rendering characters...');
     charGrid.innerHTML = '';
 
     const isBoTheme = document.body.classList.contains('bo-theme');
     const charactersData = isBoTheme ? blackOrgCharactersData : mainCharactersData;
+    console.log('Is BO Theme:', isBoTheme);
+    console.log('Using character data:', isBoTheme ? 'Black Organization' : 'Main Characters');
+    console.log('Character count:', charactersData.length);
 
     charactersData.forEach((char, index) => {
         const card = document.createElement('div');
@@ -312,17 +316,29 @@ function checkAnswer(btn, questionIndex, optionIndex) {
 
 /* --- Theme Toggle (APTX Mode) --- */
 function toggleTheme() {
+    console.log('Toggle theme clicked');
     document.body.classList.toggle('bo-theme');
-
+    console.log('Body classes after toggle:', document.body.classList.toString());
+    
     // Re-render characters to switch between Main and Black Org
     renderCharacters();
-
-    // Add visual feedback or sound effect here if desired
+    
+    // Update button text and rotation
     const btn = document.querySelector('.theme-toggle');
     if (document.body.classList.contains('bo-theme')) {
-        if (btn) btn.innerText = "Return to Normal";
+        localStorage.setItem('theme', 'bo-theme');
+        if (btn) {
+            btn.innerText = "Return to Normal";
+            btn.style.transform = 'rotate(180deg)';
+        }
+        console.log('Switched to APTX (Black Org) mode');
     } else {
-        if (btn) btn.innerText = "APTX-4869 Mode";
+        localStorage.removeItem('theme');
+        if (btn) {
+            btn.innerText = "APTX-4869 Mode";
+            btn.style.transform = 'rotate(0deg)';
+        }
+        console.log('Switched to Normal mode');
     }
 }
 
@@ -334,24 +350,20 @@ themeBtn.title = 'APTX-4869 Mode';
 themeBtn.style.cssText = "position:fixed; bottom:20px; right:20px; z-index:9999; font-size:2rem; background:none; border:none; cursor:pointer; transition: transform 0.3s ease; padding:10px; border-radius:50%; background:rgba(230,57,70,0.1); backdrop-filter:blur(10px);";
 document.body.appendChild(themeBtn);
 
+// Initialize theme from localStorage
 const currentTheme = localStorage.getItem('theme');
 if (currentTheme === 'bo-theme') {
     document.body.classList.add('bo-theme');
     themeBtn.style.transform = 'rotate(180deg)';
+    themeBtn.innerText = "Return to Normal";
+    console.log('Initialized with APTX mode from localStorage');
 }
 
-themeBtn.addEventListener('click', () => {
-    document.body.classList.toggle('bo-theme');
-
-    if (document.body.classList.contains('bo-theme')) {
-        localStorage.setItem('theme', 'bo-theme');
-        themeBtn.style.transform = 'rotate(180deg)';
-    } else {
-        localStorage.removeItem('theme');
-        themeBtn.style.transform = 'rotate(0deg)';
-    }
-
-    renderCharacters();
+// Add click event listener
+themeBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log('Theme button clicked');
+    toggleTheme();
 });
 
 /* --- Enhanced Image Loading with Better Fallbacks --- */
