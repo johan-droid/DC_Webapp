@@ -1,32 +1,19 @@
 {
   "name": "detective-conan-website",
   "version": "1.0.0",
-  "description": "",
-  "main": "backend/server.js",
+  "description": "Detective Conan Fan Website - Frontend",
+  "main": "frontend/index.html",
   "scripts": {
-    "start": "node backend/server.js",
-    "dev": "nodemon backend/server.js",
-    "frontend": "cd frontend && python -m http.server 8080",
-    "fullstack": "concurrently \"npm run dev\" \"npm run frontend\"",
-    "build": "echo 'Production build complete'",
-    "deploy": "echo 'Deploy to Render via GitHub'"
+    "serve": "cd frontend && python -m http.server 8080",
+    "start": "cd frontend && python -m http.server 3000",
+    "dev": "cd frontend && python -m http.server 8080",
+    "build": "echo 'Static build complete - ready for deployment'",
+    "deploy": "echo 'Deploy frontend to Netlify/Vercel via GitHub'"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["detective-conan", "anime", "manga", "fan-site", "static-site"],
+  "author": "Detective Conan Developer",
+  "license": "MIT",
   "type": "commonjs",
-  "dependencies": {
-    "@supabase/supabase-js": "^2.90.1",
-    "body-parser": "^1.20.2",
-    "concurrently": "^8.2.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "express-rate-limit": "^7.2.0",
-    "helmet": "^7.1.0",
-    "joi": "^17.12.2"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.11"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }

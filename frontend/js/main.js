@@ -307,8 +307,13 @@ async function loadDynamicContent() {
     const newsContainer = document.getElementById('news-feed');
     if (newsContainer) {
         try {
-            const res = await api.getNews();
-            const news = res;
+            const response = await fetch(API_CONFIG.getEndpoint(API_CONFIG.ENDPOINTS.NEWS));
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const news = await response.json();
 
             if (news.length === 0) {
                 newsContainer.innerHTML = '<p>No recent signals intercepted.</p>';
@@ -330,7 +335,7 @@ async function loadDynamicContent() {
             document.querySelectorAll('.card').forEach(el => observer.observe(el));
         } catch (err) {
             console.error('Failed to load news:', err);
-            newsContainer.innerHTML = '<p style="text-align:center;">Database offline.</p>';
+            newsContainer.innerHTML = '<p style="text-align:center;">📡 Database offline. Check back later.</p>';
         }
     }
 
@@ -338,8 +343,13 @@ async function loadDynamicContent() {
     const caseContainer = document.getElementById('case-feed');
     if (caseContainer) {
         try {
-            const res = await api.getCases();
-            const cases = res;
+            const response = await fetch(API_CONFIG.getEndpoint(API_CONFIG.ENDPOINTS.CASES));
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const cases = await response.json();
 
             caseContainer.innerHTML = cases.map(item => `
                 <article class="card animate-on-scroll" data-type="${item.type}">
@@ -356,7 +366,7 @@ async function loadDynamicContent() {
             document.querySelectorAll('.card').forEach(el => observer.observe(el));
         } catch (err) {
             console.error('Failed to load cases:', err);
-            caseContainer.innerHTML = '<p style="text-align:center;">Restricted Access.</p>';
+            caseContainer.innerHTML = '<p style="text-align:center;">📁 Case files unavailable.</p>';
         }
     }
 }

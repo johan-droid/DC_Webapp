@@ -17,74 +17,91 @@ detective-conan-website/
 │   ├── public/             # Admin panel static files
 │   │   └── admin.html
 │   ├── data/              # Database files
-│   ├── server.js          # Main server file
-│   ├── .env.example       # Environment variables template
-│   └── package.json       # Backend dependencies
-├── frontend/              # Static frontend files
-│   ├── css/              # Stylesheets
-│   │   └── style.css
-│   ├── js/               # JavaScript files
-│   │   ├── main.js
-│   │   └── api.js        # API service
-│   ├── assets/           # Images and media
-│   ├── index.html        # Homepage
-│   ├── characters.html   # Characters page
-│   ├── news.html         # News page
-│   └── updates.html      # Updates page
-├── package.json          # Root package configuration
-└── README.md            # This file
+
+## 🏗️ Architecture
+
+This is a **frontend-only** repository that connects to a separate backend API:
+
+```
+Frontend (Static) ←→ Backend API (Separate Repository)
 ```
 
-## 🚀 Getting Started
+### Frontend Features
+- Pure HTML, CSS, JavaScript
+- No server dependencies
+- Ready for static hosting
+- Remote API integration
 
-### Prerequisites
+### Backend Features
+- Node.js/Express API
+- Admin panel for content management
+- Supabase database integration
+- Authentication and security
 
-- Node.js (v14 or higher)
-- MongoDB (local or cloud instance)
-- npm or yarn
+## 🚀 Quick Start
 
-### Installation
+### Local Development
 
-1. **Clone the repository**
+1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
-   cd detective-conan-website
+   git clone https://github.com/johan-droid/DC_Webapp.git
+   cd DC_Webapp
    ```
 
-2. **Install dependencies**
+2. **Start local server**:
    ```bash
-   npm install
+   npm start
+   # or
+   npm run dev
    ```
 
-3. **Set up environment variables**
-   ```bash
-   cp backend/.env.example backend/.env
-   # Edit backend/.env with your configuration
+3. **Open in browser**:
+   ```
+   http://localhost:3000
    ```
 
-4. **Start MongoDB**
-   - For local MongoDB: `mongod`
-   - Or update `MONGODB_URI` in `.env` for cloud MongoDB
+### API Configuration
 
-### Running the Application
+The frontend connects to a remote backend API. Configure the backend URL in `frontend/js/api-config.js`:
 
-#### Option 1: Full Stack (Recommended)
-```bash
-npm run fullstack
-```
-This starts both the backend server (port 3000) and frontend server (port 8080) concurrently.
-
-#### Option 2: Backend Only
-```bash
-npm start          # Production
-# or
-npm run dev        # Development with nodemon
+```javascript
+const API_CONFIG = {
+    BASE_URL: 'https://your-backend-api.com',
+    LOCAL_URL: 'http://localhost:3001'
+};
 ```
 
-#### Option 3: Frontend Only
-```bash
-npm run frontend
-```
+## 🌐 Deployment
+
+### Frontend Deployment (This Repository)
+
+Deploy to any static hosting service:
+
+#### Netlify (Recommended)
+1. Push to GitHub
+2. Connect to Netlify
+3. Set build command: `echo "No build required"`
+4. Set publish directory: `frontend`
+5. Add environment variable: `API_BASE_URL`
+
+#### Vercel
+1. Import to Vercel
+2. Set root directory: `frontend`
+3. Deploy automatically
+
+#### GitHub Pages
+1. Push to `gh-pages` branch
+2. Enable GitHub Pages in settings
+
+### Backend Deployment (Separate Repository)
+
+The backend is deployed separately with:
+- Admin panel for content management
+- API endpoints for data
+- Database integration
+- Authentication system
+
+See [DEPLOYMENT_SEPARATED.md](./DEPLOYMENT_SEPARATED.md) for detailed backend deployment instructions.
 
 ## 📡 API Endpoints
 
