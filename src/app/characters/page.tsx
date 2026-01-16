@@ -1,39 +1,73 @@
 "use client";
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { mainCharactersData, blackOrgCharactersData } from '@/data/characters';
 
-const CharCard = ({ char }: { char: any }) => (
-    <motion.div
-        className="char-card"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-    >
-        <div className="char-image-wrapper">
-            <div className="char-placeholder">{char.name.charAt(0)}</div>
-            {char.image && (
-                <img
-                    src={char.image}
-                    alt={char.name}
-                    className="char-img-element"
-                    onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                        (e.target as HTMLImageElement).parentElement?.querySelector('.char-placeholder')?.setAttribute('style', 'display:flex');
-                    }}
-                />
-            )}
-        </div>
-        <div className="char-content">
-            <h3 className="char-name">{char.name}</h3>
-            <div className="char-desc">
-                <p>{char.description}</p>
-            </div>
-        </div>
-    </motion.div>
-);
+// Types
+type Character = {
+    id?: string;
+    name: string;
+    description: string;
+    image: string | null;
+    faction: 'main' | 'black_organization' | 'police' | 'fbi';
+};
 
 export default function CharactersPage() {
+    const [characters, setCharacters] = useState<Character[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchChars = async () => {
+            try {
+                const res = await fetch('/api/characters');
+                if (!res.ok) throw new Error('Failed');
+                const data = await res.json();
+                setCharacters(data);
+            } catch (e) {
+                console.error(e);
+                // Fallback or empty state
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchChars();
+    }, []);
+
+    const mainChars = characters.filter(c => c.faction !== 'black_organization');
+    const boChars = characters.filter(c => c.faction === 'black_organization');
+
+    const CharCard = ({ char }: { char: Character }) => (
+        <motion.div
+            className="char-card"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+        >
+            <div className="char-image-wrapper">
+                <div className="char-placeholder">{char.name.charAt(0)}</div>
+                {char.image && (
+                    <img
+                        src={char.image}
+                        alt={char.name}
+                        className="char-img-element"
+                        onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                            (e.target as HTMLImageElement).parentElement?.querySelector('.char-placeholder')?.setAttribute('style', 'display:flex');
+                        }}
+                    />
+                )}
+            </div>
+            <div className="char-content">
+                <h3 className="char-name">{char.name}</h3>
+                <div className="char-desc">
+                    <p>{char.description}</p>
+                </div>
+            </div>
+        </motion.div>
+    );
+
+    if (loading) return <div className="container" style={{ paddingTop: '100px', textAlign: 'center' }}>Loading Profiles...</div>;
+
     return (
         <div className="container">
             <header className="character-header animate-on-scroll-active">
@@ -44,18 +78,24 @@ export default function CharactersPage() {
             <div className="section-divider">
                 <h2>The Protagonists</h2>
             </div>
+
+            {mainChars.length === 0 && <p className="text-center">No profiles found in database.</p>}
+
             <div className="character-premium-grid">
-                {mainCharactersData.map((char, i) => (
-                    <CharCard key={i} char={char} />
+                {mainChars.map((char, i) => (
+                    <CharCard key={char.id || i} char={char} />
                 ))}
             </div>
 
             <div className="section-divider" style={{ marginTop: '4rem' }}>
                 <h2 style={{ color: 'var(--accent-red)' }}>The Black Organization</h2>
             </div>
+
+            {boChars.length === 0 && <p className="text-center">No Black Organization profiles found.</p>}
+
             <div className="character-premium-grid">
-                {blackOrgCharactersData.map((char, i) => (
-                    <CharCard key={i} char={char} />
+                {boChars.map((char, i) => (
+                    <CharCard key={char.id || i} char={char} />
                 ))}
             </div>
 

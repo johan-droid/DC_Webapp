@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, supabaseAdmin } from '@/lib/supabaseClient';
 import { authenticateAdmin } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
     const { data, error } = await supabase.from('cases').select('*').order('created_at', { ascending: false });
@@ -31,6 +34,9 @@ export async function POST(req: NextRequest) {
     const { data, error } = await supabaseAdmin.from('cases').insert([body]).select();
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    revalidatePath('/investigations');
+    revalidatePath('/');
 
     return NextResponse.json({ message: 'Case filed!', case: data[0] }, { status: 201 });
 }

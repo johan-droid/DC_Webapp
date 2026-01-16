@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, supabaseAdmin } from '@/lib/supabaseClient';
 import { authenticateAdmin } from '@/lib/auth';
-import Joi from 'joi'; // Can switch to Zod later as per plan
+import Joi from 'joi';
+import { revalidatePath } from 'next/cache';
 
 // Validation Schema
 const newsValidation = Joi.object({
@@ -12,18 +13,13 @@ const newsValidation = Joi.object({
     link: Joi.string().uri().allow('')
 });
 
+export const dynamic = 'force-dynamic'; // Ensure API is always fresh
+
 export async function GET() {
     const { data, error } = await supabase.from('news').select('*').order('created_at', { ascending: false });
 
     if (error) {
-        // Fallback if DB invalid or empty
-        return NextResponse.json([{
-            id: 0,
-            title: "System Info",
-            category: "System",
-            content: "Running natively on Next.js Edge.",
-            created_at: new Date()
-        }]);
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json(data);
@@ -50,6 +46,10 @@ export async function POST(req: NextRequest) {
     const { data, error } = await supabaseAdmin.from('news').insert([value]).select();
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    // 5. Revalidate cache
+    revalidatePath('/news');
+    revalidatePath('/');
 
     return NextResponse.json({ message: 'News published!', article: data[0] }, { status: 201 });
 }
