@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabaseClient';
+import Image from 'next/image';
 
 export default async function InvestigationsPage() {
     const { data: cases, error } = await supabase
@@ -23,7 +24,15 @@ export default async function InvestigationsPage() {
                 ) : (
                     cases.map((item: any) => (
                         <article key={item.id} className="card" data-type={item.type}>
-                            <div className="card-image" style={{ backgroundImage: `url('${item.image || '/assets/conan-mystery-hero.png'}')` }}></div>
+                            <div className="card-image" style={{ position: 'relative' }}>
+                                <Image
+                                    src={item.image || '/assets/conan-mystery-hero.png'}
+                                    alt={item.title || 'Case Image'}
+                                    fill
+                                    className="object-cover"
+                                    sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                />
+                            </div>
                             <div className="card-content">
                                 <span className="card-category">{item.type?.toUpperCase() || 'FILE'}</span>
                                 <h3>{item.title}</h3>

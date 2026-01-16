@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabaseClient';
+import Image from 'next/image';
 
 // Server Component
 export default async function NewsPage() {
@@ -23,7 +24,15 @@ export default async function NewsPage() {
                     ) : (
                         news.map((item: any) => (
                             <article key={item.id} className="card">
-                                <div className="card-image" style={{ backgroundImage: `url('${item.image || '/assets/hero-bg.png'}')` }}></div>
+                                <div className="card-image" style={{ position: 'relative' }}>
+                                    <Image
+                                        src={item.image || '/assets/hero-bg.png'}
+                                        alt={item.title || 'News Image'}
+                                        fill
+                                        className="object-cover"
+                                        sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    />
+                                </div>
                                 <div className="card-content">
                                     <span className="card-category">
                                         {item.category} • {new Date(item.created_at).toLocaleDateString()}
