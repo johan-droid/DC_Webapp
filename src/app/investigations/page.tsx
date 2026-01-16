@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabaseClient';
-import Image from 'next/image';
+// REMOVED: import Image from 'next/image'; 
+// REASON: Using standard img tag prevents crashes when Admin adds images from unconfigured domains.
 
 export default async function InvestigationsPage() {
     const { data: cases, error } = await supabase
@@ -25,12 +26,11 @@ export default async function InvestigationsPage() {
                     cases.map((item: any) => (
                         <article key={item.id} className="card" data-type={item.type}>
                             <div className="card-image" style={{ position: 'relative' }}>
-                                <Image
+                                {/* FIX: Use standard img to handle any external URL without crashing */}
+                                <img
                                     src={item.image || '/assets/conan-mystery-hero.png'}
                                     alt={item.title || 'Case Image'}
-                                    fill
-                                    className="object-cover"
-                                    sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                 />
                             </div>
                             <div className="card-content">

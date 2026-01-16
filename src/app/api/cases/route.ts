@@ -26,12 +26,23 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
     }
 
-    // Simple validation
-    if (!body.title || !body.description) {
-        return NextResponse.json({ error: 'Title and Description required' }, { status: 400 });
+    // FIX: Robust Validation
+    if (!body.title || typeof body.title !== 'string' || body.title.length > 200) {
+        return NextResponse.json({ error: 'Title required (max 200 chars)' }, { status: 400 });
+    }
+    if (!body.description || typeof body.description !== 'string') {
+        return NextResponse.json({ error: 'Description required' }, { status: 400 });
     }
 
-    const { data, error } = await supabaseAdmin.from('cases').insert([body]).select();
+    // FIX: Prevent Mass Assignment by explicitly constructing the object
+    const newCase = {
+        title: body.title,
+        description: body.description,
+        type: body.type || 'canon', // Default fallback
+        image: body.image || null,
+    };
+
+    const { data, error } = await supabaseAdmin.from('cases').insert([newCase]).select();
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 

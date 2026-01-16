@@ -9,17 +9,15 @@ export function authenticateAdmin(req: NextRequest): NextResponse | null {
         return NextResponse.json({ error: '⛔ Unauthorized: Key missing.' }, { status: 401 });
     }
 
-    // Convert to buffers for timingSafeEqual
-    const bufferKey = Buffer.from(apiKey);
-    const bufferSecret = Buffer.from(secret);
+    // FIX: Use hashing to ensure constant length for comparison
+    // This prevents timing attacks that leak the length of the secret
+    const hashKey = crypto.createHash('sha256').update(apiKey).digest();
+    const hashSecret = crypto.createHash('sha256').update(secret).digest();
 
-    if (bufferKey.length !== bufferSecret.length) {
-        return NextResponse.json({ error: '⛔ Unauthorized: Invalid Key.' }, { status: 401 });
-    }
-
-    if (crypto.timingSafeEqual(bufferKey, bufferSecret)) {
+    if (crypto.timingSafeEqual(hashKey, hashSecret)) {
         return null; // Auth success
     } else {
+        // Safe to log IP here
         const ip = (req as any).ip || req.headers.get('x-forwarded-for') || 'unknown';
         console.warn(`Failed admin access attempt from ${ip}`);
         return NextResponse.json({ error: '⛔ Unauthorized: Invalid Key.' }, { status: 401 });

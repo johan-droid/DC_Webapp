@@ -16,8 +16,8 @@ export const supabase = createClient(
     supabaseAnonKey || 'placeholder'
 );
 
-// Server-side admin client
-export const supabaseAdmin = createClient(
-    supabaseUrl || 'https://placeholder.supabase.co',
-    supabaseServiceKey || 'placeholder'
-);
+// FIX: Server-side admin client
+// Only initialize this if we are on the server to avoid leaking secrets or errors on client
+export const supabaseAdmin = (typeof window === 'undefined' && supabaseServiceKey)
+    ? createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseServiceKey)
+    : ({} as any); // Fallback to empty object on client
