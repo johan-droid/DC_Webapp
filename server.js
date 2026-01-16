@@ -152,9 +152,9 @@ app.post('/api/cases', authenticateAdmin, async (req, res) => {
     res.status(201).json({ message: 'Case filed!', case: data[0] });
 });
 
-// Serve index.html for any other route (SPA support)
+// Serve admin.html for any other route (fallback)
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+    res.sendFile(path.join(__dirname, 'public/admin.html'));
 });
 
 // Global Error Handler
