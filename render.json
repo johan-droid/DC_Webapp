@@ -1,0 +1,15 @@
+{
+  "services": {
+    "web": {
+      "type": "web",
+      "name": "detective-conan-api",
+      "runtime": "node",
+      "plan": "free",
+      "rootDir": ".",
+      "buildCommand": "npm install",
+      "startCommand": "npm start",
+      "healthCheckPath": "/api/health",
+      "autoDeploy": true
+    }
+  }
+}

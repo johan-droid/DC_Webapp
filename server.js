@@ -38,9 +38,9 @@ app.use(cors({
 const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
 app.use('/api/', limiter);
 
-// --- FIX: SERVE FRONTEND CORRECTLY ---
-// Since server.js is in /backend, we need to go up one level to find /frontend
-app.use(express.static(path.join(__dirname, '../frontend')));
+// --- FIX: SERVE STATIC FILES CORRECTLY ---
+// Serve admin panel and static files from public folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 // --- 3. AUTHENTICATION ---
 const authenticateAdmin = (req, res, next) => {
