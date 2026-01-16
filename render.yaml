@@ -5,6 +5,6 @@ services:
     plan: free
     rootDir: .
     buildCommand: "npm install"
-    startCommand: "npm start"
+    startCommand: "node server.js"
     healthCheckPath: /api/health
     autoDeploy: true
