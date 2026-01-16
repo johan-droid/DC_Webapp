@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investigations | Detective Conan</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; 
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
+        font-src 'self' https://fonts.gstatic.com; 
+        img-src 'self' data: https://image.tmdb.org https://m.media-amazon.com https://c4.wallpaperflare.com https://static.wikia.nocookie.net https://i.imgur.com https://www.detectiveconanworld.com; 
+        script-src 'self' 'unsafe-inline'; 
+        connect-src 'self' https://*.supabase.co;">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <h1 class="logo">DC.</h1>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="characters.html">Characters</a></li>
+                <li><a href="updates.html" class="active">Investigations</a></li>
+                <li><a href="news.html">News & Gossip</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="character-header animate-on-scroll">
+            <h1>Case Files</h1>
+            <p>Access the latest reports on criminal activities and special operations.</p>
+        </header>
+
+        <div class="filter-controls animate-on-scroll"
+            style="margin-bottom: 3rem; text-align: center; display:flex; justify-content:center; gap: 15px; flex-wrap:wrap;">
+            <button class="btn filter-btn active" onclick="filterEpisodes('all')">All Files</button>
+            <button class="btn filter-btn" onclick="filterEpisodes('canon')">Canon Only</button>
+            <button class="btn filter-btn" onclick="filterEpisodes('movie')">Movies</button>
+        </div>
+
+        <div class="card-grid" id="case-feed">
+            <p style="text-align:center; width:100%; color:#aaa;">Accessing database...</p>
+        </div>
+
+        <div class="disclaimer-section">
+            <p>Classified Information. For Detective Use Only.</p>
+        </div>
+    </div>
+
+    <script src="js/api-config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Simple script to handle the active class on buttons
+        function filterEpisodes(type) {
+            const cards = document.querySelectorAll('.card');
+            const btns = document.querySelectorAll('.filter-btn');
+
+            // Update buttons
+            btns.forEach(btn => { btn.classList.remove('active'); });
+            event.target.classList.add('active');
+
+            // Filter logic
+            cards.forEach(card => {
+                if (type === 'all' || card.dataset.type === type) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
