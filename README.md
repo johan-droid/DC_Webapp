@@ -26,13 +26,31 @@ Frontend (Static) ←→ Backend API (Separate Repository)
 - Ready for static hosting
 - Remote API integration
 
+### Backend Deployment (Separate Repository)
+
+The backend is deployed separately with:
+- Admin panel for content management
+- API endpoints for data
+- Database integration
+- Authentication system
+
+**Backend Repository**: [detective-conan-backend](https://github.com/johan-droid/detective-conan-backend)
+
+See [DEPLOYMENT_SEPARATED.md](./DEPLOYMENT_SEPARATED.md) for detailed backend deployment instructions.
+
+### Frontend Features
+- Pure HTML, CSS, JavaScript
+- No server dependencies
+- Ready for static hosting
+- Remote API integration
+
 ### Backend Features
 - Node.js/Express API
 - Admin panel for content management
 - Supabase database integration
 - Authentication and security
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 detective-conan-website/
