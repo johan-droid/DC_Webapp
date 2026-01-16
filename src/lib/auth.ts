@@ -20,7 +20,8 @@ export function authenticateAdmin(req: NextRequest): NextResponse | null {
     if (crypto.timingSafeEqual(bufferKey, bufferSecret)) {
         return null; // Auth success
     } else {
-        console.warn(`Failed admin access attempt from ${req.ip}`);
+        const ip = (req as any).ip || req.headers.get('x-forwarded-for') || 'unknown';
+        console.warn(`Failed admin access attempt from ${ip}`);
         return NextResponse.json({ error: '⛔ Unauthorized: Invalid Key.' }, { status: 401 });
     }
 }
