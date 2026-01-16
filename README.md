@@ -1,22 +1,16 @@
-# Detective Conan Website
+# 🔍 Detective Conan Website
 
-A modern, responsive fan website for Detective Conan (Case Closed) featuring character information, news, case updates, and an admin panel.
+A modern, responsive fan website for Detective Conan (Case Closed) anime and manga series.
 
-## 🏗️ Project Structure
+## � Features
 
-```
-detective-conan-website/
-├── backend/                 # Node.js/Express API server
-│   ├── models/             # MongoDB data models
-│   │   ├── News.js
-│   │   └── Case.js
-│   ├── routes/             # API endpoints
-│   │   ├── admin.js
-│   │   ├── cases.js
-│   │   └── news.js
-│   ├── public/             # Admin panel static files
-│   │   └── admin.html
-│   ├── data/              # Database files
+- **Responsive Design**: Works perfectly on desktop, tablet, and mobile
+- **Dark Theme**: Mysterious dark interface with red accents
+- **Character Profiles**: Interactive character grid with APTX-4869 toggle
+- **News & Updates**: Dynamic content from remote API
+- **Case Files**: Browse episodes, movies, and special investigations
+- **Interactive Quiz**: Test your Detective Conan knowledge
+- **Smooth Animations**: Scroll-triggered animations and transitions
 
 ## 🏗️ Architecture
 
@@ -38,70 +32,171 @@ Frontend (Static) ←→ Backend API (Separate Repository)
 - Supabase database integration
 - Authentication and security
 
-## 🚀 Quick Start
+## 📁 Project Structure
 
-### Local Development
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/johan-droid/DC_Webapp.git
-   cd DC_Webapp
-   ```
-
-2. **Start local server**:
-   ```bash
-   npm start
-   # or
-   npm run dev
-   ```
-
-3. **Open in browser**:
-   ```
-   http://localhost:3000
-   ```
-
-### API Configuration
-
-The frontend connects to a remote backend API. Configure the backend URL in `frontend/js/api-config.js`:
-
-```javascript
-const API_CONFIG = {
-    BASE_URL: 'https://your-backend-api.com',
-    LOCAL_URL: 'http://localhost:3001'
-};
+```
+detective-conan-website/
+├── frontend/
+│   ├── css/
+│   │   └── style.css          # Main stylesheet
+│   ├── js/
+│   │   ├── api-config.js       # API configuration
+│   │   ├── main.js           # Main functionality
+│   │   └── api.js            # API helpers
+│   ├── assets/               # Images and assets
+│   │   ├── conan-mystery-hero.png
+│   │   ├── gin-villain.png
+│   │   └── hero-bg.png
+│   ├── index.html           # Homepage
+│   ├── characters.html       # Character profiles
+│   ├── news.html           # News & updates
+│   └── updates.html        # Case files
+├── package.json            # Frontend configuration
+├── README.md              # This file
+├── ADMIN_GUIDE.md         # Admin panel guide
+├── DEPLOYMENT.md          # Original deployment guide
+└── DEPLOYMENT_SEPARATED.md # Separated deployment guide
 ```
 
-## 🌐 Deployment
+## 🎨 Features Overview
 
-### Frontend Deployment (This Repository)
+### 🎭 Character System
+- Interactive character grid
+- APTX-4869 pill toggle (Normal ↔ Black Organization)
+- Smooth hover animations
+- Image fallback system
+- Mobile-responsive layout
 
-Deploy to any static hosting service:
+### 📰 Content Management
+- News articles from remote API
+- Case files and episodes
+- Category filtering
+- Search functionality
+- Pagination support
 
-#### Netlify (Recommended)
-1. Push to GitHub
-2. Connect to Netlify
-3. Set build command: `echo "No build required"`
-4. Set publish directory: `frontend`
-5. Add environment variable: `API_BASE_URL`
+### 🎯 User Experience
+- Smooth scroll animations
+- Mobile hamburger menu
+- Glassmorphism effects
+- Responsive typography
+- Touch-friendly interface
 
-#### Vercel
-1. Import to Vercel
-2. Set root directory: `frontend`
-3. Deploy automatically
+### 🔐 Security
+- Content Security Policy
+- HTTPS ready
+- No sensitive data in frontend
+- API key protection
 
-#### GitHub Pages
-1. Push to `gh-pages` branch
-2. Enable GitHub Pages in settings
+## 🛠️ Technologies Used
 
-### Backend Deployment (Separate Repository)
+### Frontend
+- **HTML5**: Semantic markup
+- **CSS3**: Modern styling with animations
+- **JavaScript ES6+**: Modern JavaScript features
+- **Responsive Design**: Mobile-first approach
 
-The backend is deployed separately with:
-- Admin panel for content management
-- API endpoints for data
-- Database integration
-- Authentication system
+### Backend (Separate)
+- **Node.js**: Runtime environment
+- **Express.js**: Web framework
+- **Supabase**: Database and authentication
+- **Helmet**: Security headers
 
-See [DEPLOYMENT_SEPARATED.md](./DEPLOYMENT_SEPARATED.md) for detailed backend deployment instructions.
+## 🎮 Interactive Elements
+
+### APTX-4869 Toggle
+Click the red/white pill in the bottom-right corner to switch between:
+- **Normal Mode**: Main character profiles
+- **Black Organization Mode**: Villain profiles and dark theme
+
+### Detective Quiz
+Test your knowledge with interactive questions about:
+- Character relationships
+- Plot points
+- Mystery elements
+- Series trivia
+
+### Dynamic Content
+- Real-time news updates
+- Episode database
+- Character information
+- Image galleries
+
+## 📱 Mobile Optimization
+
+- Touch-friendly navigation
+- Responsive character grid
+- Optimized animations
+- Fast loading times
+- Progressive enhancement
+
+## 🔧 Customization
+
+### Theme Colors
+Easily customize the theme by modifying CSS variables:
+
+```css
+:root {
+    --bg-primary: #0a0e17;
+    --accent-red: #e63946;
+    --text-primary: #f1faee;
+    /* ... */
+}
+```
+
+### API Endpoints
+Configure backend endpoints in `api-config.js`:
+
+```javascript
+ENDPOINTS: {
+    NEWS: '/api/news',
+    CASES: '/api/cases'
+}
+```
+
+## 🚨 Important Notes
+
+### Admin Access
+- Admin panel is **backend-only**
+- Access via separate backend URL
+- Protected by admin key
+- Not linked from frontend
+
+### Content Sources
+- All character data from API
+- Images from CDN or backend
+- No hardcoded content
+- Real-time updates
+
+### Performance
+- Optimized for fast loading
+- Minimal dependencies
+- Efficient animations
+- CDN-ready assets
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit pull request
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🙏 Acknowledgments
+
+- Detective Conan series by Gosho Aoyama
+- Character information from Detective Conan World
+- Icons and assets from various sources
+- Community contributions and feedback
+
+---
+
+**🔥 "When you have eliminated the impossible, whatever remains, however improbable, must be the truth."**
+
+Visit the live site and explore the world of Detective Conan!
 
 ## 📡 API Endpoints
 
