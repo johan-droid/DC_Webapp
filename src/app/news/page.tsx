@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/supabase';
 // REMOVED: import Image from 'next/image'; 
 // REASON: Using standard img tag prevents crashes when Admin adds images from unconfigured domains.
 

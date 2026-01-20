@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/supabase';
 import CharacterList from '@/components/CharacterList';
 
 export const revalidate = 3600; // Revalidate every hour
