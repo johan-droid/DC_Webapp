@@ -1,137 +1,303 @@
 "use client";
 import Link from "next/link";
-import { motion, Variants } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 export default function Home() {
-  const fadeInUp: Variants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+  
+  const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.8]);
+  
+  // Stagger animation variants (Performance: reduce calculations)
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
   };
 
   return (
     <main>
-      <header className="hero">
+      {/* Hero Section with Parallax */}
+      <motion.header 
+        ref={heroRef}
+        className="hero"
+        style={{ opacity: heroOpacity }}
+      >
         <div className="container hero-content">
-          <h1 className="mystery-reveal">ONE TRUTH PREVAILS</h1>
-          <motion.p
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeInUp}
+          <motion.div
+            style={{ scale: heroScale }}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            "When you have eliminated the impossible, whatever remains, however improbable,
-            must be the truth."
-          </motion.p>
-          <Link href="/investigations" className="btn animate-on-scroll">
-            View Case Files
-          </Link>
+            <h1 className="mystery-reveal">ONE TRUTH PREVAILS</h1>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+            >
+              "When you have eliminated the impossible, whatever remains, however improbable,
+              must be the truth."
+            </motion.p>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+            >
+              <Link href="/investigations" className="btn">
+                View Case Files
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 1L15 8L8 15M15 8H1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+            </motion.div>
+          </motion.div>
         </div>
-      </header>
+      </motion.header>
 
       {/* Welcome Section */}
-      <section className="welcome-section" id="welcome">
+      <section className="section" id="welcome" style={{ background: 'rgba(0,0,0,0.3)' }}>
         <div className="container">
           <motion.div
             className="welcome-content"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeInUp}
+            viewport={{ once: true, margin: "-100px" }}
+            variants={containerVariants}
           >
-            <h2 className="welcome-title">Welcome to the World of Detective Conan</h2>
-            <p className="welcome-subtitle">Step into the shoes of a high school detective turned child sleuth</p>
-            <div className="welcome-divider"></div>
+            <motion.h2 
+              className="text-gradient" 
+              style={{ fontSize: 'var(--text-3xl)', textAlign: 'center', marginBottom: 'var(--space-md)' }}
+              variants={itemVariants}
+            >
+              Welcome to the World of Detective Conan
+            </motion.h2>
+            
+            <motion.p 
+              style={{ 
+                textAlign: 'center', 
+                fontSize: 'var(--text-lg)', 
+                fontStyle: 'italic',
+                maxWidth: '700px',
+                margin: '0 auto',
+                opacity: 0.9
+              }}
+              variants={itemVariants}
+            >
+              Step into the shoes of a high school detective turned child sleuth
+            </motion.p>
+            
+            <motion.div 
+              style={{
+                width: '120px',
+                height: '3px',
+                background: 'var(--gradient-evidence)',
+                margin: 'var(--space-xl) auto'
+              }}
+              variants={itemVariants}
+            />
           </motion.div>
         </div>
       </section>
 
-      {/* About Section */}
-      <section className="about-section" id="about">
+      {/* About Section - Refined Layout */}
+      <section className="section" id="about">
         <div className="container">
           <motion.article
-            className="about-article"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeInUp}
+            viewport={{ once: true, margin: "-100px" }}
+            variants={containerVariants}
+            style={{
+              maxWidth: '1000px',
+              margin: '0 auto',
+              background: 'var(--glass-bg)',
+              backdropFilter: 'var(--glass-blur)',
+              borderRadius: 'var(--radius-lg)',
+              padding: 'var(--space-2xl)',
+              border: '1px solid var(--glass-border)',
+              boxShadow: 'var(--shadow-xl)'
+            }}
           >
-            <h2 className="article-title">About Detective Conan</h2>
+            <motion.h2 
+              variants={itemVariants}
+              style={{ 
+                textAlign: 'center', 
+                marginBottom: 'var(--space-xl)',
+                fontSize: 'var(--text-2xl)'
+              }}
+            >
+              About Detective Conan
+            </motion.h2>
 
-            <div className="article-content">
-              <p className="article-intro">
-                <strong>Detective Conan</strong> (名探偵コナン, Meitantei Konan), also known as <strong>Case
-                  Closed</strong> in English-speaking countries,
+            <motion.div variants={itemVariants}>
+              <p style={{ 
+                fontSize: 'var(--text-lg)', 
+                textAlign: 'center',
+                padding: 'var(--space-lg)',
+                background: 'rgba(211, 47, 47, 0.1)',
+                borderLeft: '4px solid var(--detective-red)',
+                borderRadius: 'var(--radius-sm)',
+                marginBottom: 'var(--space-xl)'
+              }}>
+                <strong>Detective Conan</strong> (名探偵コナン), also known as <strong>Case Closed</strong>,
                 is a Japanese detective manga series written and illustrated by Gosho Aoyama.
               </p>
+            </motion.div>
 
-              <h3 className="article-heading">The Story Begins</h3>
-              <p className="article-text">
+            <motion.div variants={itemVariants}>
+              <h3 style={{ 
+                fontSize: 'var(--text-xl)', 
+                color: 'var(--detective-red)',
+                marginBottom: 'var(--space-md)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--space-sm)'
+              }}>
+                <span style={{ 
+                  width: '4px', 
+                  height: '24px', 
+                  background: 'var(--detective-red)',
+                  borderRadius: '2px'
+                }} />
+                The Story Begins
+              </h3>
+              <p style={{ lineHeight: '1.8', marginBottom: 'var(--space-xl)' }}>
                 <strong>Shinichi Kudo</strong> is a brilliant high school detective who frequently assists the
-                police in solving complex cases.
-                During an investigation, he is ambushed by members of a crime syndicate known as the
-                <strong>Black Organization</strong>.
-                They force-feed him an experimental poison intended to kill him, but instead of causing death,
-                the drug mysteriously shrinks his body to that of a six-year-old child.
+                police in solving complex cases. During an investigation, he is ambushed by members of a crime 
+                syndicate known as the <strong>Black Organization</strong>. They force-feed him an experimental 
+                poison intended to kill him, but instead of causing death, the drug mysteriously shrinks his body 
+                to that of a six-year-old child.
               </p>
+            </motion.div>
 
-              <h3 className="article-heading">The Detective Method</h3>
-              <p className="article-text">
+            <motion.div variants={itemVariants}>
+              <h3 style={{ 
+                fontSize: 'var(--text-xl)', 
+                color: 'var(--detective-red)',
+                marginBottom: 'var(--space-md)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--space-sm)'
+              }}>
+                <span style={{ 
+                  width: '4px', 
+                  height: '24px', 
+                  background: 'var(--detective-red)',
+                  borderRadius: '2px'
+                }} />
+                The Detective Method
+              </h3>
+              <p style={{ lineHeight: '1.8' }}>
                 Conan's unique approach involves using Dr. Agasa's special tranquilizer watch to sedate Kogoro
                 Mouri, then employing a voice-changing bowtie to present his deductions.
               </p>
-            </div>
+            </motion.div>
           </motion.article>
         </div>
       </section>
 
-      <section className="section" style={{ textAlign: 'center', background: 'rgba(0,0,0,0.2)' }}>
+      {/* Investigations CTA Section */}
+      <section className="section" style={{ 
+        background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, transparent 100%)',
+        textAlign: 'center' 
+      }}>
         <div className="container">
-          <motion.h2
+          <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            variants={fadeInUp}
+            variants={containerVariants}
           >
-            Latest Investigations
-          </motion.h2>
-          <motion.p
-            style={{ maxWidth: '600px', margin: '0 auto 2rem auto' }}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeInUp}
-          >
-            Explore the complete database of canon episodes, movies, and special cases. The truth is hidden in the files.
-          </motion.p>
-          <Link href="/investigations" className="btn">
-            Open Case Database
-          </Link>
+            <motion.h2 variants={itemVariants} style={{ marginBottom: 'var(--space-md)' }}>
+              Latest Investigations
+            </motion.h2>
+            
+            <motion.p 
+              variants={itemVariants}
+              style={{ 
+                maxWidth: '650px', 
+                margin: '0 auto var(--space-xl) auto',
+                fontSize: 'var(--text-lg)',
+                opacity: 0.9
+              }}
+            >
+              Explore the complete database of canon episodes, movies, and special cases. 
+              The truth is hidden in the files.
+            </motion.p>
+            
+            <motion.div variants={itemVariants}>
+              <Link href="/investigations" className="btn">
+                Open Case Database
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Characters Teaser */}
       <section className="section character-section" id="characters">
-        <div className="container" style={{ textAlign: 'center' }}>
-          <motion.h2
+        <div className="container">
+          <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            variants={fadeInUp}
+            variants={containerVariants}
+            style={{ textAlign: 'center' }}
           >
-            Key Characters
-          </motion.h2>
-          <motion.p
-            style={{ marginBottom: '2rem' }}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeInUp}
-          >
-            Meet the detectives, friends, and foes of the Detective Conan universe.
-          </motion.p>
-          <Link href="/characters" className="btn">
-            View All Characters
-          </Link>
+            <motion.h2 variants={itemVariants} style={{ marginBottom: 'var(--space-md)' }}>
+              Key Characters
+            </motion.h2>
+            
+            <motion.p 
+              variants={itemVariants}
+              style={{ 
+                marginBottom: 'var(--space-xl)',
+                fontSize: 'var(--text-lg)',
+                maxWidth: '700px',
+                margin: '0 auto var(--space-xl) auto',
+                opacity: 0.9
+              }}
+            >
+              Meet the detectives, friends, and foes of the Detective Conan universe.
+            </motion.p>
+            
+            <motion.div variants={itemVariants}>
+              <Link href="/characters" className="btn">
+                View All Characters
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 1L15 8L8 15M15 8H1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
     </main>
