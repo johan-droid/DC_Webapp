@@ -68,7 +68,7 @@ export default function Navbar() {
             x: "-100%",
             transition: {
                 duration: 0.3,
-                ease: [0.87, 0, 0.13, 1]
+                ease: "easeOut" as const
             }
         },
         open: {
@@ -76,7 +76,7 @@ export default function Navbar() {
             x: 0,
             transition: {
                 duration: 0.4,
-                ease: [0.25, 0.46, 0.45, 0.94],
+                ease: "easeOut" as const,
                 staggerChildren: 0.1,
                 delayChildren: 0.2
             }
@@ -90,7 +90,7 @@ export default function Navbar() {
             x: 0,
             transition: {
                 duration: 0.5,
-                ease: [0.25, 0.46, 0.45, 0.94]
+                ease: "easeOut" as const
             }
         }
     };
