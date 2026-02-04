@@ -34,6 +34,8 @@ yarn-error.log*
 # env files - Ignore all env files by default, except example
 .env*
 !.env.example
+.env.production
+.env.local
 
 # vercel
 .vercel

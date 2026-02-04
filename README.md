@@ -1,77 +1,51 @@
-# 🔍 Detective Conan Web (Next.js Edition)
+# Detective Conan Webapp
 
-Welcome to the **"Enterprise-Grade"** fan site for Detective Conan! 🕵️‍♂️✨
-Now rewritten in **Next.js 15**, **TypeScript**, and **Supabase**.
+The official Detective Conan case files and news database.
 
-## 🚀 The New Tech Stack
+## 🚀 Deployment
 
-We moved from old HTML/JS to a modern 2026 stack. Here is what's under the hood:
+### Prerequisites to Deploy
+- **Supabase Account**: You need a Supabase project for the database.
+- **Vercel/Heroku/Render Account**: For hosting the web app.
 
-*   **⚡ Framework**: [Next.js 15](https://nextjs.org/) (App Router) - Fast, SEO-ready, and powerful.
-*   **📘 Language**: [TypeScript](https://www.typescriptlang.org/) - Strict type safety (no more random crashes!).
-*   **🎨 Styling**: CSS Modules + Global Premium Styles (Ported from legacy design).
-*   **🗄️ Database**: [Supabase](https://supabase.com/) (PostgreSQL) - Real-time data for News & Cases.
-*   **🎭 Animations**: [Framer Motion](https://www.framer.com/motion/) - Smooth, cinematic entrances.
-*   **🛡️ Security**: Secured API Routes with Admin Keys & Rate Limiting.
+### 1. Database Setup (Supabase)
+1.  Create a new Supabase project.
+2.  Go to the **SQL Editor** in your Supabase dashboard.
+3.  Copy the contents of `schema.sql` from this repository and run it.
+    - This will create the necessary tables (`news`, `cases`, `characters`) and Policies.
 
----
+### 2. Environment Variables
+You need to set the following environment variables in your deployment platform:
+
+| Variable | Description |
+|----------|-------------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase Project URL (Settings -> API) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase Anon Key (Settings -> API) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Your Supabase Service Role Key (Settings -> API) |
+| `ADMIN_SECRET` | A strong password for the admin panel (min 16 chars) |
+| `NEXT_PUBLIC_SITE_URL` | Your deployed site URL (e.g., `https://your-app.vercel.app`) |
+
+### 3. Deploying
+#### Vercel (Recommended)
+1.  Import this repository into Vercel.
+2.  Vercel will automatically detect Next.js.
+3.  Add the environment variables listed above.
+4.  Click **Deploy**.
+
+#### Heroku
+1.  Create a new app on Heroku.
+2.  Connect your GitHub repository.
+3.  Go to **Settings** -> **Reveal Config Vars** and add the environment variables.
+4.  Deploy the branch.
+
+### 4. Verification
+After deployment, visit `/api/health` to check the connection status.
+
+## 🛡️ Security Note
+-   Never commit `.env.local` or `.env.production` files.
+-   The `ADMIN_SECRET` should be kept secure.
 
 ## 📂 Project Structure
-
-It's clean and easy to understand:
-
-```plaintext
-src/
- ├── app/                  # Main Pages (Home, News, Cases)
- │   ├── api/              # Backend API (Serverless Functions)
- │   ├── characters/       # Character Profiles Page
- │   ├── investigations/   # Case Files Page
- │   └── globals.css       # The "Premium" Dark Theme
- ├── components/           # Reusable UI (Navbar, Footer, etc.)
- ├── lib/                  # Helpers (Supabase Client, Auth)
- └── data/                 # Static Data (Character lists)
-```
-
----
-
-## 🛠️ How to Run locally
-
-**1. Clone the repo:**
-```bash
-git clone https://github.com/johan-droid/DC_Webapp.git
-cd DC_Webapp
-```
-
-**2. Install dependencies:**
-```bash
-npm install
-```
-
-**3. Set up secrets:**
-Create a `.env.local` file with your keys:
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key (for Admin API)
-ADMIN_SECRET=your-super-secret-password
-```
-
-**4. Lift off! 🚀**
-```bash
-npm run dev
-```
-Open **[http://localhost:3000](http://localhost:3000)** and enjoy.
-
----
-
-## ✨ Features
-
-*   **🕵️ One Truth Prevails**: A stunning hero section with cinematic reveal.
-*   **📱 Mobile Ready**: Smooth hamburger menu and responsive grid.
-*   **📡 Live Data**: News and Case files fetched directly from Supabase.
-*   **🔐 Admin Terminal**: A hidden `/admin` dashboard to post updates (protected!).
-
-> *"When you have eliminated the impossible, whatever remains, however improbable, must be the truth."* - Sherlock Holmes
-
----
-*Maintained by the Detective Boys 🔎*
+-   `src/`: Source code
+-   `schema.sql`: Database schema definition
+-   `public/`: Static assets
