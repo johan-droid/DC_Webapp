@@ -3,7 +3,7 @@
 # dependencies
 /node_modules
 /.pnp
-.pnp.*
+.pnp.js
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
@@ -31,14 +31,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files
+# env files - Ignore all env files by default, except example
 .env*
 !.env.example
-!.env.production
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
 # vercel
 .vercel
@@ -55,7 +50,6 @@ next-env.d.ts
 *~
 
 # OS
-.DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
@@ -66,9 +60,6 @@ desktop.ini
 # Logs
 logs/
 *.log
-
-# Legacy
-legacy_v1/
 
 # Security
 *.key
