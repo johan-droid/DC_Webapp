@@ -1,36 +1,85 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
-import { supabaseAdmin } from '@/lib/supabase-admin';
-import { authenticateAdmin } from '@/lib/auth';
-import { NewsSchema } from '@/lib/validators';
-import { revalidatePath } from 'next/cache';
+import { createClient } from '@supabase/supabase-js';
+import { verifyAdmin } from '@/lib/auth';
 
-export const dynamic = 'force-dynamic';
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
-export async function GET() {
-    const { data, error } = await supabase.from('news').select('*').order('created_at', { ascending: false });
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json(data);
+const requestCounts = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT = 10;
+const RATE_WINDOW = 60000;
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const record = requestCounts.get(ip);
+  
+  if (!record || now > record.resetTime) {
+    requestCounts.set(ip, { count: 1, resetTime: now + RATE_WINDOW });
+    return true;
+  }
+  
+  if (record.count >= RATE_LIMIT) return false;
+  
+  record.count++;
+  return true;
 }
 
-export async function POST(req: NextRequest) {
-    const authError = authenticateAdmin(req);
-    if (authError) return authError;
+export async function GET(request: NextRequest) {
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+  
+  if (!checkRateLimit(ip)) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
 
-    try {
-        const body = await req.json();
-        // Zod Validation
-        const validatedData = NewsSchema.parse(body);
+  try {
+    const { data, error } = await supabase
+      .from('news')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(50);
 
-        const { data, error } = await supabaseAdmin.from('news').insert([validatedData]).select();
+    if (error) throw error;
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to fetch news' }, { status: 500 });
+  }
+}
 
-        if (error) throw new Error(error.message);
+export async function POST(request: NextRequest) {
+  if (!verifyAdmin(request)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
-        revalidatePath('/news');
-        return NextResponse.json({ message: 'News published!', article: data[0] }, { status: 201 });
-    } catch (error: any) {
-        // Handle Zod or DB errors
-        const msg = error.issues ? error.issues[0].message : error.message;
-        return NextResponse.json({ error: msg }, { status: 400 });
+  try {
+    const body = await request.json();
+    const { title, content, image_url } = body;
+
+    if (!title || !content || typeof title !== 'string' || typeof content !== 'string') {
+      return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
     }
+
+    if (title.length > 255 || content.length > 10000) {
+      return NextResponse.json({ error: 'Content too long' }, { status: 400 });
+    }
+
+    const sanitizedTitle = title.trim().substring(0, 255);
+    const sanitizedContent = content.trim().substring(0, 10000);
+
+    const { data, error } = await supabase
+      .from('news')
+      .insert([{
+        title: sanitizedTitle,
+        content: sanitizedContent,
+        image_url: image_url || null,
+        created_at: new Date().toISOString()
+      }])
+      .select();
+
+    if (error) throw error;
+    return NextResponse.json(data[0]);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to create news' }, { status: 500 });
+  }
 }

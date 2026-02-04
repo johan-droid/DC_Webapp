@@ -1,169 +1,327 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
-// Types for your forms
-type NewsForm = { title: string; category: string; image: string; content: string };
-type CaseForm = { title: string; type: string; image: string; description: string };
-type CharForm = { name: string; description: string; image: string; faction: string };
-
-export default function AdminPage() {
-    const [activeTab, setActiveTab] = useState<'news' | 'case' | 'character'>('news');
-    const [apiKey, setApiKey] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-
-    // Initial States
-    const initNews = { title: '', category: 'Fan Theory', image: '', content: '' };
-    const initCase = { title: '', type: 'canon', image: '', description: '' };
-    const initChar = { name: '', description: '', image: '', faction: 'main' };
-
-    const [newsForm, setNewsForm] = useState<NewsForm>(initNews);
-    const [caseForm, setCaseForm] = useState<CaseForm>(initCase);
-    const [charForm, setCharForm] = useState<CharForm>(initChar);
-
-    const handleSubmit = async (endpoint: string, data: any, resetFn: () => void) => {
-        if (!apiKey) return setMessage({ type: 'error', text: 'Please enter the Admin Key' });
-        setIsLoading(true);
-        setMessage(null);
-
-        try {
-            const res = await fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-admin-key': apiKey },
-                body: JSON.stringify(data)
-            });
-            const resData = await res.json();
-
-            if (res.ok) {
-                setMessage({ type: 'success', text: resData.message || 'Success' });
-                resetFn();
-            } else {
-                setMessage({ type: 'error', text: resData.error || 'Operation failed' });
-            }
-        } catch (err) {
-            setMessage({ type: 'error', text: 'Network connection failed' });
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    return (
-        <div className="admin-wrapper">
-            <div className="admin-card">
-                <h2 className="admin-title">Scriptwriter Terminal</h2>
-
-                {/* Status Message */}
-                {message && (
-                    <div className={`status-msg ${message.type}`}>
-                        {message.text}
-                    </div>
-                )}
-
-                {/* API Key Input */}
-                <div className="auth-section">
-                    <label>🔐 Admin Access Key</label>
-                    <input
-                        type="password"
-                        value={apiKey}
-                        onChange={(e) => setApiKey(e.target.value)}
-                        placeholder="Enter Secret Key"
-                        className="input-field"
-                    />
-                </div>
-
-                {/* Tabs */}
-                <div className="tabs">
-                    {[
-                        { id: 'news', label: 'News' },
-                        { id: 'case', label: 'Cases' },
-                        { id: 'character', label: 'Characters' }
-                    ].map(tab => (
-                        <button
-                            key={tab.id}
-                            className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
-                            onClick={() => setActiveTab(tab.id as any)}
-                        >
-                            {tab.label}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Forms Container */}
-                <div className="form-container">
-                    {activeTab === 'news' && (
-                        <form onSubmit={(e) => { e.preventDefault(); handleSubmit('/api/news', newsForm, () => setNewsForm(initNews)); }}>
-                            <FormGroup label="Headline">
-                                <input type="text" className="input-field" value={newsForm.title} onChange={e => setNewsForm({ ...newsForm, title: e.target.value })} required />
-                            </FormGroup>
-                            <FormGroup label="Category">
-                                <select className="input-field" value={newsForm.category} onChange={e => setNewsForm({ ...newsForm, category: e.target.value })}>
-                                    <option>Fan Theory</option>
-                                    <option>Merchandise</option>
-                                    <option>Interview</option>
-                                    <option>Breaking News</option>
-                                </select>
-                            </FormGroup>
-                            <FormGroup label="Content">
-                                <textarea className="input-field" rows={5} value={newsForm.content} onChange={e => setNewsForm({ ...newsForm, content: e.target.value })} required />
-                            </FormGroup>
-                            <SubmitBtn loading={isLoading} text="Publish News" />
-                        </form>
-                    )}
-
-                    {activeTab === 'case' && (
-                        <form onSubmit={(e) => { e.preventDefault(); handleSubmit('/api/cases', caseForm, () => setCaseForm(initCase)); }}>
-                            <FormGroup label="Case Title">
-                                <input type="text" className="input-field" value={caseForm.title} onChange={e => setCaseForm({ ...caseForm, title: e.target.value })} required />
-                            </FormGroup>
-                            <FormGroup label="Type">
-                                <select className="input-field" value={caseForm.type} onChange={e => setCaseForm({ ...caseForm, type: e.target.value })}>
-                                    <option value="canon">Manga Canon</option>
-                                    <option value="anime">Anime Original</option>
-                                    <option value="movie">Feature Film</option>
-                                </select>
-                            </FormGroup>
-                            <FormGroup label="Details">
-                                <textarea className="input-field" rows={5} value={caseForm.description} onChange={e => setCaseForm({ ...caseForm, description: e.target.value })} required />
-                            </FormGroup>
-                            <SubmitBtn loading={isLoading} text="File Case" />
-                        </form>
-                    )}
-
-                    {activeTab === 'character' && (
-                        <form onSubmit={(e) => { e.preventDefault(); handleSubmit('/api/characters', charForm, () => setCharForm(initChar)); }}>
-                            <FormGroup label="Name">
-                                <input type="text" className="input-field" value={charForm.name} onChange={e => setCharForm({ ...charForm, name: e.target.value })} required />
-                            </FormGroup>
-                            <FormGroup label="Faction">
-                                <select className="input-field" value={charForm.faction} onChange={e => setCharForm({ ...charForm, faction: e.target.value })}>
-                                    <option value="main">Protagonist/Ally</option>
-                                    <option value="black_organization">Black Organization</option>
-                                    <option value="police">Police</option>
-                                    <option value="fbi">FBI</option>
-                                </select>
-                            </FormGroup>
-                            <FormGroup label="Dossier">
-                                <textarea className="input-field" rows={5} value={charForm.description} onChange={e => setCharForm({ ...charForm, description: e.target.value })} required />
-                            </FormGroup>
-                            <SubmitBtn loading={isLoading} text="Add Character" />
-                        </form>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
+interface NewsItem {
+  id?: number;
+  title: string;
+  content: string;
+  image_url?: string;
+  created_at?: string;
 }
 
-// UI Components for cleaner code
-const FormGroup = ({ label, children }: { label: string, children: React.ReactNode }) => (
-    <div className="form-group">
-        <label className="form-label">{label}</label>
-        {children}
-    </div>
-);
+interface CaseItem {
+  id?: number;
+  title: string;
+  description: string;
+  episode_number?: number;
+  case_type: 'episode' | 'movie' | 'special';
+  created_at?: string;
+}
 
-const SubmitBtn = ({ loading, text }: { loading: boolean, text: string }) => (
-    <button type="submit" className="btn submit-btn" disabled={loading}>
-        {loading ? 'Processing...' : text}
-    </button>
-);
+export default function AdminPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [activeTab, setActiveTab] = useState<'news' | 'cases'>('news');
+  const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // News form state
+  const [newsForm, setNewsForm] = useState<NewsItem>({
+    title: '',
+    content: '',
+    image_url: ''
+  });
+
+  // Cases form state
+  const [caseForm, setCaseForm] = useState<CaseItem>({
+    title: '',
+    description: '',
+    episode_number: undefined,
+    case_type: 'episode'
+  });
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      const response = await fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setIsAuthenticated(true);
+        setStatus({ type: 'success', message: 'Access granted!' });
+        setPassword('');
+      } else {
+        setStatus({ type: 'error', message: data.error || 'Access denied' });
+        setPassword('');
+      }
+    } catch (error) {
+      setStatus({ type: 'error', message: 'Connection failed' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleNewsSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/news', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newsForm),
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus({ type: 'success', message: 'News published successfully!' });
+        setNewsForm({ title: '', content: '', image_url: '' });
+      } else {
+        setStatus({ type: 'error', message: data.error || 'Failed to publish' });
+      }
+    } catch (error) {
+      setStatus({ type: 'error', message: 'Network error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCaseSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/cases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(caseForm),
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus({ type: 'success', message: 'Case filed successfully!' });
+        setCaseForm({ title: '', description: '', episode_number: undefined, case_type: 'episode' });
+      } else {
+        setStatus({ type: 'error', message: data.error || 'Failed to file case' });
+      }
+    } catch (error) {
+      setStatus({ type: 'error', message: 'Network error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="admin-wrapper">
+        <motion.div 
+          className="admin-card"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="admin-title">🔍 Detective Access Terminal</h1>
+          
+          <form onSubmit={handleLogin} className="auth-section">
+            <label htmlFor="password">Security Clearance Required</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input-field"
+              placeholder="Enter admin password..."
+              required
+            />
+            <button 
+              type="submit" 
+              className="btn submit-btn"
+              disabled={loading}
+            >
+              {loading ? 'Authenticating...' : 'Access Terminal'}
+            </button>
+          </form>
+
+          {status && (
+            <div className={`status-msg ${status.type}`}>
+              {status.message}
+            </div>
+          )}
+        </motion.div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="admin-wrapper">
+      <motion.div 
+        className="admin-card"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-xl)' }}>
+          <h1 className="admin-title">🕵️ Content Management</h1>
+          <button 
+            onClick={() => setIsAuthenticated(false)}
+            className="btn"
+            style={{ padding: 'var(--space-sm) var(--space-md)', fontSize: 'var(--text-sm)' }}
+          >
+            Logout
+          </button>
+        </div>
+
+        <div className="tabs">
+          <button
+            className={`tab-btn ${activeTab === 'news' ? 'active' : ''}`}
+            onClick={() => setActiveTab('news')}
+          >
+            📰 News
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'cases' ? 'active' : ''}`}
+            onClick={() => setActiveTab('cases')}
+          >
+            📁 Cases
+          </button>
+        </div>
+
+        {status && (
+          <div className={`status-msg ${status.type}`}>
+            {status.message}
+          </div>
+        )}
+
+        {activeTab === 'news' && (
+          <motion.form 
+            onSubmit={handleNewsSubmit}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="form-group">
+              <label className="form-label">News Title</label>
+              <input
+                type="text"
+                value={newsForm.title}
+                onChange={(e) => setNewsForm({ ...newsForm, title: e.target.value })}
+                className="input-field"
+                placeholder="Breaking: New Detective Conan episode..."
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Content</label>
+              <textarea
+                value={newsForm.content}
+                onChange={(e) => setNewsForm({ ...newsForm, content: e.target.value })}
+                className="input-field"
+                rows={6}
+                placeholder="Write the news content here..."
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Image URL (Optional)</label>
+              <input
+                type="url"
+                value={newsForm.image_url}
+                onChange={(e) => setNewsForm({ ...newsForm, image_url: e.target.value })}
+                className="input-field"
+                placeholder="https://example.com/image.jpg"
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              className="btn submit-btn"
+              disabled={loading}
+            >
+              {loading ? 'Publishing...' : '📰 Publish News'}
+            </button>
+          </motion.form>
+        )}
+
+        {activeTab === 'cases' && (
+          <motion.form 
+            onSubmit={handleCaseSubmit}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="form-group">
+              <label className="form-label">Case Title</label>
+              <input
+                type="text"
+                value={caseForm.title}
+                onChange={(e) => setCaseForm({ ...caseForm, title: e.target.value })}
+                className="input-field"
+                placeholder="The Mysterious Murder Case"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Case Type</label>
+              <select
+                value={caseForm.case_type}
+                onChange={(e) => setCaseForm({ ...caseForm, case_type: e.target.value as 'episode' | 'movie' | 'special' })}
+                className="input-field"
+              >
+                <option value="episode">Episode</option>
+                <option value="movie">Movie</option>
+                <option value="special">Special</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Episode Number (Optional)</label>
+              <input
+                type="number"
+                value={caseForm.episode_number || ''}
+                onChange={(e) => setCaseForm({ ...caseForm, episode_number: e.target.value ? parseInt(e.target.value) : undefined })}
+                className="input-field"
+                placeholder="123"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Case Description</label>
+              <textarea
+                value={caseForm.description}
+                onChange={(e) => setCaseForm({ ...caseForm, description: e.target.value })}
+                className="input-field"
+                rows={6}
+                placeholder="Describe the case details..."
+                required
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              className="btn submit-btn"
+              disabled={loading}
+            >
+              {loading ? 'Filing...' : '📁 File Case'}
+            </button>
+          </motion.form>
+        )}
+      </motion.div>
+    </div>
+  );
+}

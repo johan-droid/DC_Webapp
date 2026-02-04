@@ -1,23 +1,43 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
-  title: "Detective Conan - The Truth Is Always One",
-  description: "The ultimate resource for Detective Conan investigations, news, and character files.",
-  keywords: ["Detective Conan", "Case Closed", "Manga", "Anime", "Mystery"],
+  title: "Detective Conan - One Truth Prevails",
+  description: "Official Detective Conan case files database. Explore mysteries, investigations, and the latest news from the world of Detective Conan.",
+  keywords: ["Detective Conan", "Case Closed", "Anime", "Mystery", "Investigation"],
+  authors: [{ name: "Detective Boys" }],
+  robots: {
+    index: true,
+    follow: true,
+    nocache: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://your-domain.com",
+    title: "Detective Conan - One Truth Prevails",
+    description: "Official Detective Conan case files database",
+    siteName: "Detective Conan Database",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Detective Conan - One Truth Prevails",
+    description: "Official Detective Conan case files database",
+  },
+  verification: {
+    google: "your-google-verification-code",
+  },
+  other: {
+    'revisit-after': '7 days',
+  },
 };
 
 export default function RootLayout({
@@ -27,10 +47,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <meta name="theme-color" content="#0d0d0d" />
+        <meta name="format-detection" content="telephone=no" />
+      </head>
+      <body>
         <Navbar />
         {children}
-        <Footer />
       </body>
     </html>
   );

@@ -1,33 +1,90 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
-import { supabaseAdmin } from '@/lib/supabase-admin';
-import { authenticateAdmin } from '@/lib/auth';
-import { CaseSchema } from '@/lib/validators';
-import { revalidatePath } from 'next/cache';
+import { createClient } from '@supabase/supabase-js';
+import { verifyAdmin } from '@/lib/auth';
 
-export const dynamic = 'force-dynamic';
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
-export async function GET() {
-    const { data, error } = await supabase.from('cases').select('*').order('created_at', { ascending: false });
-    if (error) return NextResponse.json({ error: 'Database error' }, { status: 500 });
-    return NextResponse.json(data);
+const requestCounts = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT = 10;
+const RATE_WINDOW = 60000;
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const record = requestCounts.get(ip);
+  
+  if (!record || now > record.resetTime) {
+    requestCounts.set(ip, { count: 1, resetTime: now + RATE_WINDOW });
+    return true;
+  }
+  
+  if (record.count >= RATE_LIMIT) return false;
+  
+  record.count++;
+  return true;
 }
 
-export async function POST(req: NextRequest) {
-    const authError = authenticateAdmin(req);
-    if (authError) return authError;
+export async function GET(request: NextRequest) {
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+  
+  if (!checkRateLimit(ip)) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
 
-    try {
-        const body = await req.json();
-        const validatedData = CaseSchema.parse(body);
+  try {
+    const { data, error } = await supabase
+      .from('cases')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(100);
 
-        const { data, error } = await supabaseAdmin.from('cases').insert([validatedData]).select();
-        if (error) throw new Error(error.message);
+    if (error) throw error;
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to fetch cases' }, { status: 500 });
+  }
+}
 
-        revalidatePath('/investigations');
-        return NextResponse.json({ message: 'Case filed!', case: data[0] }, { status: 201 });
-    } catch (error: any) {
-        const msg = error.issues ? error.issues[0].message : error.message;
-        return NextResponse.json({ error: msg }, { status: 400 });
+export async function POST(request: NextRequest) {
+  if (!verifyAdmin(request)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const body = await request.json();
+    const { title, description, episode_number, case_type } = body;
+
+    if (!title || !description || typeof title !== 'string' || typeof description !== 'string') {
+      return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
     }
+
+    if (!['episode', 'movie', 'special'].includes(case_type)) {
+      return NextResponse.json({ error: 'Invalid case type' }, { status: 400 });
+    }
+
+    if (title.length > 255 || description.length > 10000) {
+      return NextResponse.json({ error: 'Content too long' }, { status: 400 });
+    }
+
+    const sanitizedTitle = title.trim().substring(0, 255);
+    const sanitizedDescription = description.trim().substring(0, 10000);
+
+    const { data, error } = await supabase
+      .from('cases')
+      .insert([{
+        title: sanitizedTitle,
+        description: sanitizedDescription,
+        episode_number: episode_number || null,
+        case_type,
+        created_at: new Date().toISOString()
+      }])
+      .select();
+
+    if (error) throw error;
+    return NextResponse.json(data[0]);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to create case' }, { status: 500 });
+  }
 }

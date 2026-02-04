@@ -1,51 +1,140 @@
-import { supabase } from '@/lib/supabase';
-// REMOVED: import Image from 'next/image'; 
-// REASON: Using standard img tag prevents crashes when Admin adds images from unconfigured domains.
+"use client";
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
 
-// Server Component
-export default async function NewsPage() {
-    const { data: news, error } = await supabase
-        .from('news')
-        .select('*')
-        .order('created_at', { ascending: false });
+interface NewsItem {
+  id: number;
+  title: string;
+  content: string;
+  image_url?: string;
+  created_at: string;
+}
 
+export default function NewsPage() {
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchNews();
+  }, []);
+
+  const fetchNews = async () => {
+    try {
+      const response = await fetch('/api/news');
+      if (response.ok) {
+        const data = await response.json();
+        setNews(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch news:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  if (loading) {
     return (
-        <section className="section">
-            <div className="container">
-                <h1 style={{ marginBottom: '1rem', textAlign: 'center' }}>News & Gossip</h1>
-                <p style={{ textAlign: 'center', marginBottom: '3rem', color: 'var(--text-secondary)' }}>
-                    The latest whispers from Beika City.
-                </p>
-
-                <div className="card-grid">
-                    {(!news || news.length === 0) ? (
-                        <p style={{ textAlign: 'center', width: '100%', color: '#aaa' }}>
-                            {error ? '📡 Database Connection Error.' : 'No recent signals intercepted.'}
-                        </p>
-                    ) : (
-                        news.map((item: any) => (
-                            <article key={item.id} className="card">
-                                <div className="card-image" style={{ position: 'relative' }}>
-                                    {/* FIX: Use standard img to handle any external URL without crashing */}
-                                    <img
-                                        src={item.image || '/assets/hero-bg.png'}
-                                        alt={item.title || 'News Image'}
-                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                    />
-                                </div>
-                                <div className="card-content">
-                                    <span className="card-category">
-                                        {item.category} • {new Date(item.created_at).toLocaleDateString()}
-                                    </span>
-                                    <h3>{item.title}</h3>
-                                    <p>{item.content.substring(0, 100)}...</p>
-                                    <a href={item.link || '#'} className="read-more">Read Full Report →</a>
-                                </div>
-                            </article>
-                        ))
-                    )}
-                </div>
-            </div>
-        </section>
+      <div className="container" style={{ paddingTop: 'calc(var(--nav-height) + var(--space-2xl))' }}>
+        <div className="text-center">
+          <h1>Loading News...</h1>
+        </div>
+      </div>
     );
+  }
+
+  return (
+    <main>
+      <section className="section" style={{ paddingTop: 'calc(var(--nav-height) + var(--space-2xl))' }}>
+        <div className="container">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+          >
+            <motion.h1 
+              variants={itemVariants}
+              className="text-center"
+              style={{ marginBottom: 'var(--space-xl)' }}
+            >
+              📰 Detective Conan News
+            </motion.h1>
+
+            {news.length === 0 ? (
+              <motion.div 
+                variants={itemVariants}
+                className="text-center"
+                style={{ 
+                  padding: 'var(--space-2xl)',
+                  background: 'var(--glass-bg)',
+                  borderRadius: 'var(--radius-lg)',
+                  border: '1px solid var(--glass-border)'
+                }}
+              >
+                <p>No news available yet. Check back later!</p>
+              </motion.div>
+            ) : (
+              <div className="card-grid">
+                {news.map((item, index) => (
+                  <motion.article
+                    key={item.id}
+                    className="card"
+                    variants={itemVariants}
+                    custom={index}
+                  >
+                    {item.image_url && (
+                      <div className="card-image">
+                        <Image
+                          src={item.image_url}
+                          alt={item.title}
+                          fill
+                          style={{ objectFit: 'cover' }}
+                        />
+                      </div>
+                    )}
+                    
+                    <div className="card-content">
+                      <div className="card-category">News</div>
+                      <h3>{item.title}</h3>
+                      <p>{item.content}</p>
+                      <div style={{ 
+                        fontSize: 'var(--text-xs)', 
+                        opacity: 0.6,
+                        marginTop: 'var(--space-md)'
+                      }}>
+                        {new Date(item.created_at).toLocaleDateString()}
+                      </div>
+                    </div>
+                  </motion.article>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        </div>
+      </section>
+    </main>
+  );
 }
