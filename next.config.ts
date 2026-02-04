@@ -5,7 +5,6 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
   reactStrictMode: true,
-  swcMinify: true,
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'image.tmdb.org' },

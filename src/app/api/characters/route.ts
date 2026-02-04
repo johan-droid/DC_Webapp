@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { authenticateAdmin } from '@/lib/auth';
+import { verifyAdmin } from '@/lib/auth';
 import { CharacterSchema } from '@/lib/validators';
 
 export async function GET() {
@@ -11,8 +11,9 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-    const authError = authenticateAdmin(req);
-    if (authError) return authError;
+    if (!verifyAdmin(req)) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     try {
         const body = await req.json();
