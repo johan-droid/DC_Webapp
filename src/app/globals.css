@@ -862,6 +862,8 @@ footer p {
 @media (max-width: 768px) {
   :root {
     --nav-height: 70px;
+    --space-3xl: 4rem;
+    --space-2xl: 3rem;
   }
   
   .container {
@@ -885,6 +887,7 @@ footer p {
     gap: var(--space-2xl);
     transform: translateX(-100%);
     transition: transform var(--duration-base) var(--ease-expo);
+    z-index: 1000;
   }
   
   .nav-links.active {
@@ -895,18 +898,64 @@ footer p {
     font-size: var(--text-xl);
   }
   
+  .hero h1 {
+    font-size: clamp(2.5rem, 10vw, 4rem);
+  }
+  
   .card-grid {
     grid-template-columns: 1fr;
     gap: var(--space-lg);
   }
   
   .character-premium-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: var(--space-md);
   }
   
   .admin-card {
     padding: var(--space-lg);
+  }
+  
+  .tabs {
+    flex-wrap: wrap;
+  }
+  
+  .tab-btn {
+    flex: 1 1 45%;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --nav-height: 60px;
+  }
+  
+  .hero h1 {
+    font-size: clamp(2rem, 12vw, 3rem);
+  }
+  
+  .character-premium-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+  
+  .card-content {
+    padding: var(--space-md);
+  }
+}
+
+@media (min-width: 769px) {
+  .hamburger {
+    display: none !important;
+  }
+  
+  .nav-links {
+    display: flex !important;
+    position: static;
+    flex-direction: row;
+    background: transparent;
+    backdrop-filter: none;
+    transform: none;
   }
 }
 

@@ -12,8 +12,8 @@ export default function Navbar() {
     const [lastScrollY, setLastScrollY] = useState(0);
 
     const toggleMenu = () => setIsOpen(!isOpen);
+    const closeMenu = () => setIsOpen(false);
 
-    // Performance: Optimized scroll handler with throttling
     useEffect(() => {
         let ticking = false;
         
@@ -21,11 +21,8 @@ export default function Navbar() {
             if (!ticking) {
                 window.requestAnimationFrame(() => {
                     const currentScrollY = window.scrollY;
-                    
-                    // Add background when scrolled
                     setScrolled(currentScrollY > 50);
                     
-                    // Hide navbar on scroll down, show on scroll up
                     if (currentScrollY > lastScrollY && currentScrollY > 100) {
                         setHidden(true);
                     } else {
@@ -35,7 +32,6 @@ export default function Navbar() {
                     setLastScrollY(currentScrollY);
                     ticking = false;
                 });
-                
                 ticking = true;
             }
         };
@@ -44,7 +40,6 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [lastScrollY]);
 
-    // Lock body scroll when menu is open
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
@@ -61,7 +56,6 @@ export default function Navbar() {
         { href: '/news', label: 'News' },
     ];
 
-    // Mobile menu animation variants
     const menuVariants = {
         closed: {
             opacity: 0,
@@ -109,7 +103,7 @@ export default function Navbar() {
             }}
         >
             <div className="container nav-content">
-                <Link href="/" className="logo">
+                <Link href="/" className="logo" onClick={closeMenu}>
                     <motion.span
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -124,7 +118,6 @@ export default function Navbar() {
                     <span className="bar"></span>
                 </div>
 
-                {/* Desktop Navigation */}
                 <ul className="nav-links" style={{ display: 'none' }}>
                     {links.map((link) => (
                         <li key={link.href}>
@@ -138,7 +131,6 @@ export default function Navbar() {
                     ))}
                 </ul>
 
-                {/* Mobile Navigation (Desktop hidden in CSS) */}
                 <AnimatePresence>
                     {isOpen && (
                         <motion.ul
@@ -153,7 +145,7 @@ export default function Navbar() {
                                     <Link
                                         href={link.href}
                                         className={pathname === link.href ? 'active' : ''}
-                                        onClick={() => setIsOpen(false)}
+                                        onClick={closeMenu}
                                     >
                                         {link.label}
                                     </Link>
@@ -164,7 +156,6 @@ export default function Navbar() {
                 </AnimatePresence>
             </div>
 
-            {/* Show desktop links on larger screens */}
             <style jsx>{`
                 @media (min-width: 769px) {
                     .nav-links[style*="display: none"] {
