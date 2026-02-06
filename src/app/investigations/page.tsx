@@ -26,6 +26,8 @@ export default function InvestigationsPage() {
       if (response.ok) {
         const data = await response.json();
         setCases(data);
+      } else {
+        console.error('Failed to fetch cases: Server error');
       }
     } catch (error) {
       console.error('Failed to fetch cases:', error);

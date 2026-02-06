@@ -46,22 +46,45 @@ export default function Navbar() {
                 top: 0,
                 width: '100%',
                 zIndex: 1000,
-                background: scrolled ? 'rgba(13, 13, 13, 0.95)' : 'transparent',
-                backdropFilter: scrolled ? 'blur(10px)' : 'none'
+                background: scrolled 
+                    ? 'rgba(13, 13, 13, 0.85)' 
+                    : 'rgba(13, 13, 13, 0.3)',
+                backdropFilter: scrolled 
+                    ? 'blur(20px) saturate(180%)' 
+                    : 'blur(12px) saturate(150%)',
+                WebkitBackdropFilter: scrolled 
+                    ? 'blur(20px) saturate(180%)' 
+                    : 'blur(12px) saturate(150%)',
+                borderBottom: scrolled 
+                    ? '1px solid rgba(255, 255, 255, 0.1)' 
+                    : '1px solid rgba(255, 255, 255, 0.05)',
+                transition: 'all 0.3s ease'
             }}
         >
-            <div className="container nav-content" style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem' }}>
+            <div className="container nav-content" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem' }}>
                 <Link href="/" className="logo">
                     <motion.span whileHover={{ scale: 1.1, color: '#e63946' }}>DC.</motion.span>
                 </Link>
 
-                <ul className="nav-links" style={{ display: 'flex', gap: '2rem', listStyle: 'none' }}>
+                {/* Hamburger Menu Button */}
+                <div 
+                    className={`hamburger ${isOpen ? 'active' : ''}`}
+                    onClick={() => setIsOpen(!isOpen)}
+                    style={{ display: 'none' }}
+                >
+                    <span className="bar"></span>
+                    <span className="bar"></span>
+                    <span className="bar"></span>
+                </div>
+
+                <ul className={`nav-links ${isOpen ? 'active' : ''}`} style={{ display: 'flex', gap: '2rem', listStyle: 'none' }}>
                     {links.map((link) => (
                         <li key={link.href}>
                             <Link
                                 href={link.href}
                                 className={pathname === link.href ? 'active' : ''}
                                 style={{ color: pathname === link.href ? '#e63946' : '#fff', textDecoration: 'none' }}
+                                onClick={() => setIsOpen(false)}
                             >
                                 {link.label}
                             </Link>

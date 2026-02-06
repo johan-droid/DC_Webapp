@@ -26,6 +26,8 @@ export default function NewsPage() {
       if (response.ok) {
         const data = await response.json();
         setNews(data);
+      } else {
+        console.error('Failed to fetch news: Server error');
       }
     } catch (error) {
       console.error('Failed to fetch news:', error);
