@@ -9,10 +9,10 @@ export default function Home() {
     target: heroRef,
     offset: ["start start", "end start"]
   });
-  
+
   const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.8]);
-  
+
   // Stagger animation variants (Performance: reduce calculations)
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <main>
       {/* Hero Section with Parallax */}
-      <motion.header 
+      <motion.header
         ref={heroRef}
         className="hero"
         style={{ opacity: heroOpacity }}
@@ -53,7 +53,7 @@ export default function Home() {
             transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <h1 className="mystery-reveal">ONE TRUTH PREVAILS</h1>
-            
+
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -62,16 +62,16 @@ export default function Home() {
               "When you have eliminated the impossible, whatever remains, however improbable,
               must be the truth."
             </motion.p>
-            
+
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.8, duration: 0.5 }}
             >
-              <Link href="/investigations" className="btn">
-                View Case Files
+              <Link href="/news" className="btn">
+                Latest News
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M8 1L15 8L8 15M15 8H1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M8 1L15 8L8 15M15 8H1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </Link>
             </motion.div>
@@ -89,18 +89,18 @@ export default function Home() {
             viewport={{ once: true, margin: "-100px" }}
             variants={containerVariants}
           >
-            <motion.h2 
-              className="text-gradient" 
+            <motion.h2
+              className="text-gradient"
               style={{ fontSize: 'var(--text-3xl)', textAlign: 'center', marginBottom: 'var(--space-md)' }}
               variants={itemVariants}
             >
               Welcome to the World of Detective Conan
             </motion.h2>
-            
-            <motion.p 
-              style={{ 
-                textAlign: 'center', 
-                fontSize: 'var(--text-lg)', 
+
+            <motion.p
+              style={{
+                textAlign: 'center',
+                fontSize: 'var(--text-lg)',
                 fontStyle: 'italic',
                 maxWidth: '700px',
                 margin: '0 auto',
@@ -110,8 +110,8 @@ export default function Home() {
             >
               Step into the shoes of a high school detective turned child sleuth
             </motion.p>
-            
-            <motion.div 
+
+            <motion.div
               style={{
                 width: '120px',
                 height: '3px',
@@ -143,10 +143,10 @@ export default function Home() {
               boxShadow: 'var(--shadow-xl)'
             }}
           >
-            <motion.h2 
+            <motion.h2
               variants={itemVariants}
-              style={{ 
-                textAlign: 'center', 
+              style={{
+                textAlign: 'center',
                 marginBottom: 'var(--space-xl)',
                 fontSize: 'var(--text-2xl)'
               }}
@@ -155,8 +155,8 @@ export default function Home() {
             </motion.h2>
 
             <motion.div variants={itemVariants}>
-              <p style={{ 
-                fontSize: 'var(--text-lg)', 
+              <p style={{
+                fontSize: 'var(--text-lg)',
                 textAlign: 'center',
                 padding: 'var(--space-lg)',
                 background: 'rgba(211, 47, 47, 0.1)',
@@ -170,17 +170,17 @@ export default function Home() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <h3 style={{ 
-                fontSize: 'var(--text-xl)', 
+              <h3 style={{
+                fontSize: 'var(--text-xl)',
                 color: 'var(--detective-red)',
                 marginBottom: 'var(--space-md)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 'var(--space-sm)'
               }}>
-                <span style={{ 
-                  width: '4px', 
-                  height: '24px', 
+                <span style={{
+                  width: '4px',
+                  height: '24px',
                   background: 'var(--detective-red)',
                   borderRadius: '2px'
                 }} />
@@ -188,25 +188,25 @@ export default function Home() {
               </h3>
               <p style={{ lineHeight: '1.8', marginBottom: 'var(--space-xl)' }}>
                 <strong>Shinichi Kudo</strong> is a brilliant high school detective who frequently assists the
-                police in solving complex cases. During an investigation, he is ambushed by members of a crime 
-                syndicate known as the <strong>Black Organization</strong>. They force-feed him an experimental 
-                poison intended to kill him, but instead of causing death, the drug mysteriously shrinks his body 
+                police in solving complex cases. During an investigation, he is ambushed by members of a crime
+                syndicate known as the <strong>Black Organization</strong>. They force-feed him an experimental
+                poison intended to kill him, but instead of causing death, the drug mysteriously shrinks his body
                 to that of a six-year-old child.
               </p>
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <h3 style={{ 
-                fontSize: 'var(--text-xl)', 
+              <h3 style={{
+                fontSize: 'var(--text-xl)',
                 color: 'var(--detective-red)',
                 marginBottom: 'var(--space-md)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 'var(--space-sm)'
               }}>
-                <span style={{ 
-                  width: '4px', 
-                  height: '24px', 
+                <span style={{
+                  width: '4px',
+                  height: '24px',
                   background: 'var(--detective-red)',
                   borderRadius: '2px'
                 }} />
@@ -218,47 +218,6 @@ export default function Home() {
               </p>
             </motion.div>
           </motion.article>
-        </div>
-      </section>
-
-      {/* Investigations CTA Section */}
-      <section className="section" style={{ 
-        background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, transparent 100%)',
-        textAlign: 'center' 
-      }}>
-        <div className="container">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={containerVariants}
-          >
-            <motion.h2 variants={itemVariants} style={{ marginBottom: 'var(--space-md)' }}>
-              Latest Investigations
-            </motion.h2>
-            
-            <motion.p 
-              variants={itemVariants}
-              style={{ 
-                maxWidth: '650px', 
-                margin: '0 auto var(--space-xl) auto',
-                fontSize: 'var(--text-lg)',
-                opacity: 0.9
-              }}
-            >
-              Explore the complete database of canon episodes, movies, and special cases. 
-              The truth is hidden in the files.
-            </motion.p>
-            
-            <motion.div variants={itemVariants}>
-              <Link href="/investigations" className="btn">
-                Open Case Database
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-            </motion.div>
-          </motion.div>
         </div>
       </section>
 
@@ -275,10 +234,10 @@ export default function Home() {
             <motion.h2 variants={itemVariants} style={{ marginBottom: 'var(--space-md)' }}>
               Key Characters
             </motion.h2>
-            
-            <motion.p 
+
+            <motion.p
               variants={itemVariants}
-              style={{ 
+              style={{
                 marginBottom: 'var(--space-xl)',
                 fontSize: 'var(--text-lg)',
                 maxWidth: '700px',
@@ -288,12 +247,12 @@ export default function Home() {
             >
               Meet the detectives, friends, and foes of the Detective Conan universe.
             </motion.p>
-            
+
             <motion.div variants={itemVariants}>
               <Link href="/characters" className="btn">
                 View All Characters
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M8 1L15 8L8 15M15 8H1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M8 1L15 8L8 15M15 8H1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </Link>
             </motion.div>

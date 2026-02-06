@@ -49,9 +49,8 @@ export default function Navbar() {
 
     const links = [
         { href: '/', label: 'Home' },
-        { href: '/characters', label: 'Characters' },
-        { href: '/investigations', label: 'Investigations' },
         { href: '/news', label: 'News' },
+        { href: '/characters', label: 'Characters' },
     ];
 
     return (

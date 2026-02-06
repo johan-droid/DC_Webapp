@@ -3,9 +3,9 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
-  title: "Detective Conan - One Truth Prevails",
-  description: "Official Detective Conan case files database. Explore mysteries, investigations, and the latest news from the world of Detective Conan.",
-  keywords: ["Detective Conan", "Case Closed", "Anime", "Mystery", "Investigation"],
+  title: "Detective Conan News - One Truth Prevails",
+  description: "Official Detective Conan news portal. Explore the latest news, updates, and characters from the world of Detective Conan.",
+  keywords: ["Detective Conan", "Case Closed", "Anime", "News", "Characters"],
   authors: [{ name: "Detective Boys" }],
   robots: {
     index: true,
@@ -23,9 +23,9 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://your-domain.com",
-    title: "Detective Conan - One Truth Prevails",
-    description: "Official Detective Conan case files database",
-    siteName: "Detective Conan Database",
+    title: "Detective Conan News - One Truth Prevails",
+    description: "Official Detective Conan news and character portal",
+    siteName: "Detective Conan News",
   },
   twitter: {
     card: "summary_large_image",

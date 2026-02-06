@@ -24,23 +24,7 @@ export const NewsSchema = z.object({
     .transform(val => val.replace(/\s+/g, ' ')) // Normalize spaces
 });
 
-export const CaseSchema = z.object({
-  title: z.string()
-    .min(1, 'Title must be at least 1 character')
-    .max(255, 'Title must be less than 255 characters')
-    .regex(/^[a-zA-Z0-9\s\-'.!?(),:;]+$/, 'Title contains invalid characters')
-    .transform(val => val.trim())
-    .transform(val => val.replace(/\s+/g, ' ')), // Normalize spaces
-  type: z.enum(['canon', 'anime', 'movie']).default('canon'),
-  description: z.string()
-    .min(10, 'Description must be at least 10 characters')
-    .max(10000, 'Description must be less than 10000 characters')
-    .transform(val => val.trim())
-    .transform(val => val.replace(/\s+/g, ' ')), // Normalize spaces
-  image: z.string().url().nullable().optional(),
-  episode_number: z.number().int().positive().optional(),
-  case_type: z.enum(['episode', 'movie', 'special'])
-});
+
 
 export const CharacterSchema = z.object({
   name: z.string()
@@ -73,6 +57,6 @@ export const validateCSRFToken = (token: string | undefined, sessionToken: strin
 };
 
 export const generateSecureId = (): string => {
-  return Math.random().toString(36).substring(2, 15) + 
-         Date.now().toString(36);
+  return Math.random().toString(36).substring(2, 15) +
+    Date.now().toString(36);
 };

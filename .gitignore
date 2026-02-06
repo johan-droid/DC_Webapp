@@ -57,7 +57,42 @@ yarn-error.log*
 .pnpm-debug.log*
 *.log
 
+
 # Supabase
 supabase/functions/*/deno.lock
 supabase/.branches
 supabase/.temp
+
+# Python (Legacy Bot)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+venv/
+.venv/
+env/
+.env/
+
+# Misc
+*.bak
+*.tmp
+temp/
+*~
