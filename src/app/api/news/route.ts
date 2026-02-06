@@ -14,21 +14,21 @@ const RATE_WINDOW = 60000;
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
   const record = requestCounts.get(ip);
-  
+
   if (!record || now > record.resetTime) {
     requestCounts.set(ip, { count: 1, resetTime: now + RATE_WINDOW });
     return true;
   }
-  
+
   if (record.count >= RATE_LIMIT) return false;
-  
+
   record.count++;
   return true;
 }
 
 export async function GET(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
-  
+
   if (!checkRateLimit(ip)) {
     return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
   }
@@ -54,10 +54,10 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { title, content, image_url } = body;
+    const { title, content, image_url, author } = body;
 
-    if (!title || !content || typeof title !== 'string' || typeof content !== 'string') {
-      return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
+    if (!title || !content || !author || typeof title !== 'string' || typeof content !== 'string' || typeof author !== 'string') {
+      return NextResponse.json({ error: 'Invalid input: Author is required' }, { status: 400 });
     }
 
     if (title.length > 255 || content.length > 10000) {
@@ -66,12 +66,14 @@ export async function POST(request: NextRequest) {
 
     const sanitizedTitle = title.trim().substring(0, 255);
     const sanitizedContent = content.trim().substring(0, 10000);
+    const sanitizedAuthor = author.trim().substring(0, 100);
 
     const { data, error } = await supabase
       .from('news')
       .insert([{
         title: sanitizedTitle,
         content: sanitizedContent,
+        author: sanitizedAuthor,
         image_url: image_url || null,
         created_at: new Date().toISOString()
       }])

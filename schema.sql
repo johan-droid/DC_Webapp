@@ -9,7 +9,8 @@ create table if not exists public.news (
     category text default 'General'::text,
     content text not null,
     image text,
-    link text
+    link text,
+    author text default 'Detective Boys'
 );
 
 -- 2. Investigations (Cases) Table

@@ -8,6 +8,7 @@ interface NewsItem {
   title: string;
   content: string;
   image_url?: string;
+  author?: string;
   created_at: string;
 }
 
@@ -75,7 +76,7 @@ export default function NewsPage() {
             animate="visible"
             variants={containerVariants}
           >
-            <motion.h1 
+            <motion.h1
               variants={itemVariants}
               className="text-center"
               style={{ marginBottom: 'var(--space-xl)' }}
@@ -84,10 +85,10 @@ export default function NewsPage() {
             </motion.h1>
 
             {news.length === 0 ? (
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
                 className="text-center"
-                style={{ 
+                style={{
                   padding: 'var(--space-2xl)',
                   background: 'var(--glass-bg)',
                   borderRadius: 'var(--radius-lg)',
@@ -115,17 +116,20 @@ export default function NewsPage() {
                         />
                       </div>
                     )}
-                    
+
                     <div className="card-content">
                       <div className="card-category">News</div>
                       <h3>{item.title}</h3>
                       <p>{item.content}</p>
-                      <div style={{ 
-                        fontSize: 'var(--text-xs)', 
+                      <div style={{
+                        fontSize: 'var(--text-xs)',
                         opacity: 0.6,
-                        marginTop: 'var(--space-md)'
+                        marginTop: 'var(--space-md)',
+                        display: 'flex',
+                        justifyContent: 'space-between'
                       }}>
-                        {new Date(item.created_at).toLocaleDateString()}
+                        <span>{new Date(item.created_at).toLocaleDateString()}</span>
+                        {item.author && <span style={{ color: '#e63946' }}>By {item.author}</span>}
                       </div>
                     </div>
                   </motion.article>
