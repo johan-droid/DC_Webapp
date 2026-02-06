@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { randomBytes } from 'crypto';
 
 const BOT_USER_AGENTS = [
   'bot', 'crawler', 'spider', 'scraper', 'curl', 'wget', 'python-requests',
@@ -28,9 +27,10 @@ const requestCounts = new Map<string, { count: number; timestamp: number }>();
 const RATE_LIMIT = 30;
 const TIME_WINDOW = 60000;
 const CSRF_TOKEN_EXPIRY = 3600000; // 1 hour
-
 function generateCSRFToken(): string {
-  return randomBytes(32).toString('hex');
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
 function isBot(userAgent: string): boolean {
@@ -45,16 +45,16 @@ function isSuspicious(url: string): boolean {
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
   const record = requestCounts.get(ip);
-  
+
   if (!record || now - record.timestamp > TIME_WINDOW) {
     requestCounts.set(ip, { count: 1, timestamp: now });
     return true;
   }
-  
+
   if (record.count >= RATE_LIMIT) {
     return false;
   }
-  
+
   record.count++;
   return true;
 }
@@ -66,9 +66,9 @@ function validateOrigin(origin: string | null): boolean {
 
 export function middleware(request: NextRequest) {
   const userAgent = request.headers.get('user-agent') || '';
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 
-             request.headers.get('x-real-ip') || 
-             'unknown';
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ||
+    request.headers.get('x-real-ip') ||
+    'unknown';
   const url = request.nextUrl.pathname + request.nextUrl.search;
   const origin = request.headers.get('origin');
   const referer = request.headers.get('referer');
@@ -98,7 +98,7 @@ export function middleware(request: NextRequest) {
 
   // Rate limiting
   if (!checkRateLimit(ip)) {
-    return new NextResponse('Too Many Requests', { 
+    return new NextResponse('Too Many Requests', {
       status: 429,
       headers: {
         'Retry-After': '60',
@@ -111,7 +111,7 @@ export function middleware(request: NextRequest) {
 
   // Add security headers
   const response = NextResponse.next();
-  
+
   // Advanced security headers
   response.headers.set('X-DNS-Prefetch-Control', 'on');
   response.headers.set('X-Content-Type-Options', 'nosniff');
@@ -122,7 +122,7 @@ export function middleware(request: NextRequest) {
   response.headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
   response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
   response.headers.set('Cross-Origin-Resource-Policy', 'same-origin');
-  
+
   // Content Security Policy
   const csp = [
     "default-src 'self'",
@@ -138,27 +138,27 @@ export function middleware(request: NextRequest) {
     "frame-ancestors 'none'",
     "upgrade-insecure-requests"
   ].join('; ');
-  
+
   response.headers.set('Content-Security-Policy', csp);
-  
+
   // Add CSRF token for state-changing requests
   if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method)) {
     const csrfToken = generateCSRFToken();
     response.headers.set('X-CSRF-Token', csrfToken);
     response.headers.set('Set-Cookie', `csrf-token=${csrfToken}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${CSRF_TOKEN_EXPIRY}`);
   }
-  
+
   // Add fingerprinting protection
   response.headers.set('X-Robots-Tag', 'noarchive, nosnippet, notranslate, noimageindex');
-  
+
   // Remove server information
   response.headers.set('Server', '');
   response.headers.set('X-Powered-By', '');
-  
+
   // Add performance headers
   response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   response.headers.set('Expect-CT', '');
-  
+
   return response;
 }
 
