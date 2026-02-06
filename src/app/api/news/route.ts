@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { verifyAdmin } from '@/lib/auth';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 const requestCounts = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT = 10;
@@ -44,6 +40,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    // Use public client for GET
     const { data, error } = await supabase
       .from('news')
       .select('*')
@@ -78,7 +75,8 @@ export async function POST(request: NextRequest) {
     const sanitizedContent = content.trim().substring(0, 10000);
     const sanitizedAuthor = author.trim().substring(0, 100);
 
-    const { data, error } = await supabase
+    // Use admin client for POST
+    const { data, error } = await supabaseAdmin
       .from('news')
       .insert([{
         title: sanitizedTitle,
