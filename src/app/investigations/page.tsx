@@ -23,14 +23,15 @@ export default function InvestigationsPage() {
   const fetchCases = async () => {
     try {
       const response = await fetch('/api/cases');
-      if (response.ok) {
-        const data = await response.json();
-        setCases(data);
-      } else {
-        console.error('Failed to fetch cases: Server error');
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
       }
+      const data = await response.json();
+      setCases(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to fetch cases:', error);
+      setCases([]); // Set empty array on error to prevent undefined issues
     } finally {
       setLoading(false);
     }
@@ -77,6 +78,11 @@ export default function InvestigationsPage() {
       <div className="container" style={{ paddingTop: 'calc(var(--nav-height) + var(--space-2xl))' }}>
         <div className="text-center">
           <h1>Loading Cases...</h1>
+          <div className="card-grid" style={{ marginTop: 'var(--space-2xl)' }}>
+            {[...Array(6)].map((_, index) => (
+              <div key={index} className="card skeleton" style={{ height: '300px' }} />
+            ))}
+          </div>
         </div>
       </div>
     );

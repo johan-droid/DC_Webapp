@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { randomBytes } from 'crypto';
 
 const BOT_USER_AGENTS = [
   'bot', 'crawler', 'spider', 'scraper', 'curl', 'wget', 'python-requests',
@@ -16,9 +17,21 @@ const SUSPICIOUS_PATTERNS = [
   /drop.*table/i
 ];
 
+const ALLOWED_ORIGINS = [
+  'http://localhost:3000',
+  'https://localhost:3000',
+  process.env.NEXT_PUBLIC_SITE_URL || '',
+  'https://your-domain.com' // Replace with actual domain
+].filter(Boolean);
+
 const requestCounts = new Map<string, { count: number; timestamp: number }>();
 const RATE_LIMIT = 30;
 const TIME_WINDOW = 60000;
+const CSRF_TOKEN_EXPIRY = 3600000; // 1 hour
+
+function generateCSRFToken(): string {
+  return randomBytes(32).toString('hex');
+}
 
 function isBot(userAgent: string): boolean {
   const ua = userAgent.toLowerCase();
@@ -46,12 +59,19 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
+function validateOrigin(origin: string | null): boolean {
+  if (!origin) return true; // Same-origin requests
+  return ALLOWED_ORIGINS.includes(origin);
+}
+
 export function middleware(request: NextRequest) {
   const userAgent = request.headers.get('user-agent') || '';
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 
              request.headers.get('x-real-ip') || 
              'unknown';
   const url = request.nextUrl.pathname + request.nextUrl.search;
+  const origin = request.headers.get('origin');
+  const referer = request.headers.get('referer');
 
   // Block suspicious bots (allow legitimate search engines)
   if (isBot(userAgent) && !userAgent.includes('Googlebot') && !userAgent.includes('Bingbot')) {
@@ -63,23 +83,81 @@ export function middleware(request: NextRequest) {
     return new NextResponse('Invalid Request', { status: 400 });
   }
 
+  // Validate origin for API routes
+  if (url.startsWith('/api/') && !validateOrigin(origin)) {
+    return new NextResponse('Invalid Origin', { status: 403 });
+  }
+
+  // Validate referer for sensitive routes
+  if ((url.startsWith('/admin/') || url.startsWith('/api/')) && referer) {
+    const refererOrigin = new URL(referer).origin;
+    if (!validateOrigin(refererOrigin)) {
+      return new NextResponse('Invalid Referer', { status: 403 });
+    }
+  }
+
   // Rate limiting
   if (!checkRateLimit(ip)) {
-    return new NextResponse('Too Many Requests', { status: 429 });
+    return new NextResponse('Too Many Requests', { 
+      status: 429,
+      headers: {
+        'Retry-After': '60',
+        'X-RateLimit-Limit': RATE_LIMIT.toString(),
+        'X-RateLimit-Remaining': '0',
+        'X-RateLimit-Reset': new Date(Date.now() + TIME_WINDOW).toISOString()
+      }
+    });
   }
 
   // Add security headers
   const response = NextResponse.next();
   
+  // Advanced security headers
   response.headers.set('X-DNS-Prefetch-Control', 'on');
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('X-Frame-Options', 'DENY');
-  response.headers.set('X-XSS-Protection', '1; mode=block');
+  response.headers.set('X-XSS-Protection', '1; mode=block; report=https://your-domain.com/csp-report');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()');
+  response.headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
+  response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+  response.headers.set('Cross-Origin-Resource-Policy', 'same-origin');
+  
+  // Content Security Policy
+  const csp = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "img-src 'self' data: https: blob:",
+    "font-src 'self' https://fonts.gstatic.com",
+    "connect-src 'self' https://www.google-analytics.com https://api.supabase.co",
+    "frame-src 'none'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    "upgrade-insecure-requests"
+  ].join('; ');
+  
+  response.headers.set('Content-Security-Policy', csp);
+  
+  // Add CSRF token for state-changing requests
+  if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method)) {
+    const csrfToken = generateCSRFToken();
+    response.headers.set('X-CSRF-Token', csrfToken);
+    response.headers.set('Set-Cookie', `csrf-token=${csrfToken}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${CSRF_TOKEN_EXPIRY}`);
+  }
   
   // Add fingerprinting protection
-  response.headers.set('X-Robots-Tag', 'noarchive, nosnippet');
+  response.headers.set('X-Robots-Tag', 'noarchive, nosnippet, notranslate, noimageindex');
+  
+  // Remove server information
+  response.headers.set('Server', '');
+  response.headers.set('X-Powered-By', '');
+  
+  // Add performance headers
+  response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  response.headers.set('Expect-CT', '');
   
   return response;
 }

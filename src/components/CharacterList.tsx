@@ -1,4 +1,5 @@
 "use client";
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -11,42 +12,44 @@ type Character = {
     faction: 'main' | 'black_organization' | 'police' | 'fbi';
 };
 
-const CharCard = ({ char }: { char: Character }) => (
-    <motion.div
-        className="char-card"
-        initial={{ opacity: 0, scale: 0.9 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4 }}
-    >
-        <div className="char-image-wrapper">
-            <div className="char-placeholder">{char.name.charAt(0)}</div>
-            {char.image && (
-                <Image
-                    src={char.image}
-                    alt={char.name}
-                    fill
-                    className="char-img-element object-cover"
-                    sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    onError={(e) => {
-                        // Image component onError handling is limited differently in Next.js
-                        // Often better to handle broken images at data level or use a wrapper
-                        // For simple fallback, we rely on the placeholder behind it.
-                        // However, next/image doesn't transparently hide on error like img
-                        const target = e.target as HTMLImageElement;
-                        target.style.opacity = '0';
-                    }}
-                />
-            )}
-        </div>
-        <div className="char-content">
-            <h3 className="char-name">{char.name}</h3>
-            <div className="char-desc">
-                <p>{char.description}</p>
+const CharCard = ({ char }: { char: Character }) => {
+    const [imageError, setImageError] = useState(false);
+
+    return (
+        <motion.div
+            className="char-card"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+        >
+            <div className="char-image-wrapper">
+                <div className="char-placeholder">{char.name.charAt(0)}</div>
+                {char.image && !imageError && (
+                    <Image
+                        src={char.image}
+                        alt={char.name}
+                        fill
+                        className="char-img-element object-cover"
+                        sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        onError={() => setImageError(true)}
+                        onLoadingComplete={(result) => {
+                            if (result.naturalWidth === 0) {
+                                setImageError(true);
+                            }
+                        }}
+                    />
+                )}
             </div>
-        </div>
-    </motion.div>
-);
+            <div className="char-content">
+                <h3 className="char-name">{char.name}</h3>
+                <div className="char-desc">
+                    <p>{char.description}</p>
+                </div>
+            </div>
+        </motion.div>
+    );
+};
 
 export default function CharacterList({ characters }: { characters: Character[] }) {
     const mainChars = characters.filter(c => c.faction !== 'black_organization');

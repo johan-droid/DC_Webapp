@@ -23,14 +23,15 @@ export default function NewsPage() {
   const fetchNews = async () => {
     try {
       const response = await fetch('/api/news');
-      if (response.ok) {
-        const data = await response.json();
-        setNews(data);
-      } else {
-        console.error('Failed to fetch news: Server error');
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
       }
+      const data = await response.json();
+      setNews(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to fetch news:', error);
+      setNews([]); // Set empty array on error to prevent undefined issues
     } finally {
       setLoading(false);
     }
@@ -64,6 +65,11 @@ export default function NewsPage() {
       <div className="container" style={{ paddingTop: 'calc(var(--nav-height) + var(--space-2xl))' }}>
         <div className="text-center">
           <h1>Loading News...</h1>
+          <div className="card-grid" style={{ marginTop: 'var(--space-2xl)' }}>
+            {[...Array(6)].map((_, index) => (
+              <div key={index} className="card skeleton" style={{ height: '350px' }} />
+            ))}
+          </div>
         </div>
       </div>
     );
