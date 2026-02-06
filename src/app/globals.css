@@ -894,6 +894,240 @@ footer p {
 }
 
 /* ============================================
+   ADVANCED UI ANIMATIONS
+   ============================================ */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Advanced hover effects */
+.advanced-hover {
+  position: relative;
+  overflow: hidden;
+}
+
+.advanced-hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.advanced-hover:hover::before {
+  left: 100%;
+}
+
+/* Magnetic button effect */
+.magnetic-btn {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2);
+}
+
+.magnetic-btn:hover {
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 10px 25px rgba(211, 47, 47, 0.3);
+}
+
+/* Glitch effect for special elements */
+.glitch {
+  position: relative;
+  color: var(--paper-white);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch::before {
+  animation: glitch-1 0.5s infinite;
+  color: var(--detective-red);
+  z-index: -1;
+}
+
+.glitch::after {
+  animation: glitch-2 0.5s infinite;
+  color: var(--mystery-purple);
+  z-index: -2;
+}
+
+@keyframes glitch-1 {
+  0%, 100% { clip-path: inset(0 0 100% 0); }
+  25% { clip-path: inset(0 0 80% 0); }
+  50% { clip-path: inset(0 0 100% 0); }
+  75% { clip-path: inset(0 0 20% 0); }
+}
+
+@keyframes glitch-2 {
+  0%, 100% { clip-path: inset(0 0 100% 0); }
+  25% { clip-path: inset(0 20% 100% 0); }
+  50% { clip-path: inset(0 0 100% 0); }
+  75% { clip-path: inset(0 80% 100% 0); }
+}
+
+/* Parallax scroll effects */
+.parallax-container {
+  perspective: 1px;
+}
+
+.parallax-element {
+  transform: translateZ(-1px) scale(2);
+  will-change: transform;
+}
+
+/* Advanced loading states */
+.loading-dots {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+
+.loading-dots span {
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--detective-red);
+  border-radius: 50%;
+  animation: loading-bounce 1.4s infinite ease-in-out both;
+}
+
+.loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+.loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+.loading-dots span:nth-child(3) { animation-delay: 0s; }
+
+@keyframes loading-bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+/* Advanced card effects */
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+
+.card-3d:hover {
+  transform: rotateY(10deg) rotateX(5deg) translateZ(20px);
+}
+
+/* Neon glow effects */
+.neon-glow {
+  text-shadow: 
+    0 0 10px var(--detective-red),
+    0 0 20px var(--detective-red),
+    0 0 30px var(--detective-red),
+    0 0 40px var(--mystery-purple),
+    0 0 50px var(--mystery-purple),
+    0 0 60px var(--mystery-purple),
+    0 0 70px var(--mystery-purple),
+    0 0 80px var(--mystery-purple),
+    0 0 90px var(--mystery-purple),
+    0 0 100px var(--mystery-purple);
+  animation: neon-flicker 2s infinite alternate;
+}
+
+@keyframes neon-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================ */
+.gpu-accelerated {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.smooth-scroll {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--nav-height);
+}
+
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-contents {
+  will-change: contents, opacity;
+}
+
+/* Image optimization */
+.optimized-img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+/* Font optimization */
+.optimize-fonts {
+  font-display: swap;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+/* Animation optimization */
+.optimize-animations {
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2);
+  animation-fill-mode: both;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
    MOBILE OPTIMIZATIONS
    ============================================ */
 /* Fix for iOS Safari viewport height */
