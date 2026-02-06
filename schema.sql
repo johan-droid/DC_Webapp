@@ -40,18 +40,54 @@ alter table public.cases enable row level security;
 alter table public.characters enable row level security;
 
 -- Policy: Allow Public Read Access (Everyone can view)
-create policy "Allow Public Read News" on public.news for select using (true);
-create policy "Allow Public Read Cases" on public.cases for select using (true);
-create policy "Allow Public Read Characters" on public.characters for select using (true);
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow Public Read News' AND tablename = 'news') THEN
+    create policy "Allow Public Read News" on public.news for select using (true);
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow Public Read Cases' AND tablename = 'cases') THEN
+    create policy "Allow Public Read Cases" on public.cases for select using (true);
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow Public Read Characters' AND tablename = 'characters') THEN
+    create policy "Allow Public Read Characters" on public.characters for select using (true);
+  END IF;
+END $$;
 
 -- Policy: Service Role (Admin) Write Access
--- Note: Service Role bypasses RLS by default, but these explicit policies prevent anon writes
-create policy "Allow Service Role Write News" on public.news for insert to service_role with check (true);
-create policy "Allow Service Role Update News" on public.news for update to service_role using (true);
-create policy "Allow Service Role Delete News" on public.news for delete to service_role using (true);
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow Service Role Write News' AND tablename = 'news') THEN
+    create policy "Allow Service Role Write News" on public.news for insert to service_role with check (true);
+  END IF;
+END $$;
 
-create policy "Allow Service Role Write Cases" on public.cases for insert to service_role with check (true);
-create policy "Allow Service Role Write Characters" on public.characters for insert to service_role with check (true);
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow Service Role Update News' AND tablename = 'news') THEN
+    create policy "Allow Service Role Update News" on public.news for update to service_role using (true);
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow Service Role Delete News' AND tablename = 'news') THEN
+    create policy "Allow Service Role Delete News" on public.news for delete to service_role using (true);
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow Service Role Write Cases' AND tablename = 'cases') THEN
+    create policy "Allow Service Role Write Cases" on public.cases for insert to service_role with check (true);
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow Service Role Write Characters' AND tablename = 'characters') THEN
+    create policy "Allow Service Role Write Characters" on public.characters for insert to service_role with check (true);
+  END IF;
+END $$;
 
 -- 4. Bounties Table (New Feature)
 create table if not exists public.bounties (
@@ -64,7 +100,27 @@ create table if not exists public.bounties (
 );
 
 alter table public.bounties enable row level security;
-create policy "Allow Public Read Bounties" on public.bounties for select using (true);
-create policy "Allow Service Role Write Bounties" on public.bounties for insert to service_role with check (true);
-create policy "Allow Service Role Update Bounties" on public.bounties for update to service_role using (true);
-create policy "Allow Service Role Delete Bounties" on public.bounties for delete to service_role using (true);
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow Public Read Bounties' AND tablename = 'bounties') THEN
+    create policy "Allow Public Read Bounties" on public.bounties for select using (true);
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow Service Role Write Bounties' AND tablename = 'bounties') THEN
+    create policy "Allow Service Role Write Bounties" on public.bounties for insert to service_role with check (true);
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow Service Role Update Bounties' AND tablename = 'bounties') THEN
+    create policy "Allow Service Role Update Bounties" on public.bounties for update to service_role using (true);
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Allow Service Role Delete Bounties' AND tablename = 'bounties') THEN
+    create policy "Allow Service Role Delete Bounties" on public.bounties for delete to service_role using (true);
+  END IF;
+END $$;
