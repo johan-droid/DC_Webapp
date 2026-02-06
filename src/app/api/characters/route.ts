@@ -11,7 +11,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-    if (!verifyAdmin(req)) {
+    if (!await verifyAdmin(req)) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

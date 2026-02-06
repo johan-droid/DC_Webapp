@@ -1,4 +1,4 @@
-"use client";
+import Link from "next/link";
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -108,39 +108,40 @@ export default function NewsPage() {
             ) : (
               <div className="card-grid">
                 {news.map((item, index) => (
-                  <motion.article
-                    key={item.id}
-                    className="card"
-                    variants={itemVariants}
-                    custom={index}
-                  >
-                    {item.image_url && (
-                      <div className="card-image">
-                        <Image
-                          src={item.image_url}
-                          alt={item.title}
-                          fill
-                          style={{ objectFit: 'cover' }}
-                        />
-                      </div>
-                    )}
+                  <Link href={`/news/${item.id}`} key={item.id} style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}>
+                    <motion.article
+                      className="card"
+                      variants={itemVariants}
+                      custom={index}
+                    >
+                      {item.image_url && (
+                        <div className="card-image">
+                          <Image
+                            src={item.image_url}
+                            alt={item.title}
+                            fill
+                            style={{ objectFit: 'cover' }}
+                          />
+                        </div>
+                      )}
 
-                    <div className="card-content">
-                      <div className="card-category">News</div>
-                      <h3>{item.title}</h3>
-                      <p>{item.content}</p>
-                      <div style={{
-                        fontSize: 'var(--text-xs)',
-                        opacity: 0.6,
-                        marginTop: 'var(--space-md)',
-                        display: 'flex',
-                        justifyContent: 'space-between'
-                      }}>
-                        <span>{new Date(item.created_at).toLocaleDateString()}</span>
-                        {item.author && <span style={{ color: '#e63946' }}>By {item.author}</span>}
+                      <div className="card-content">
+                        <div className="card-category">News</div>
+                        <h3>{item.title}</h3>
+                        <p>{item.content.substring(0, 150)}...</p>
+                        <div style={{
+                          fontSize: 'var(--text-xs)',
+                          opacity: 0.6,
+                          marginTop: 'var(--space-md)',
+                          display: 'flex',
+                          justifyContent: 'space-between'
+                        }}>
+                          <span>{new Date(item.created_at).toLocaleDateString()}</span>
+                          {item.author && <span style={{ color: '#e63946' }}>By {item.author}</span>}
+                        </div>
                       </div>
-                    </div>
-                  </motion.article>
+                    </motion.article>
+                  </Link>
                 ))}
               </div>
             )}

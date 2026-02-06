@@ -76,7 +76,7 @@ export default function Navbar() {
                     }}
                 />
             )}
-            
+
             <motion.nav
                 className={`navbar ${scrolled ? 'scrolled' : ''}`}
                 initial={false}
@@ -87,17 +87,17 @@ export default function Navbar() {
                     top: 0,
                     width: '100%',
                     zIndex: 1000,
-                    background: scrolled 
-                        ? 'rgba(13, 13, 13, 0.85)' 
+                    background: scrolled
+                        ? 'rgba(13, 13, 13, 0.85)'
                         : 'rgba(13, 13, 13, 0.3)',
-                    backdropFilter: scrolled 
-                        ? 'blur(20px) saturate(180%)' 
+                    backdropFilter: scrolled
+                        ? 'blur(20px) saturate(180%)'
                         : 'blur(12px) saturate(150%)',
-                    WebkitBackdropFilter: scrolled 
-                        ? 'blur(20px) saturate(180%)' 
+                    WebkitBackdropFilter: scrolled
+                        ? 'blur(20px) saturate(180%)'
                         : 'blur(12px) saturate(150%)',
-                    borderBottom: scrolled 
-                        ? '1px solid rgba(255, 255, 255, 0.1)' 
+                    borderBottom: scrolled
+                        ? '1px solid rgba(255, 255, 255, 0.1)'
                         : '1px solid rgba(255, 255, 255, 0.05)',
                     transition: 'all 0.3s ease'
                 }}
@@ -108,12 +108,17 @@ export default function Navbar() {
                     </Link>
 
                     {/* Hamburger Menu Button */}
-                    <button 
+                    <button
                         className={`hamburger ${isOpen ? 'active' : ''}`}
                         onClick={() => setIsOpen(!isOpen)}
                         aria-label="Toggle navigation menu"
                         aria-expanded={isOpen}
-                        style={{ zIndex: 1002 }}
+                        style={{
+                            position: 'relative',
+                            zIndex: 1002,
+                            padding: '10px', /* Larger tap target */
+                            marginTop: '4px'
+                        }}
                     >
                         <span className="bar"></span>
                         <span className="bar"></span>
@@ -124,7 +129,7 @@ export default function Navbar() {
                     <ul className={`nav-links ${isOpen ? 'active' : ''}`} style={{ display: 'flex', gap: '2rem', listStyle: 'none' }}>
                         {/* Close button for mobile menu */}
                         <li className="mobile-close-btn" style={{ display: 'none' }}>
-                            <button 
+                            <button
                                 onClick={() => setIsOpen(false)}
                                 aria-label="Close navigation menu"
                                 style={{

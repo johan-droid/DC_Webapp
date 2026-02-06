@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
+import { SignJWT } from 'jose';
 
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_TIME = 15 * 60 * 1000; // 15 minutes
@@ -48,8 +49,14 @@ export async function POST(request: NextRequest) {
       // Success - reset attempts
       loginAttempts.delete(clientIP);
 
-      // Generate session token
-      const token = crypto.randomBytes(32).toString('hex');
+      // Generate session token (JWT)
+      const secretKey = new TextEncoder().encode(adminSecret);
+      const token = await new SignJWT({ role: 'admin' })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime('2h')
+        .sign(secretKey);
+
       const response = NextResponse.json({ success: true, token });
 
       // Set secure cookie
@@ -57,7 +64,7 @@ export async function POST(request: NextRequest) {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 3600 // 1 hour
+        maxAge: 7200 // 2 hours
       });
 
       return response;

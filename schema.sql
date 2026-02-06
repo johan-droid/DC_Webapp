@@ -52,3 +52,19 @@ create policy "Allow Service Role Delete News" on public.news for delete to serv
 
 create policy "Allow Service Role Write Cases" on public.cases for insert to service_role with check (true);
 create policy "Allow Service Role Write Characters" on public.characters for insert to service_role with check (true);
+
+-- 4. Bounties Table (New Feature)
+create table if not exists public.bounties (
+    id uuid default uuid_generate_v4() primary key,
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+    title text not null,
+    description text not null,
+    reward text not null,
+    status text default 'open' -- open/closed/claimed
+);
+
+alter table public.bounties enable row level security;
+create policy "Allow Public Read Bounties" on public.bounties for select using (true);
+create policy "Allow Service Role Write Bounties" on public.bounties for insert to service_role with check (true);
+create policy "Allow Service Role Update Bounties" on public.bounties for update to service_role using (true);
+create policy "Allow Service Role Delete Bounties" on public.bounties for delete to service_role using (true);

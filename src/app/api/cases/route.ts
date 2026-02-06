@@ -24,21 +24,21 @@ setInterval(() => {
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
   const record = requestCounts.get(ip);
-  
+
   if (!record || now > record.resetTime) {
     requestCounts.set(ip, { count: 1, resetTime: now + RATE_WINDOW });
     return true;
   }
-  
+
   if (record.count >= RATE_LIMIT) return false;
-  
+
   record.count++;
   return true;
 }
 
 export async function GET(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
-  
+
   if (!checkRateLimit(ip)) {
     return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
   }
@@ -57,13 +57,13 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
-  if (!verifyAdmin(request)) {
+export async function POST(req: NextRequest) {
+  if (!await verifyAdmin(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
-    const body = await request.json();
+    const body = await req.json();
     const { title, description, episode_number, case_type } = body;
 
     if (!title || !description || typeof title !== 'string' || typeof description !== 'string') {
