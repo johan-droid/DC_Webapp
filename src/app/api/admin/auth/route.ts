@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
     }
 
-    const adminSecret = process.env.ADMIN_TOKEN;
+    const adminSecret = process.env.ADMIN_SECRET;
     if (!adminSecret) {
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
