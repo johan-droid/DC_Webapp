@@ -81,6 +81,10 @@ function NewsList() {
       if (res.ok) {
         fetchNews();
       } else {
+        if (res.status === 401 || res.status === 403) {
+          window.location.href = '/admin/login';
+          return;
+        }
         const data = await res.json();
         alert(`Deletion Failed: ${data.details || data.error}`);
       }
@@ -162,6 +166,10 @@ function NewsCreationForm({ onNewsCreated }: { onNewsCreated?: () => void }) {
         (document.getElementById('fileInput') as HTMLInputElement).value = '';
         if (onNewsCreated) onNewsCreated();
       } else {
+        if (res.status === 401 || res.status === 403) {
+          window.location.href = '/admin/login';
+          return;
+        }
         const data = await res.json();
         const errorMessage = data.details ? `${data.error}: ${data.details}` : data.error;
         setStatus(`Error: ${errorMessage}`);
