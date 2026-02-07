@@ -62,29 +62,52 @@ export default function AdminTerminal() {
 }
 
 function NewsCreationForm() {
-  const [form, setForm] = useState({ title: '', content: '', image_url: '', author: '' });
+  const [form, setForm] = useState({ title: '', content: '', author: '', category: 'General' });
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [status, setStatus] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('Publishing...');
+    setIsUploading(true);
 
     try {
+      const formData = new FormData();
+      formData.append('title', form.title);
+      formData.append('content', form.content);
+      formData.append('author', form.author);
+      formData.append('category', form.category);
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
+
       const res = await fetch('/api/news', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: formData,
       });
 
       if (res.ok) {
         setStatus('News Published Successfully');
-        setForm({ title: '', content: '', image_url: '', author: '' });
+        setForm({ title: '', content: '', author: '', category: 'General' });
+        setImageFile(null);
+        // Reset file input manually if needed
+        (document.getElementById('fileInput') as HTMLInputElement).value = '';
       } else {
         const data = await res.json();
         setStatus(`Error: ${data.error}`);
       }
     } catch (error) {
+      console.error(error);
       setStatus('Transmission Failed');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -117,15 +140,31 @@ function NewsCreationForm() {
             />
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', opacity: 0.8 }}>Image Evidence URL</label>
-            <input
-              type="url"
-              value={form.image_url}
-              onChange={(e) => setForm({ ...form, image_url: e.target.value })}
+            <label style={{ display: 'block', marginBottom: '0.5rem', opacity: 0.8 }}>Panel Size (Category)</label>
+            <select
+              value={form.category}
+              onChange={(e) => setForm({ ...form, category: e.target.value })}
               style={inputStyle}
-            />
+            >
+              <option value="General">Standard (General)</option>
+              <option value="Featured">Featured (Large)</option>
+              <option value="Banner">Banner (Wide)</option>
+              <option value="Sidebar">Sidebar (Compact)</option>
+            </select>
           </div>
         </div>
+
+        <div>
+          <label style={{ display: 'block', marginBottom: '0.5rem', opacity: 0.8 }}>Evidence Photo (JPG/PNG)</label>
+          <input
+            id="fileInput"
+            type="file"
+            accept="image/jpeg, image/png, image/webp"
+            onChange={handleFileChange}
+            style={inputStyle}
+          />
+        </div>
+
         <div>
           <label style={{ display: 'block', marginBottom: '0.5rem', opacity: 0.8 }}>Full Report</label>
           <textarea
@@ -136,7 +175,9 @@ function NewsCreationForm() {
             maxLength={10000}
           />
         </div>
-        <button type="submit" style={buttonStyle}>Publish Report</button>
+        <button type="submit" style={buttonStyle} disabled={isUploading}>
+          {isUploading ? 'Transmitting Data...' : 'Publish Report'}
+        </button>
         {status && <p style={{ marginTop: '1rem', color: status.includes('Error') ? '#ff4444' : '#00ff00', fontWeight: 'bold' }}>{status}</p>}
       </form>
     </div>

@@ -54,21 +54,42 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// ... imports
+import { uploadToCloudinary } from '@/lib/cloudinary';
+
 export async function POST(request: NextRequest) {
   if (!await verifyAdmin(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
-    const body = await request.json();
-    const { title, content, image_url, author } = body;
+    const formData = await request.formData();
+    const title = formData.get('title') as string;
+    const content = formData.get('content') as string;
+    const author = formData.get('author') as string;
+    const imageFile = formData.get('image') as File | null;
+    const imageUrl = formData.get('image_url') as string; // Keep legacy support or fallback
 
-    if (!title || !content || !author || typeof title !== 'string' || typeof content !== 'string' || typeof author !== 'string') {
-      return NextResponse.json({ error: 'Invalid input: Author is required' }, { status: 400 });
+    if (!title || !content || !author) {
+      return NextResponse.json({ error: 'Invalid input: Title, Content, and Author are required' }, { status: 400 });
     }
 
     if (title.length > 255 || content.length > 10000) {
       return NextResponse.json({ error: 'Content too long' }, { status: 400 });
+    }
+
+    let finalImageUrl = imageUrl;
+
+    // Handle File Upload
+    if (imageFile && imageFile.type.startsWith('image/')) {
+      const buffer = Buffer.from(await imageFile.arrayBuffer());
+      try {
+        const uploadResult = await uploadToCloudinary(buffer, 'dc_webapp_news');
+        finalImageUrl = uploadResult.secure_url;
+      } catch (uploadError) {
+        console.error('Image upload failed:', uploadError);
+        return NextResponse.json({ error: 'Image upload failed' }, { status: 500 });
+      }
     }
 
     const sanitizedTitle = title.trim().substring(0, 255);
@@ -82,7 +103,7 @@ export async function POST(request: NextRequest) {
         title: sanitizedTitle,
         content: sanitizedContent,
         author: sanitizedAuthor,
-        image_url: image_url || null,
+        image_url: finalImageUrl || null,
         created_at: new Date().toISOString()
       }])
       .select();
@@ -90,6 +111,7 @@ export async function POST(request: NextRequest) {
     if (error) throw error;
     return NextResponse.json(data[0]);
   } catch (error) {
+    console.error('News creation error:', error);
     return NextResponse.json({ error: 'Failed to create news' }, { status: 500 });
   }
 }

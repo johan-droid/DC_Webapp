@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import SmartImage from '@/components/SmartImage';
 
 interface NewsItem {
   id: number;
@@ -116,16 +117,14 @@ export default function NewsPage() {
                       variants={itemVariants}
                       custom={index}
                     >
-                      {item.image_url && (
-                        <div className="card-image">
-                          <Image
-                            src={item.image_url}
-                            alt={item.title}
-                            fill
-                            style={{ objectFit: 'cover' }}
-                          />
-                        </div>
-                      )}
+                      <div className="card-image">
+                        <SmartImage
+                          src={item.image_url}
+                          alt={item.title}
+                          fill
+                          style={{ objectFit: 'cover' }}
+                        />
+                      </div>
 
                       <div className="card-content">
                         <div className="card-category">News</div>

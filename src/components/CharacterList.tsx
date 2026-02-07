@@ -1,7 +1,6 @@
 "use client";
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
+import SmartImage from '@/components/SmartImage';
 
 // Types
 type Character = {
@@ -13,8 +12,6 @@ type Character = {
 };
 
 const CharCard = ({ char }: { char: Character }) => {
-    const [imageError, setImageError] = useState(false);
-
     return (
         <motion.div
             className="char-card"
@@ -24,22 +21,13 @@ const CharCard = ({ char }: { char: Character }) => {
             transition={{ duration: 0.4 }}
         >
             <div className="char-image-wrapper">
-                <div className="char-placeholder">{char.name.charAt(0)}</div>
-                {char.image && !imageError && (
-                    <Image
-                        src={char.image}
-                        alt={char.name}
-                        fill
-                        className="char-img-element object-cover"
-                        sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        onError={() => setImageError(true)}
-                        onLoadingComplete={(result) => {
-                            if (result.naturalWidth === 0) {
-                                setImageError(true);
-                            }
-                        }}
-                    />
-                )}
+                <SmartImage
+                    src={char.image}
+                    alt={char.name}
+                    fill
+                    className="char-img-element object-cover"
+                    sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
             </div>
             <div className="char-content">
                 <h3 className="char-name">{char.name}</h3>

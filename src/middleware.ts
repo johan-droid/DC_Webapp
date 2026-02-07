@@ -182,7 +182,7 @@ export async function middleware(request: NextRequest) {
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://vercel.live https://*.vercel.live",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://vercel.live",
-    "img-src 'self' data: https: blob: https://vercel.live https://*.vercel.live",
+    "img-src 'self' data: https: blob: https://vercel.live https://*.vercel.live https://res.cloudinary.com",
     "font-src 'self' https://fonts.gstatic.com https://vercel.live https://*.vercel.live",
     "connect-src 'self' https://www.google-analytics.com https://api.supabase.co https://vercel.live https://*.vercel.live",
     "frame-src 'self' https://vercel.live https://*.vercel.live",
