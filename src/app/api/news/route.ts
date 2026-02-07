@@ -120,8 +120,12 @@ export async function POST(request: NextRequest) {
     revalidatePath('/');
 
     return NextResponse.json(data[0]);
-  } catch (error) {
+    // ...
+  } catch (error: any) {
     console.error('News creation error:', error);
-    return NextResponse.json({ error: 'Failed to create news' }, { status: 500 });
+    return NextResponse.json({
+      error: 'Failed to create news',
+      details: error.message || String(error)
+    }, { status: 500 });
   }
 }
