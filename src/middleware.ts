@@ -61,6 +61,22 @@ function checkRateLimit(ip: string): boolean {
 
 function validateOrigin(origin: string | null): boolean {
   if (!origin) return true; // Same-origin requests
+
+  // Allow all localhost/127.0.0.1 in development
+  if (process.env.NODE_ENV === 'development') {
+    if (origin.startsWith('http://localhost') ||
+      origin.startsWith('https://localhost') ||
+      origin.startsWith('http://127.0.0.1') ||
+      origin.startsWith('https://127.0.0.1')) {
+      return true;
+    }
+  }
+
+  // Allow Vercel preview deployments
+  if (origin.endsWith('.vercel.app')) {
+    return true;
+  }
+
   return ALLOWED_ORIGINS.includes(origin);
 }
 
@@ -126,16 +142,16 @@ export function middleware(request: NextRequest) {
   // Content Security Policy
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "img-src 'self' data: https: blob:",
-    "font-src 'self' https://fonts.gstatic.com",
-    "connect-src 'self' https://www.google-analytics.com https://api.supabase.co",
-    "frame-src 'none'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://vercel.live https://*.vercel.live",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://vercel.live",
+    "img-src 'self' data: https: blob: https://vercel.live https://*.vercel.live",
+    "font-src 'self' https://fonts.gstatic.com https://vercel.live https://*.vercel.live",
+    "connect-src 'self' https://www.google-analytics.com https://api.supabase.co https://vercel.live https://*.vercel.live",
+    "frame-src 'self' https://vercel.live https://*.vercel.live",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-    "frame-ancestors 'none'",
+    "frame-ancestors 'self' https://vercel.live https://*.vercel.live",
     "upgrade-insecure-requests"
   ].join('; ');
 
