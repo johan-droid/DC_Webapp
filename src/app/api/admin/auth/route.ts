@@ -37,9 +37,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
     }
 
-    const adminKey = process.env.ADMIN_KEY;
+    const adminKey = process.env.ADMIN_KEY || process.env.ADMIN_SECRET;
     if (!adminKey) {
-      console.error("ADMIN_KEY not set in environment");
+      console.error("ADMIN_KEY or ADMIN_SECRET not set in environment");
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
 
