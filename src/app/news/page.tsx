@@ -25,7 +25,7 @@ export default function NewsPage() {
 
   const fetchNews = async () => {
     try {
-      const response = await fetch('/api/news');
+      const response = await fetch('/api/news', { cache: 'no-store' });
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);

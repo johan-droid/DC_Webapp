@@ -57,6 +57,11 @@ export async function GET(request: NextRequest) {
 // ... imports
 import { uploadToCloudinary } from '@/lib/cloudinary-server';
 
+import { revalidatePath } from 'next/cache';
+
+// Force dynamic behavior to prevent caching of the GET route
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   if (!await verifyAdmin(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -109,6 +114,11 @@ export async function POST(request: NextRequest) {
       .select();
 
     if (error) throw error;
+
+    // Revalidate paths to reflect new content immediately
+    revalidatePath('/news');
+    revalidatePath('/');
+
     return NextResponse.json(data[0]);
   } catch (error) {
     console.error('News creation error:', error);
