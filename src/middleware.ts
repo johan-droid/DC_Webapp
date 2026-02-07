@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { jwtVerify } from 'jose';
 
 const BOT_USER_AGENTS = [
   'bot', 'crawler', 'spider', 'scraper', 'curl', 'wget', 'python-requests',
@@ -27,6 +28,7 @@ const requestCounts = new Map<string, { count: number; timestamp: number }>();
 const RATE_LIMIT = 30;
 const TIME_WINDOW = 60000;
 const CSRF_TOKEN_EXPIRY = 3600000; // 1 hour
+
 function generateCSRFToken(): string {
   const array = new Uint8Array(32);
   crypto.getRandomValues(array);
@@ -80,7 +82,23 @@ function validateOrigin(origin: string | null): boolean {
   return ALLOWED_ORIGINS.includes(origin);
 }
 
-export function middleware(request: NextRequest) {
+async function verifyAdminToken(request: NextRequest): Promise<boolean> {
+  const token = request.cookies.get('admin_token')?.value;
+  if (!token) return false;
+
+  try {
+    const adminKey = process.env.ADMIN_KEY || process.env.ADMIN_SECRET; // Fallback for safety
+    if (!adminKey) return false;
+
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET || adminKey);
+    await jwtVerify(token, secret);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+export async function middleware(request: NextRequest) {
   const userAgent = request.headers.get('user-agent') || '';
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ||
     request.headers.get('x-real-ip') ||
@@ -88,6 +106,7 @@ export function middleware(request: NextRequest) {
   const url = request.nextUrl.pathname + request.nextUrl.search;
   const origin = request.headers.get('origin');
   const referer = request.headers.get('referer');
+  const pathname = request.nextUrl.pathname;
 
   // Block suspicious bots (allow legitimate search engines)
   if (isBot(userAgent) && !userAgent.includes('Googlebot') && !userAgent.includes('Bingbot')) {
@@ -123,6 +142,25 @@ export function middleware(request: NextRequest) {
         'X-RateLimit-Reset': new Date(Date.now() + TIME_WINDOW).toISOString()
       }
     });
+  }
+
+  // --- Admin Route Protection ---
+  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+    const isValid = await verifyAdminToken(request);
+    if (!isValid) {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
+    }
+  }
+
+  // --- API Protection ---
+  if (pathname.startsWith('/api/news') && ['POST', 'PUT', 'DELETE'].includes(request.method)) {
+    const isValid = await verifyAdminToken(request);
+    if (!isValid) {
+      return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
   }
 
   // Add security headers

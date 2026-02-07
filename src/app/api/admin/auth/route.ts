@@ -37,33 +37,35 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
     }
 
-    const adminSecret = process.env.ADMIN_SECRET;
-    if (!adminSecret) {
+    const adminKey = process.env.ADMIN_KEY;
+    if (!adminKey) {
+      console.error("ADMIN_KEY not set in environment");
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
 
     const hashedInput = hashPassword(token);
-    const hashedSecret = hashPassword(adminSecret);
+    const hashedSecret = hashPassword(adminKey);
 
     if (hashedInput === hashedSecret) {
       // Success - reset attempts
       loginAttempts.delete(clientIP);
 
       // Generate session token (JWT)
-      const secretKey = new TextEncoder().encode(adminSecret);
-      const token = await new SignJWT({ role: 'admin' })
+      const secret = new TextEncoder().encode(process.env.JWT_SECRET || adminKey);
+      const jwtToken = await new SignJWT({ role: 'admin' })
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
         .setExpirationTime('2h')
-        .sign(secretKey);
+        .sign(secret);
 
-      const response = NextResponse.json({ success: true, token });
+      const response = NextResponse.json({ success: true });
 
       // Set secure cookie
-      response.cookies.set('admin_token', token, {
+      response.cookies.set('admin_token', jwtToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
+        path: '/',
         maxAge: 7200 // 2 hours
       });
 
@@ -86,11 +88,18 @@ export async function POST(request: NextRequest) {
 
       loginAttempts.set(clientIP, { count: newCount });
       return NextResponse.json(
-        { error: `Invalid password. ${MAX_ATTEMPTS - newCount} attempts remaining.` },
+        { error: `Invalid key. ${MAX_ATTEMPTS - newCount} attempts remaining.` },
         { status: 401 }
       );
     }
   } catch (error) {
+    console.error("Auth error:", error);
     return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
   }
+}
+
+export async function DELETE(request: NextRequest) {
+  const response = NextResponse.json({ success: true, message: 'Logged out' });
+  response.cookies.delete('admin_token');
+  return response;
 }
