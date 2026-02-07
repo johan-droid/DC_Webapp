@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
 // Use a strong secret for JWT signing/verification
-const ADMIN_SECRET = process.env.ADMIN_TOKEN || 'fallback-secret-for-dev-only-do-not-use-in-prod';
+// Use the same secret derivation as the auth route and middleware
+const adminKey = process.env.ADMIN_KEY || process.env.ADMIN_SECRET;
+const ADMIN_SECRET = process.env.JWT_SECRET || adminKey || 'fallback-secret-for-dev-only-do-not-use-in-prod';
 const SECRET_KEY = new TextEncoder().encode(ADMIN_SECRET);
 
 export async function verifyAdmin(request: NextRequest): Promise<boolean> {

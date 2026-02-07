@@ -90,7 +90,11 @@ function NewsCreationForm() {
 
       const res = await fetch('/api/news', {
         method: 'POST',
+        headers: {
+          // 'Content-Type': 'multipart/form-data', // Let browser set this for FormData
+        },
         body: formData,
+        credentials: 'include', // Ensure cookies are sent
       });
 
       if (res.ok) {
