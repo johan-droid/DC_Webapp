@@ -98,3 +98,24 @@ env/
 *.tmp
 temp/
 *~
+
+# Secrets & Environment
+.env*
+!.env.example
+
+# OS Files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vercel
+.vercel
+
+# Project specific
+public/sitemap.xml
+

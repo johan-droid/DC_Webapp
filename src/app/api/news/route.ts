@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
 }
 
 // ... imports
-import { uploadToCloudinary } from '@/lib/cloudinary';
+import { uploadToCloudinary } from '@/lib/cloudinary-server';
 
 export async function POST(request: NextRequest) {
   if (!await verifyAdmin(request)) {
