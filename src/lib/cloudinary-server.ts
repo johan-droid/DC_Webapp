@@ -58,6 +58,22 @@ export async function uploadToCloudinary(
 }
 
 /**
+ * Extracts the public ID from a Cloudinary URL
+ */
+export function extractPublicIdFromUrl(url: string): string | null {
+    try {
+        const parts = url.split('/');
+        const versionIndex = parts.findIndex(part => part.startsWith('v') && !isNaN(Number(part.substring(1))));
+        const publicIdParts = parts.slice(versionIndex + 1);
+        const publicIdWithExtension = publicIdParts.join('/');
+        return publicIdWithExtension.replace(/\.[^/.]+$/, "");
+    } catch (error) {
+        console.error('Error extracting public ID:', error);
+        return null;
+    }
+}
+
+/**
  * Deletes an image from Cloudinary
  */
 export async function deleteFromCloudinary(publicId: string): Promise<void> {
