@@ -10,7 +10,7 @@ interface NewsItem {
   id: number;
   title: string;
   content: string;
-  image_url?: string;
+  image?: string;
   author?: string;
   created_at: string;
 }
@@ -119,7 +119,7 @@ export default function NewsPage() {
                     >
                       <div className="card-image">
                         <SmartImage
-                          src={item.image_url}
+                          src={item.image}
                           alt={item.title}
                           fill
                           style={{ objectFit: 'cover' }}

@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
         title: sanitizedTitle,
         content: sanitizedContent,
         author: sanitizedAuthor,
-        image_url: finalImageUrl || null,
+        image: finalImageUrl || null,
         created_at: new Date().toISOString()
       }])
       .select();
