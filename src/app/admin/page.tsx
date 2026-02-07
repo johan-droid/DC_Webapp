@@ -105,7 +105,8 @@ function NewsCreationForm() {
         (document.getElementById('fileInput') as HTMLInputElement).value = '';
       } else {
         const data = await res.json();
-        setStatus(`Error: ${data.error}`);
+        const errorMessage = data.details ? `${data.error}: ${data.details}` : data.error;
+        setStatus(`Error: ${errorMessage}`);
       }
     } catch (error) {
       console.error(error);

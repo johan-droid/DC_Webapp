@@ -67,6 +67,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  // VALIDATION: Check for required environment variables
+  if (!process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
+    !process.env.CLOUDINARY_API_KEY ||
+    !process.env.CLOUDINARY_API_SECRET) {
+    return NextResponse.json({ error: 'Server Misconfiguration: Missing Cloudinary Keys' }, { status: 500 });
+  }
+
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return NextResponse.json({ error: 'Server Misconfiguration: Missing Supabase Service Key' }, { status: 500 });
+  }
+
   try {
     const formData = await request.formData();
     const title = formData.get('title') as string;
