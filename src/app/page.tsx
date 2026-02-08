@@ -221,44 +221,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Characters Teaser */}
-      <section className="section character-section" id="characters">
-        <div className="container">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={containerVariants}
-            style={{ textAlign: 'center' }}
-          >
-            <motion.h2 variants={itemVariants} style={{ marginBottom: 'var(--space-md)' }}>
-              Key Characters
-            </motion.h2>
 
-            <motion.p
-              variants={itemVariants}
-              style={{
-                marginBottom: 'var(--space-xl)',
-                fontSize: 'var(--text-lg)',
-                maxWidth: '700px',
-                margin: '0 auto var(--space-xl) auto',
-                opacity: 0.9
-              }}
-            >
-              Meet the detectives, friends, and foes of the Detective Conan universe.
-            </motion.p>
-
-            <motion.div variants={itemVariants}>
-              <Link href="/characters" className="btn">
-                View All Characters
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M8 1L15 8L8 15M15 8H1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
     </main>
   );
 }
