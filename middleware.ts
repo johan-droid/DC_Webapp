@@ -36,7 +36,7 @@ export async function middleware(request: NextRequest) {
         try {
             await jwtVerify(token, SECRET_KEY);
             return response;
-        } catch (error) {
+        } catch (_) {
             // Invalid token
             return NextResponse.redirect(new URL('/admin/login', request.url));
         }

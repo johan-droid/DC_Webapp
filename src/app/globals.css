@@ -591,107 +591,12 @@ a {
   gap: var(--space-sm);
 }
 
-/* ============================================
-   CHARACTER CARDS - Distinctive Layout
-   ============================================ */
-.character-premium-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: var(--space-lg);
-  padding: var(--space-2xl) 0;
-}
 
-.char-card {
-  position: relative;
-  aspect-ratio: 3 / 4;
-  background: var(--gradient-noir);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  border: 1px solid var(--glass-border);
-
-  transition: all var(--duration-slow) var(--ease-expo);
-  cursor: pointer;
-}
-
-.char-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, transparent 60%);
-  pointer-events: none;
-  z-index: 1;
-}
-
-.char-image-wrapper {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.char-placeholder {
-  font-family: var(--font-display);
-  font-size: 6rem;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.1);
-  user-select: none;
-}
-
-.char-img-element {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform var(--duration-slow) var(--ease-expo);
-}
-
-.char-card:hover .char-img-element {
-  transform: scale(1.08);
-}
-
-.char-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: var(--space-lg);
-  z-index: 2;
-}
-
-.char-name {
-  font-size: var(--text-xl);
-  margin-bottom: var(--space-xs);
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
-}
-
-.char-desc {
-  font-size: var(--text-sm);
-  color: rgba(255, 255, 255, 0.8);
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height var(--duration-slow) var(--ease-expo);
-  line-height: 1.5;
-}
-
-.char-card:hover .char-desc {
-  max-height: 150px;
-  margin-top: var(--space-sm);
-}
-
-.char-card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-xl);
-  border-color: rgba(255, 255, 255, 0.2);
-}
 
 /* ============================================
    SECTIONS - Refined Spacing
    ============================================ */
-.character-header {
-  text-align: center;
-  padding-top: calc(var(--nav-height) + var(--space-2xl));
-  padding-bottom: var(--space-xl);
-}
+
 
 .section-divider {
   border-bottom: 1px solid var(--glass-border);

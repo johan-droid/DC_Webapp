@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import './admin.css';
 
@@ -49,8 +48,14 @@ export default function AdminTerminal() {
   );
 }
 
+interface NewsItem {
+  id: string;
+  title: string;
+  created_at: string;
+}
+
 function NewsList() {
-  const [news, setNews] = useState<any[]>([]);
+  const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchNews = async () => {
@@ -60,8 +65,8 @@ function NewsList() {
         const data = await res.json();
         setNews(data);
       }
-    } catch (error) {
-      console.error('Failed to fetch news', error);
+    } catch (_) {
+      console.error('Failed to fetch news');
     } finally {
       setLoading(false);
     }
@@ -88,7 +93,7 @@ function NewsList() {
         const data = await res.json();
         alert(`Deletion Failed: ${data.details || data.error}`);
       }
-    } catch (error) {
+    } catch (_) {
       alert('Delete failed');
     }
   };

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import SmartImage from '@/components/SmartImage';
 
 interface NewsItem {

@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(_: NextRequest) {
   const response = NextResponse.json({ success: true, message: 'Logged out' });
   response.cookies.delete('admin_token');
   return response;

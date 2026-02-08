@@ -26,21 +26,7 @@ export const NewsSchema = z.object({
 
 
 
-export const CharacterSchema = z.object({
-  name: z.string()
-    .min(1, 'Name must be at least 1 character')
-    .max(100, 'Name must be less than 100 characters')
-    .regex(/^[a-zA-Z0-9\s\-'.]+$/, 'Name contains invalid characters')
-    .transform(val => val.trim())
-    .transform(val => val.replace(/\s+/g, ' ')), // Normalize spaces
-  description: z.string()
-    .min(10, 'Description must be at least 10 characters')
-    .max(1000, 'Description must be less than 1000 characters')
-    .transform(val => val.trim())
-    .transform(val => val.replace(/\s+/g, ' ')), // Normalize spaces
-  image: z.string().url().nullable().optional(),
-  faction: z.enum(['main', 'black_organization', 'police', 'fbi'])
-});
+
 
 // Security utility functions
 export const sanitizeInput = (input: string): string => {

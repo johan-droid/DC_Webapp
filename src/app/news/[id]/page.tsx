@@ -19,24 +19,24 @@ export default function NewsDetailPage({ params }: { params: Promise<{ id: strin
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const fetchNewsItem = async () => {
+            try {
+                const res = await fetch(`/api/news/${resolvedParams.id}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setNews(data);
+                } else {
+                    setNews(null);
+                }
+            } catch (_) {
+                console.error('Failed to fetch news');
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchNewsItem();
     }, [resolvedParams.id]);
-
-    const fetchNewsItem = async () => {
-        try {
-            const res = await fetch(`/api/news/${resolvedParams.id}`);
-            if (res.ok) {
-                const data = await res.json();
-                setNews(data);
-            } else {
-                setNews(null);
-            }
-        } catch (error) {
-            console.error('Failed to fetch news', error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     if (loading) return (
         <div className="container" style={{ paddingTop: '150px', textAlign: 'center' }}>

@@ -27,7 +27,7 @@ export default function AdminLogin() {
                 const data = await res.json();
                 setStatus(data.error || 'Access Denied');
             }
-        } catch (error) {
+        } catch (_) {
             setStatus('Connection Failed');
         }
     };

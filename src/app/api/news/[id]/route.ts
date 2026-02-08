@@ -23,7 +23,7 @@ export async function GET(
         }
 
         return NextResponse.json(data);
-    } catch (error) {
+    } catch (_) {
         return NextResponse.json({ error: 'Failed to fetch news item' }, { status: 500 });
     }
 }
@@ -78,8 +78,9 @@ export async function DELETE(
         revalidatePath('/');
 
         return NextResponse.json({ message: 'News deleted successfully' });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Delete error:', error);
-        return NextResponse.json({ error: 'Failed to delete news', details: error.message }, { status: 500 });
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ error: 'Failed to delete news', details: errorMessage }, { status: 500 });
     }
 }

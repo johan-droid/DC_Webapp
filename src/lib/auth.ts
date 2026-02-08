@@ -21,11 +21,12 @@ export async function verifyAdmin(request: NextRequest): Promise<boolean> {
   try {
     const { payload } = await jwtVerify(token, SECRET_KEY);
     return payload.role === 'admin';
-  } catch (error) {
+  } catch (_) {
     return false;
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export function requireAuth(handler: Function) {
   return async (request: NextRequest) => {
     const isAdmin = await verifyAdmin(request);

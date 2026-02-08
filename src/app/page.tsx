@@ -59,8 +59,8 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
             >
-              "When you have eliminated the impossible, whatever remains, however improbable,
-              must be the truth."
+              &quot;When you have eliminated the impossible, whatever remains, however improbable,
+              must be the truth.&quot;
             </motion.p>
 
             <motion.div
@@ -213,7 +213,7 @@ export default function Home() {
                 The Detective Method
               </h3>
               <p style={{ lineHeight: '1.8' }}>
-                Conan's unique approach involves using Dr. Agasa's special tranquilizer watch to sedate Kogoro
+                Conan&apos;s unique approach involves using Dr. Agasa&apos;s special tranquilizer watch to sedate Kogoro
                 Mouri, then employing a voice-changing bowtie to present his deductions.
               </p>
             </motion.div>
