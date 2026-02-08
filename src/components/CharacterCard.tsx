@@ -98,10 +98,17 @@ export default function CharacterCard({ character }: CharacterCardProps) {
                                     {character.description}
                                 </p>
 
+                                {character.romanticLink && (
+                                    <div className="mt-3 text-xs text-gray-400 flex items-center gap-1">
+                                        <Heart size={12} className="text-pink-500" fill="currentColor" />
+                                        <span>Love: <span className="text-white">{character.romanticLink}</span></span>
+                                    </div>
+                                )}
+
                                 {character.relationships && (
-                                    <div className="mt-3 text-xs text-gray-500 flex items-center gap-1">
-                                        <Heart size={10} className="text-red-400" />
-                                        <span>Relation: {character.relationships}</span>
+                                    <div className="mt-2 text-xs text-gray-500 flex items-center gap-1">
+                                        <User size={12} className="text-blue-400" />
+                                        <span>Note: {character.relationships}</span>
                                     </div>
                                 )}
                             </motion.div>

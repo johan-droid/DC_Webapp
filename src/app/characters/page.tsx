@@ -57,6 +57,21 @@ export default function CharactersPage() {
                 </div>
             </section>
 
+            {/* File Index (Sticky Nav) */}
+            <div className="sticky top-0 z-40 bg-[#0d0d0d]/80 backdrop-blur-md border-y border-white/5 py-4 overflow-x-auto">
+                <div className="container mx-auto px-4 flex gap-4 md:justify-center min-w-max">
+                    {characterGroups.map((group) => (
+                        <a
+                            key={group.id}
+                            href={`#${group.id}`}
+                            className="text-xs md:text-sm font-mono text-gray-400 hover:text-red-500 transition-colors whitespace-nowrap px-3 py-1 rounded hover:bg-white/5 uppercase tracking-wider"
+                        >
+                            {group.id === 'foreign_intel' ? 'FBI/CIA' : group.title.split('&')[0]}
+                        </a>
+                    ))}
+                </div>
+            </div>
+
             {/* Intro for New Weebs */}
             <section className="py-24 relative overflow-hidden">
                 <div className="absolute inset-0 bg-red-950/10 pointer-events-none" />
