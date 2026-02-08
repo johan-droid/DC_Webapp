@@ -296,68 +296,7 @@ a {
   width: 100%;
 }
 
-/* Mobile Menu */
-.hamburger {
-  display: none;
-  flex-direction: column;
-  gap: 6px;
-  cursor: pointer;
-  z-index: 2001;
-  padding: var(--space-xs);
-  background: none;
-  border: none;
-  outline: none;
-}
-
-.hamburger:focus {
-  outline: 2px solid var(--detective-red);
-  outline-offset: 2px;
-}
-
-.bar {
-  width: 28px;
-  height: 3px;
-  background: var(--paper-white);
-  border-radius: 2px;
-  transition: all var(--duration-base) var(--ease-expo);
-}
-
-.hamburger.active .bar:nth-child(1) {
-  transform: translateY(9px) rotate(45deg);
-}
-
-.hamburger.active .bar:nth-child(2) {
-  opacity: 0;
-  transform: translateX(-20px);
-}
-
-.hamburger.active .bar:nth-child(3) {
-  transform: translateY(-9px) rotate(-45deg);
-}
-
-.mobile-close-btn {
-  display: none !important;
-}
-
-/* Mobile Menu Overlay */
-.mobile-menu-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 999;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  cursor: pointer;
-}
-
-.mobile-menu-overlay.active {
-  opacity: 1;
-}
+/* Mobile Menu Removed - Navbar is always visible */
 
 /* ============================================
    HERO SECTION - Cinematic Impact
@@ -1206,52 +1145,15 @@ body {
     padding: 0 var(--space-md);
   }
 
-  .hamburger {
-    display: flex;
-  }
-
-  .mobile-close-btn {
-    display: block !important;
-  }
-
+  /* Simplified Navigation for Mobile */
   .nav-links {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(13, 13, 13, 0.98);
-    backdrop-filter: blur(30px) saturate(200%);
-    -webkit-backdrop-filter: blur(30px) saturate(200%);
-    flex-direction: column;
-    justify-content: center;
-    gap: var(--space-2xl);
-    transform: translateX(-100%);
-    transition: transform var(--duration-base) var(--ease-expo);
-    z-index: 1001;
-    padding: var(--space-xl);
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .nav-links.active {
-    transform: translateX(0);
+    display: flex !important;
+    gap: var(--space-md) !important;
   }
 
   .nav-links a {
-    font-size: var(--text-xl);
-    text-align: center;
-    padding: var(--space-md);
-    display: block;
-    width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
-    border-radius: var(--radius-md);
-    transition: all var(--duration-base) var(--ease-smooth);
-  }
-
-  .nav-links a:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: scale(1.05);
+    font-size: var(--text-sm) !important;
+    padding: var(--space-xs) !important;
   }
 
   .hero h1 {
@@ -1307,6 +1209,7 @@ body {
   p {
     margin-bottom: var(--space-md);
     line-height: 1.6;
+    font-size: var(--text-base);
   }
 
   .btn {
@@ -1366,28 +1269,14 @@ body {
     font-size: var(--text-xs);
   }
 
+  /* Even simpler nav for very small screens */
   .nav-links {
-    padding: var(--space-lg);
+    gap: var(--space-sm) !important;
   }
 
   .nav-links a {
-    font-size: var(--text-lg);
-    padding: var(--space-sm);
-  }
-}
-
-@media (min-width: 769px) {
-  .hamburger {
-    display: none !important;
-  }
-
-  .nav-links {
-    display: flex !important;
-    position: static;
-    flex-direction: row;
-    background: transparent;
-    backdrop-filter: none;
-    transform: none;
+    font-size: 0.75rem !important;
+    /* Smaller font on very small screens */
   }
 }
 
