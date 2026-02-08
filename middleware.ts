@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     response.headers.set(
         'Content-Security-Policy',
-        "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://apis.google.com https://vercel.live https://*.vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://res.cloudinary.com https://i.ytimg.com blob:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://res.cloudinary.com https://*.supabase.co https://vercel.live https://*.vercel.live wss://*.vercel.live;"
+        "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://apis.google.com https://vercel.live https://*.vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://res.cloudinary.com https://i.imgur.com https://*.imgur.com https://i.ytimg.com blob:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://res.cloudinary.com https://*.supabase.co https://vercel.live https://*.vercel.live wss://*.vercel.live; frame-src 'self' https://vercel.live https://*.vercel.live;"
     );
 
     // 2. Protect Admin Routes
