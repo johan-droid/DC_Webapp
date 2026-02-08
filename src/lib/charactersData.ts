@@ -2,6 +2,8 @@ export interface Character {
     id: string;
     name: string;
     japaneseName?: string;
+    aliases?: string[];
+    voiceActor?: string;
     affiliation: string;
     role: string;
     status: 'Alive' | 'Deceased' | 'Unknown';
