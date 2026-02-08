@@ -58,22 +58,37 @@ export default function CharactersPage() {
             </section>
 
             {/* Intro for New Weebs */}
-            <section className="py-16">
-                <div className="container mx-auto px-4">
-                    <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 md:p-12 max-w-4xl mx-auto shadow-2xl relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-2 h-full bg-red-600" />
-                        <h3 className="text-2xl font-bold mb-4 font-serif text-red-400">New to the Case?</h3>
-                        <p className="text-gray-300 mb-6 leading-relaxed">
-                            Detective Conan (Case Closed) is a long-running mystery series revolving around Shinichi Kudo, a high school detective shrunk into a child by the Black Organization. He adopts the alias "Conan Edogawa" and solves cases while secretly hunting down the syndicate to regain his original form.
-                        </p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                            <div className="bg-black/30 p-4 rounded border border-white/5">
-                                <strong className="block text-white mb-1">Beginner Tip #1</strong>
-                                <p className="text-gray-400">You don't need to watch all 1000+ episodes! Focus on the "Black Organization" arc episodes for the main plot.</p>
+            <section className="py-24 relative overflow-hidden">
+                <div className="absolute inset-0 bg-red-950/10 pointer-events-none" />
+                <div className="container mx-auto px-4 relative z-10">
+                    <div className="bg-[#1a1a1a]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-12 max-w-5xl mx-auto shadow-2xl relative overflow-hidden group hover:border-red-500/30 transition-colors duration-500">
+                        {/* Decorative Elements */}
+                        <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-red-600 to-transparent" />
+                        <div className="absolute -right-20 -top-20 w-64 h-64 bg-red-600/10 blur-3xl rounded-full pointer-events-none" />
+
+                        <div className="flex flex-col md:flex-row gap-10 items-start">
+                            <div className="flex-1">
+                                <h3 className="text-3xl font-bold mb-6 font-serif text-white tracking-wide border-b border-white/10 pb-4 inline-block">
+                                    <span className="text-red-500 mr-2">///</span>
+                                    Mission Briefing
+                                </h3>
+                                <p className="text-gray-300 mb-6 leading-relaxed text-lg font-light">
+                                    <strong className="text-white font-medium">Detective Conan</strong> (also known as <em>Case Closed</em>) follows the story of Shinichi Kudo, a brilliant high school detective. After witnessing a shady deal by the <span className="text-red-400">Black Organization</span>, he is force-fed an experimental drug (APTX 4869) that shrinks him into a child.
+                                </p>
+                                <p className="text-gray-400 leading-relaxed font-light">
+                                    Adopting the alias <strong>"Conan Edogawa"</strong>, he lives with his childhood friend Ran and her detective father, solving cases from the shadows while hunting down the syndicate to regain his body.
+                                </p>
                             </div>
-                            <div className="bg-black/30 p-4 rounded border border-white/5">
-                                <strong className="block text-white mb-1">Beginner Tip #2</strong>
-                                <p className="text-gray-400">The movies are mostly non-canon but offer high-budget action and character moments.</p>
+
+                            <div className="w-full md:w-1/3 flex flex-col gap-4">
+                                <div className="bg-black/40 p-5 rounded-xl border border-white/10 hover:bg-black/60 transition-colors">
+                                    <strong className="block text-red-400 mb-2 text-sm uppercase tracking-wider">Directive #1</strong>
+                                    <p className="text-gray-400 text-sm">Focus on the <strong>"Black Organization"</strong> episodes. They contain the core plot progression.</p>
+                                </div>
+                                <div className="bg-black/40 p-5 rounded-xl border border-white/10 hover:bg-black/60 transition-colors">
+                                    <strong className="block text-blue-400 mb-2 text-sm uppercase tracking-wider">Directive #2</strong>
+                                    <p className="text-gray-400 text-sm">Movies are largely non-canon but offer spectacular action. Treat them as high-budget side missions.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
